@@ -13,7 +13,11 @@
     "start": "next dev --turbopack"
   },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.8.0",
+    "@aws-amplify/ui-react": "^6.15.6",
     "@magiarium/structure": "github:magiarium/magiarium-structure",
+    "aws-amplify": "^6.22.0",
+    "js-cookie": "^3.0.8",
     "next": "^16.3.5",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
@@ -22,6 +26,7 @@
     "@eslint/eslintrc": "^3",
     "@markuplint/jsx-parser": "^4.18.3",
     "@markuplint/react-spec": "^4.18.0",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^26.5.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

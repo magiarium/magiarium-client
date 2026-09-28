@@ -1,5 +1,5 @@
 const TopPage = () => {
-  return null;
+  return <>トップページ</>;
 };
 
 export default TopPage;
