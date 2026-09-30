@@ -1,0 +1,25 @@
+.form-input {
+  &__wrapper {
+    position: relative;
+
+    input {
+      width: 100%;
+      padding: 0.1rem;
+      border: 1px solid #000000;
+    }
+  }
+
+  &__password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    color: black;
+    font-size: 0.75rem;
+
+    border: 0;
+    padding: 4px;
+    background: transparent;
+    cursor: pointer;
+  }
+}
