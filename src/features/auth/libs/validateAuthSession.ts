@@ -7,13 +7,13 @@ import { UserAccountInfo } from '../type';
  * @param currentUserAccount 現在のアカウント情報
  * @returns true:問題なし、false:不正セッション
  */
-export const validateAuthSession = async ({
+export const validateAuthSession = ({
   session,
   currentUserAccount,
 }: {
   session: AuthSession;
   currentUserAccount: UserAccountInfo;
-}): Promise<boolean> => {
+}): boolean => {
   const payload = session.tokens?.idToken?.payload;
 
   if (!payload) {
@@ -34,7 +34,7 @@ export const validateAuthSession = async ({
   if (
     currentUserAccount.id === sub &&
     currentUserAccount.name === username &&
-    cognitoGroups.includes(currentUserAccount.role)
+    cognitoGroups.includes(currentUserAccount.role.toLocaleLowerCase())
   ) {
     return true;
   }

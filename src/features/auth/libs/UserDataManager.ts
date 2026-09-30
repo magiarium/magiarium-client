@@ -33,7 +33,7 @@ export class UserDataManager {
     this._currentUserAccount = signinUserAccount;
 
     if (signinUserAccount.role === 'GUEST') {
-      // ゲストユーザーの場合、認証ユーザーから明示的にサインアウト
+      // ゲストユーザーを利用する場合、認証アカウントはサインアウト
       await signOut();
     } else {
       // ゲストユーザー以外の場合、新規アカウントであれば利用可能アカウント一覧に追加
@@ -41,7 +41,7 @@ export class UserDataManager {
         .filter((target) => target.id !== signinUserAccount.id)
         .push(signinUserAccount);
     }
-    // Cookie側も更新
+    // Cookie側も同様に更新
     registerUserDataToCookies(signinUserAccount);
     // 更新
     this._notify();
