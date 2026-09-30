@@ -3,12 +3,11 @@ import { LoadingCircle } from '@/common/components/LoadingCircle';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AuthStep, AuthStepContext } from '../contexts/AuthStepContext';
-import { UNKNOWN_USER_ICON } from '../define';
 import { ErrorMessage } from './common/ErrorMessage';
 import { InputPassword } from './InputPassword';
 import { InputTOTPCode } from './InputTOTPCode';
 import './Main.scss';
-import { SelectUserAccount } from './SelectUserAccount';
+import { SelectAccount } from './SelectAccount';
 import { SetupPassword } from './SetupPassword';
 import { SetupTOTPCode } from './SetupTOTPCode';
 import { SigninOtherAccount } from './SigninOtherAccount';
@@ -20,9 +19,9 @@ import { SigninOtherAccount } from './SigninOtherAccount';
 export const LockPage = () => {
   // 初期状態はアカウント選択画面のため、ユーザー不明扱い
   const [authStep, setAuthStep] = useState<AuthStep>({
-    type: 'SELECT_USER_ACCOUNT',
-    name: '',
-    icon: UNKNOWN_USER_ICON,
+    type: 'SELECT_ACCOUNT',
+    accountId: '',
+    accountName: '',
   });
 
   // 認証が完了した場合は数秒待機後、Top画面に遷移
@@ -43,8 +42,8 @@ export const LockPage = () => {
         <div className="lock-page__screen">
           {(() => {
             switch (authStep.type) {
-              case 'SELECT_USER_ACCOUNT':
-                return <SelectUserAccount />;
+              case 'SELECT_ACCOUNT':
+                return <SelectAccount />;
               case 'INPUT_PASSWORD':
                 return <InputPassword />;
               case 'SIGNIN_OTHER_ACCOUNT':
@@ -58,7 +57,7 @@ export const LockPage = () => {
               case 'DONE':
                 return (
                   <>
-                    ようこそ、{authStep.name} さま
+                    ようこそ、{authStep.accountName} さま
                     <LoadingCircle />
                   </>
                 );

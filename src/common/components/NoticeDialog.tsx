@@ -7,11 +7,11 @@ import {
   useRef,
 } from 'react';
 import { BsXLg } from 'react-icons/bs';
-import './Notice.scss';
+import './NoticeDialog.scss';
 
 type NoticeType = 'DEFAULT' | 'NOTICE' | 'ALERT';
 
-export const Notice = forwardRef<
+export const NoticeDialog = forwardRef<
   HTMLDialogElement,
   {
     title: string;
@@ -32,13 +32,13 @@ export const Notice = forwardRef<
   }, []);
 
   return (
-    <dialog data-type={type} className="notice" ref={dialogRef}>
-      <div className="notice__title-bar">
-        <span className="notice__title">{title}</span>
+    <dialog data-type={type} className="notice-dialog" ref={dialogRef}>
+      <div className="notice-dialog__title-bar">
+        <span className="notice-dialog__title">{title}</span>
 
         <button
           type="button"
-          className="notice__title-button"
+          className="notice-dialog__title-button"
           onClick={() => dialogRef.current?.close()}
           aria-label="閉じる"
         >
@@ -46,9 +46,9 @@ export const Notice = forwardRef<
         </button>
       </div>
 
-      <div className="notice__content">{children}</div>
+      <div className="notice-dialog__content">{children}</div>
     </dialog>
   );
 });
 
-Notice.displayName = 'Notice';
+NoticeDialog.displayName = 'NoticeDialog';

@@ -2,6 +2,7 @@ import {
   Dispatch,
   HTMLInputAutoCompleteAttribute,
   HTMLInputTypeAttribute,
+  ReactNode,
   SetStateAction,
   useState,
 } from 'react';
@@ -10,6 +11,7 @@ import './FormInput.scss';
 
 /**
  * form内input要素
+ *
  * @param params.id InputId
  * @param params.type InputType
  * @param params.label label + input.placeholder
@@ -32,7 +34,7 @@ export const FormInput = ({
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   autoComplete?: HTMLInputAutoCompleteAttribute;
-}) => {
+}): ReactNode => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="form-input">

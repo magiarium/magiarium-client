@@ -1,50 +1,49 @@
 import classNames from 'classnames';
 import { BsChevronRight } from 'react-icons/bs';
 import { useUserData } from '../../auth/hooks/useUserData';
-import { UNKNOWN_USER_ICON } from '../define';
 import { useAuthStep } from '../hooks/useAuthStep';
 import { useSignin } from '../hooks/useSignin';
-import './SelectUserAccount.scss';
+import './SelectAccount.scss';
+import { UserIcon } from './common/AccountIcon';
 import { LinkButton } from './common/LinkButton';
-import { UserIcon } from './common/UserIcon';
 
 /**
  * ユーザーアカウント選択画面
  */
-export const SelectUserAccount = () => {
+export const SelectAccount = () => {
   const { availableAccounts, currentAccount } = useUserData();
-  const { signinBySelectUser } = useSignin();
+  const { signinByAccountInfo } = useSignin();
   const { setAuthStep } = useAuthStep();
 
   return (
-    <div className="select-user-account">
-      <div className="select-user-account__accounts">
+    <div className="select-account">
+      <div className="select-account__accounts">
         {availableAccounts.map((targetAccount, index) => {
           const isCurrentAccount = targetAccount.id === currentAccount.id;
           return (
             <button
               className={classNames(
-                'select-user-account__button',
-                isCurrentAccount && 'select-user-account__button--active'
+                'select-account__button',
+                isCurrentAccount && 'select-account__button--active'
               )}
               key={`user-account-${index}`}
               onClick={async () => {
-                const result = await signinBySelectUser(targetAccount);
+                const result = await signinByAccountInfo(targetAccount);
                 setAuthStep(result);
               }}
             >
-              <UserIcon icon={targetAccount.icon} name={targetAccount.name} />
+              <UserIcon id={targetAccount.id} name={targetAccount.name} />
             </button>
           );
         })}
       </div>
-      <div className="select-user-account__footer">
+      <div className="select-account__footer">
         <LinkButton
           onClick={() => {
             setAuthStep({
               type: 'SIGNIN_OTHER_ACCOUNT',
-              name: '',
-              icon: UNKNOWN_USER_ICON,
+              accountId: '',
+              accountName: '',
             });
           }}
         >

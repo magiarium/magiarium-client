@@ -2,13 +2,14 @@ import { useSignin } from '@/features/signin/hooks/useSignin';
 import { useState } from 'react';
 import { BsArrowLeft } from 'react-icons/bs';
 import { useAuthStep } from '../hooks/useAuthStep';
+import { AccountIconName } from './common/AccountIcon.Name';
 import { FormInput } from './common/FormInput';
 import { GlassButton } from './common/GlassButton';
 import { InputAccountInfoTemplateLayout } from './common/InputAccountInfoTemplateLayout';
-import { UserIconName } from './common/UserIcon.Name';
 
 /**
  * パスワード入力画面
+ *
  * @returns Reactコンポーネント
  */
 export const InputPassword = () => {
@@ -20,15 +21,15 @@ export const InputPassword = () => {
     <InputAccountInfoTemplateLayout
       authAction={() =>
         signinWithPassword({
-          username: authStep.name,
-          icon: authStep.icon,
+          accountId: authStep.accountId,
+          accountName: authStep.accountName,
           password,
         })
       }
       errorMessage="パスワードが間違っています。"
       formContent={
         <>
-          <UserIconName>{authStep.name}</UserIconName>
+          <AccountIconName>{authStep.accountName}</AccountIconName>
           <FormInput
             id="password"
             type="password"
@@ -42,7 +43,7 @@ export const InputPassword = () => {
       footerContent={
         <GlassButton onClick={prevAuthStep}>
           <BsArrowLeft />
-          ユーザーの切り替え
+          アカウントの切り替え
         </GlassButton>
       }
     />

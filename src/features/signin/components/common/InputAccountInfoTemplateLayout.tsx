@@ -3,10 +3,10 @@ import type { Dispatch, SetStateAction, SubmitEvent } from 'react';
 import { ReactNode, useState } from 'react';
 import { AuthStep } from '../../contexts/AuthStepContext';
 import { useAuthStep } from '../../hooks/useAuthStep';
+import { AccountIconImage } from './AccountIcon.Image';
 import { ErrorMessage } from './ErrorMessage';
 import './InputAccountInfoTemplateLayout.scss';
 import { SubmitButton } from './SubmitButton';
-import { UserIconImage } from './UserIcon.Image';
 
 export type SetError = Dispatch<SetStateAction<string>>;
 
@@ -52,7 +52,7 @@ export const InputAccountInfoTemplateLayout = ({
 
   return (
     <div className="input-accountinfo-template">
-      <UserIconImage icon={authStep.icon} />
+      <AccountIconImage id={authStep.accountId} />
       {isLoading ? (
         <>
           認証中

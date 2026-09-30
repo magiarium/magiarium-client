@@ -8,11 +8,12 @@ import { InputAccountInfoTemplateLayout } from './common/InputAccountInfoTemplat
 
 /**
  * 他アカウントでサインイン
+ *
  * @returns Reactコンポーネント
  */
 export const SigninOtherAccount = () => {
   const { authStep, prevAuthStep } = useAuthStep<'SIGNIN_OTHER_ACCOUNT'>();
-  const [username, setUsername] = useState(authStep.name);
+  const [username, setUsername] = useState(authStep.accountName);
   const [password, setPassword] = useState('');
 
   const { signinWithPassword } = useSignin();
@@ -21,18 +22,18 @@ export const SigninOtherAccount = () => {
     <InputAccountInfoTemplateLayout
       authAction={() =>
         signinWithPassword({
-          username: username,
-          icon: authStep.icon,
+          accountId: authStep.accountId,
+          accountName: username,
           password,
         })
       }
-      errorMessage="ユーザー名またはパスワードが正しくありません"
+      errorMessage="アカウント名またはパスワードが正しくありません"
       formContent={
         <>
           <FormInput
             id="username"
             type="text"
-            label="ユーザー名"
+            label="アカウント名"
             value={username}
             setValue={setUsername}
             autoComplete="username"
@@ -50,7 +51,7 @@ export const SigninOtherAccount = () => {
       footerContent={
         <GlassButton onClick={prevAuthStep}>
           <BsArrowLeft />
-          ユーザーの切り替え
+          アカウントの切り替え
         </GlassButton>
       }
     />

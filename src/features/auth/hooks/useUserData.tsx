@@ -12,9 +12,9 @@ export const useUserData = () => {
   const userDataManager = context;
 
   return {
-    signin: userDataManager.signin,
+    changeCurrentAccount: userDataManager.changeCurrentAccount,
     currentAccount: userDataManager.getCurrentAccount(),
+    curretnAccountRole: userDataManager.getCurrentRole(),
     availableAccounts: userDataManager.getAvailableAccounts(),
-    userRole: userDataManager.getRole(),
   };
 };

@@ -1,8 +1,7 @@
 import { UserDataManagerContext } from '@/features/auth/contexts/UserDataManagerContext';
-import { extractCurrentUserAccountFromSession } from '@/features/auth/libs/extractCurrentUserAccountFromSession';
+import { extractCurrentAccountFromSession } from '@/features/auth/libs/extractCurrentAccountFromSession';
 import { validateAuthSession } from '@/features/auth/libs/validateAuthSession';
-import { UserAccountInfo } from '@/features/auth/type';
-import { ImageMetadata } from '@magiarium/structure';
+import type { AccountInfo } from '@/features/auth/type';
 import {
   confirmSignIn,
   fetchAuthSession,
@@ -22,116 +21,125 @@ export const useSignin = () => {
   }
 
   const userDataManager = context;
-  const { signin } = userDataManager;
+  const { changeCurrentAccount } = userDataManager;
 
   /**
-   * 現在セッション中のユーザーでUIをサインイン状態にする
-   * @returns サインインユーザー
+   * セッション情報をもとに、カレントアカウントを更新する処理
+   *
+   * @returns カレントアカウント情報
    */
-  const signinBySessionUser = async () => {
+  const changeCurrentAccountBySessionUser = async () => {
     const session = await fetchAuthSession();
-    const currentUser = extractCurrentUserAccountFromSession(session);
+    const currentAccount = extractCurrentAccountFromSession(session);
 
-    await signin(currentUser);
-    return currentUser;
+    await changeCurrentAccount(currentAccount);
+    return currentAccount;
   };
 
   /**
-   * 選択したユーザーでサインイン
-   * @param targetAccount サインイン対象アカウント
+   * アカウント情報をもとにサインインする処理
+   *
+   * @param targetAccount アカウント情報
    * @returns 次の認証ステップ
    */
-  const signinBySelectUser = async (
-    targetAccount: UserAccountInfo
+  const signinByAccountInfo = async (
+    targetAccount: AccountInfo
   ): Promise<AuthStep> => {
     if (targetAccount.role === 'GUEST') {
-      // ゲストユーザーの場合、そのままユーザー情報を更新
-      signin(targetAccount);
+      // ゲストアカウントの場合、認証をスキップして対象アカウントでカレントアカウントを更新
+      changeCurrentAccount(targetAccount);
       return {
         type: 'DONE',
-        name: targetAccount.name,
-        icon: targetAccount.icon,
+        accountId: targetAccount.id,
+        accountName: targetAccount.name,
       };
     } else {
-      // ゲストユーザー以外の場合、認証チェック
+      // ゲストアカウント以外の場合、認証チェック
       const session = await fetchAuthSession();
       const isValidateAuth = validateAuthSession({
         session,
-        currentUserAccount: targetAccount,
+        currentAccount: targetAccount,
       });
       if (isValidateAuth) {
-        // 既にサインイン状態のため、ブラウザに状態反映して完了
-        signin(targetAccount);
+        // 既にサインイン状態のため、カレントアカウントを更新
+        changeCurrentAccount(targetAccount);
         return {
           type: 'DONE',
-          name: targetAccount.name,
-          icon: targetAccount.icon,
+          accountId: targetAccount.id,
+          accountName: targetAccount.name,
         };
       } else {
-        // セッション切れのため、再ログイン
+        // セッション切れのため、認証ステップをパスワード入力(再ログイン)に更新
         return {
           type: 'INPUT_PASSWORD',
-          name: targetAccount.name,
-          icon: targetAccount.icon,
+          accountId: targetAccount.id,
+          accountName: targetAccount.name,
         };
       }
     }
   };
 
   /**
-   * パスワードでサインイン
-   * @param targetAccount サインイン対象アカウント
-   * @param password パスワード
+   * パスワードを入力してアカウントにサインインする処理
+   *
+   * @param params.accountId アカウントID
+   * @param params.accountName アカウント名
+   * @param params.password パスワード
    * @returns 次の認証ステップ
    */
   const signinWithPassword = async ({
-    username,
-    icon,
+    accountId,
+    accountName,
     password,
   }: {
-    username: string;
-    icon: ImageMetadata;
+    accountId: string;
+    accountName: string;
     password: string;
   }): Promise<AuthStep> => {
     try {
-      await signOut(); // サインインで転けるため、この時点でサインアウト
+      await signOut(); // サインイン状態が残っていると失敗するため、この時点で機械的にサインアウト(空打ちは無害)
       const result = await signIn({
-        username,
+        username: accountName,
         password,
       });
 
       switch (result.nextStep.signInStep) {
         case 'DONE':
-          const currentUser = await signinBySessionUser();
+          // 成功
+          const currentAccount = await changeCurrentAccountBySessionUser();
           return {
             type: 'DONE',
-            name: currentUser.name,
-            icon: icon,
+            accountId: currentAccount.id,
+            accountName: currentAccount.name,
           };
 
         case 'CONFIRM_SIGN_IN_WITH_TOTP_CODE':
+          // TOTPコードの追加入力が必要
           return {
             type: 'INPUT_TOTP_CODE',
-            name: username,
-            icon: icon,
+            accountId,
+            accountName,
           };
         case 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED':
+          // パスワード強制リセットが必要(初回ログインのみ)
           return {
             type: 'SETUP_PASSWORD',
-            name: username,
-            icon: icon,
+            accountId,
+            accountName,
           };
         case 'CONTINUE_SIGN_IN_WITH_TOTP_SETUP':
+          // TOTPコードのセットアップが必要(任意にしたので現状不要処理だが、今後必要になる可能性があるため残しておく)
           return {
             type: 'SETUP_TOTP_CODE',
-            name: username,
-            icon: icon,
+            accountId,
+            accountName,
             setupUri: result.nextStep.totpSetupDetails
-              .getSetupUri('まぎありうむ', username)
+              .getSetupUri('まぎありうむ', accountName)
               .toString(),
           };
 
         default:
+          // 現状存在しないルート(予期せぬ操作のため例外を投げてエラー扱い)
           throw new Error('サインイン失敗');
       }
     } catch {
@@ -141,6 +149,7 @@ export const useSignin = () => {
 
   /**
    * TOTPコードサインイン
+   *
    * @param code TOTPコード
    * @returns 次の認証ステップ
    */
@@ -151,12 +160,12 @@ export const useSignin = () => {
       });
 
       if (result.nextStep.signInStep === 'DONE') {
-        const currentUser = await signinBySessionUser();
+        const currentUser = await changeCurrentAccountBySessionUser();
 
         return {
           type: 'DONE' as const,
-          name: currentUser.name,
-          icon: currentUser.icon,
+          accountId: currentUser.id,
+          accountName: currentUser.name,
         };
       }
       throw new Error('認証エラー');
@@ -167,6 +176,7 @@ export const useSignin = () => {
 
   /**
    * パスワードセットアップ処理
+   *
    * @param password パスワード
    * @returns 次の認証ステップ
    */
@@ -176,12 +186,12 @@ export const useSignin = () => {
         challengeResponse: password,
       });
       if (result.nextStep.signInStep === 'DONE') {
-        const currentUser = await signinBySessionUser();
+        const currentUser = await changeCurrentAccountBySessionUser();
         const totpSetupDetails = await setUpTOTP();
         return {
           type: 'SETUP_TOTP_CODE',
-          name: currentUser.name,
-          icon: currentUser.icon,
+          accountId: currentUser.id,
+          accountName: currentUser.name,
           setupUri: totpSetupDetails.getSetupUri('まぎありうむ').toString(),
         };
       }
@@ -193,26 +203,27 @@ export const useSignin = () => {
 
   /**
    * TOTPコードセットアップ
-   * @param params.name アカウント名
-   * @param params.icon アイコン画像情報
+   *
+   * @param params.accountId アカウントID
+   * @param params.accountName アカウント名
    * @param params.code TOTPコード
    * @returns 次の認証ステップ
    */
   const setupTOTP = async ({
-    name,
-    icon,
+    accountId,
+    accountName,
     code,
   }: {
-    name: string;
-    icon: ImageMetadata;
+    accountId: string;
+    accountName: string;
     code: string;
   }): Promise<AuthStep> => {
     try {
       verifyTOTPSetup({ code });
       return {
         type: 'DONE',
-        name,
-        icon,
+        accountId,
+        accountName,
       };
     } catch {
       throw new Error('認証エラー');
@@ -220,7 +231,7 @@ export const useSignin = () => {
   };
 
   return {
-    signinBySelectUser,
+    signinByAccountInfo,
     signinWithPassword,
     signinWithTotp,
     setupPassword,

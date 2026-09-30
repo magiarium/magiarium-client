@@ -1,18 +1,19 @@
 import { AuthSession } from 'aws-amplify/auth';
-import { UserAccountInfo } from '../type';
+import type { AccountInfo } from '../type';
 
 /**
- * 現在のアカウントがセッション情報と一致しているかチェックする処理
+ * カレントアカウントがセッション情報と一致しているかチェックする処理
+ *
  * @param session セッション情報
- * @param currentUserAccount 現在のアカウント情報
+ * @param currentAccount カレントアカウント情報
  * @returns true:問題なし、false:不正セッション
  */
 export const validateAuthSession = ({
   session,
-  currentUserAccount,
+  currentAccount,
 }: {
   session: AuthSession;
-  currentUserAccount: UserAccountInfo;
+  currentAccount: AccountInfo;
 }): boolean => {
   const payload = session.tokens?.idToken?.payload;
 
@@ -32,9 +33,9 @@ export const validateAuthSession = ({
     : [];
 
   if (
-    currentUserAccount.id === sub &&
-    currentUserAccount.name === username &&
-    cognitoGroups.includes(currentUserAccount.role.toLocaleLowerCase())
+    currentAccount.id === sub &&
+    currentAccount.name === username &&
+    cognitoGroups.includes(currentAccount.role.toLocaleLowerCase())
   ) {
     return true;
   }

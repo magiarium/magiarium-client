@@ -2,21 +2,21 @@
   padding: 2px 12px;
 
   background: #c0c0c0;
-  color: #000;
+  color: #000000;
 
   border: 2px solid;
-  border-color: #fff #000 #000 #fff;
+  border-color: #ffffff #000000 #000000 #ffffff;
 
   font-size: 1rem;
   line-height: 1.25rem;
 
   cursor: pointer;
-  box-shadow: 1px 1px 0 #000;
+  box-shadow: 1px 1px 0 #000000;
 
   user-select: none;
 
   &:active {
-    border-color: #000 #fff #fff #000;
+    border-color: #000000 #ffffff #ffffff #000000;
     box-shadow: none;
 
     padding-top: 3px;
@@ -24,13 +24,13 @@
   }
 
   &:focus-visible {
-    outline: 1px dotted #000;
+    outline: 1px dotted #000000;
     outline-offset: -4px;
   }
 
   &:disabled {
     color: #808080;
-    text-shadow: 1px 1px #fff;
+    text-shadow: 1px 1px #ffffff;
     cursor: default;
   }
 }

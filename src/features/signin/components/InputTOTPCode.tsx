@@ -2,13 +2,14 @@ import { useSignin } from '@/features/signin/hooks/useSignin';
 import { useState } from 'react';
 import { BsChevronLeft } from 'react-icons/bs';
 import { useAuthStep } from '../hooks/useAuthStep';
+import { AccountIconName } from './common/AccountIcon.Name';
 import { FormInput } from './common/FormInput';
 import { InputAccountInfoTemplateLayout } from './common/InputAccountInfoTemplateLayout';
 import { LinkButton } from './common/LinkButton';
-import { UserIconName } from './common/UserIcon.Name';
 
 /**
  * TOTPコード入力画面
+ *
  * @returns Reactコンポーネント
  */
 export const InputTOTPCode = () => {
@@ -22,7 +23,7 @@ export const InputTOTPCode = () => {
       errorMessage="認証コードが間違っています。"
       formContent={
         <>
-          <UserIconName>{authStep.name}</UserIconName>
+          <AccountIconName>{authStep.accountName}</AccountIconName>
           <FormInput
             id="totp-code"
             type="text"

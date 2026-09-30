@@ -2,10 +2,10 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useState } from 'react';
 import { useAuthStep } from '../hooks/useAuthStep';
 import { useSignin } from '../hooks/useSignin';
+import { AccountIconName } from './common/AccountIcon.Name';
 import { FormInput } from './common/FormInput';
 import { GlassButton } from './common/GlassButton';
 import { InputAccountInfoTemplateLayout } from './common/InputAccountInfoTemplateLayout';
-import { UserIconName } from './common/UserIcon.Name';
 import './SetupTOTPCode.scss';
 
 export const SetupTOTPCode = () => {
@@ -17,15 +17,15 @@ export const SetupTOTPCode = () => {
     <InputAccountInfoTemplateLayout
       authAction={() =>
         setupTOTP({
-          name: authStep.name,
-          icon: authStep.icon,
+          accountId: authStep.accountId,
+          accountName: authStep.accountName,
           code,
         })
       }
       errorMessage="TOTPコードのセットアップに失敗しました。"
       formContent={
         <>
-          <UserIconName>{authStep.name}</UserIconName>
+          <AccountIconName>{authStep.accountName}</AccountIconName>
           <div className="setup-totp-code__qr-code">
             <QRCodeSVG value={authStep.setupUri} />
           </div>
@@ -42,9 +42,9 @@ export const SetupTOTPCode = () => {
         <GlassButton
           onClick={() => {
             setAuthStep({
-              type: 'SELECT_USER_ACCOUNT',
-              name: authStep.name,
-              icon: authStep.icon,
+              type: 'SELECT_ACCOUNT',
+              accountId: authStep.accountId,
+              accountName: authStep.accountName,
             });
           }}
         >

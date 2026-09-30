@@ -9,13 +9,14 @@ export const useAuthStep = <T extends AuthStepType = AuthStepType>() => {
   const context = useContext(AuthStepContext);
 
   if (!context) {
-    throw new Error('SigninContextを初期化してください。');
+    throw new Error('AuthStepContextを初期化してください。');
   }
 
   const { authStep, setAuthStep } = context;
 
   /**
    * 初期表示(SELECT_USER_ACCOUNT)と完了(DONE)以外の場合、prevを自動で設定するWrapperを提供
+   *
    * @param authStep 認証ステップ
    */
   const setAuthStepWrapper = (nextAuthStep: AuthStep): void => {

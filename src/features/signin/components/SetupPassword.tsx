@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { BsArrowLeft } from 'react-icons/bs';
 import { useAuthStep } from '../hooks/useAuthStep';
 import { useSignin } from '../hooks/useSignin';
+import { AccountIconName } from './common/AccountIcon.Name';
 import { ErrorMessage } from './common/ErrorMessage';
 import { FormInput } from './common/FormInput';
 import { GlassButton } from './common/GlassButton';
 import { InputAccountInfoTemplateLayout } from './common/InputAccountInfoTemplateLayout';
-import { UserIconName } from './common/UserIcon.Name';
 
 /**
  * パスワードセットアップ画面
@@ -23,7 +23,7 @@ export const SetupPassword = () => {
       errorMessage="パスワードの更新に失敗しました。"
       formContent={
         <>
-          <UserIconName>{authStep.name}</UserIconName>
+          <AccountIconName>{authStep.accountName}</AccountIconName>
           <ErrorMessage>パスワードをリセットしてください。</ErrorMessage>
           <FormInput
             id="password"
@@ -38,7 +38,7 @@ export const SetupPassword = () => {
       footerContent={
         <GlassButton onClick={prevAuthStep}>
           <BsArrowLeft />
-          ユーザーの切り替え
+          アカウントの切り替え
         </GlassButton>
       }
     />

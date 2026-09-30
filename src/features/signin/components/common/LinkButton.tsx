@@ -3,6 +3,7 @@ import './LinkButton.scss';
 
 /**
  * リンクボタン
+ *
  * @param params.children　ボタンコンテンツ
  * @param params.onClick クリックアクション
  * @returns Reactコンポーネント

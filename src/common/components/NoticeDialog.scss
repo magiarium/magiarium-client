@@ -1,10 +1,10 @@
-.notice {
+.notice-dialog {
   width: min(90vw, 500px);
   padding: 2.5px;
   border: 2px solid;
   border-color: #000000;
   background: #f0f0f0;
-  color: #000;
+  color: #000000;
   box-shadow: 2px 2px 0 #808080;
   font-size: 0.9rem;
   cursor: default;
@@ -19,7 +19,7 @@
     height: 25px;
     padding: 2px 2px 2px 4px;
     background: #000080;
-    color: #fff;
+    color: #ffffff;
     font-weight: bold;
   }
 
