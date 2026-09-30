@@ -1,6 +1,6 @@
 'use client';
 import { UserAccountRole } from '../type';
-import { useUserAccount } from './useUserAccount';
+import { useUserData } from './useUserData';
 
 export type Permission =
   | 'READ:PUBLIC'
@@ -26,7 +26,7 @@ const ROLE_PERMISSIONS: Record<UserAccountRole, ReadonlySet<Permission>> = {
 };
 
 export const usePermission = () => {
-  const { userRole } = useUserAccount();
+  const { userRole } = useUserData();
 
   const can = (permission: Permission) => {
     return ROLE_PERMISSIONS[userRole].has(permission);

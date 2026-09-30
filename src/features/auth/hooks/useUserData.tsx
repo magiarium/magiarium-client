@@ -2,7 +2,7 @@
 import { useContext } from 'react';
 import { UserDataManagerContext } from '../contexts/UserDataManagerContext';
 
-export const useUserAccount = () => {
+export const useUserData = () => {
   const context = useContext(UserDataManagerContext);
 
   if (!context) {

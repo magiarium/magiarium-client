@@ -1,0 +1,31 @@
+.input-accountinfo-template {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__form {
+    position: relative;
+    margin-top: 20px;
+  }
+
+  &__user-name {
+    font-size: 1.25rem;
+  }
+
+  &__fieldset {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+  }
+
+  &__submit-button {
+    position: absolute;
+    bottom: 0;
+    right: -1.75rem;
+  }
+
+  &__footer {
+    margin-top: 20px;
+  }
+}

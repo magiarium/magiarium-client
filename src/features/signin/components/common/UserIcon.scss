@@ -1,0 +1,11 @@
+.user-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  max-width: 150px;
+  margin: 10px;
+
+  // user-icon__imageは共通部品として個別に定義
+}

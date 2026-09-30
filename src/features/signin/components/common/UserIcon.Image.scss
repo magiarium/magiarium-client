@@ -1,0 +1,36 @@
+.user-icon__image {
+  position: relative;
+
+  display: block;
+
+  width: 75px;
+  height: 75px;
+
+  margin: 10px;
+
+  padding: 3px;
+
+  box-sizing: border-box;
+
+  // ユーザーアイコンフレーム
+  border: 5px solid rgba(135, 170, 205, 0.92);
+  border-radius: 7px;
+  box-shadow:
+    0 0 0 1px rgba(75, 115, 150, 0.65),
+    0 2px 5px rgba(0, 0, 0, 0.55),
+    inset 0 0 4px rgba(255, 255, 255, 0.9),
+    inset 0 0 10px rgba(150, 195, 225, 0.28);
+
+  overflow: hidden;
+
+  img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 3px;
+  }
+}

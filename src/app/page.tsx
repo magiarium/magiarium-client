@@ -1,9 +1,9 @@
 'use client';
-import { useUserAccount } from '@/features/auth/hooks/useUserAccount';
+import { useUserData } from '@/features/auth/hooks/useUserData';
 import Link from 'next/link';
 
 const TopPage = () => {
-  const { currentAccount } = useUserAccount();
+  const { currentAccount } = useUserData();
   return (
     <>
       <div>トップページ</div>

@@ -1,0 +1,11 @@
+.link-button {
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: rgba(252, 252, 252, 0.9);
+  text-decoration: underline;
+  padding: 0.25rem;
+
+  &:hover {
+    border: 1px solid rgba(220, 245, 255, 1);
+  }
+}

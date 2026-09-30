@@ -1,0 +1,16 @@
+.auth-expired-notice {
+  &__content {
+    display: flex;
+  }
+  &__icon {
+    margin-right: 20px;
+  }
+  &__footer {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+
+    margin-top: 10px;
+  }
+}

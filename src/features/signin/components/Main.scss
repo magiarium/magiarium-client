@@ -1,0 +1,23 @@
+.lock-page {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+
+  color: white;
+
+  // 背景画像(仮) ※アニメーションを動かす際にComponentに分離予定
+  background-image: url('/assets/images/wallpaper.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  &__screen {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
