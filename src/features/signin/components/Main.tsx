@@ -1,5 +1,6 @@
 'use client';
 import { LoadingCircle } from '@/common/components/LoadingCircle';
+import { useAppState } from '@/features/app-controller/hooks/useAppState';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AuthStep, AuthStepContext } from '../contexts/AuthStepContext';
@@ -23,6 +24,17 @@ export const LockPage = () => {
     accountId: '',
     accountName: '',
   });
+
+  const { setAppState } = useAppState();
+
+  // マウント時に"LOCKED"状態に、アンマウント時に"READY"状態に更新する
+  useEffect(() => {
+    // マウント時にアプリケーションをロック状態に更新
+    setAppState('LOCKED');
+    return () => {
+      setAppState('READY'); // アンマウント時にREADYに更新
+    };
+  }, []);
 
   // 認証が完了した場合は数秒待機後、Top画面に遷移
   const router = useRouter();
