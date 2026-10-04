@@ -12,6 +12,7 @@ export type AnimationConfig =
       playConfig: PlayConfig;
       children: AnimationConfig[];
       completeAction?: () => void;
+      initializeAction?: () => void;
     }
   | {
       controllerType: 'SIMPLE';
@@ -19,6 +20,7 @@ export type AnimationConfig =
       element: HTMLElement;
       animator: Animator;
       completeAction?: () => void;
+      initializeAction?: () => void;
     };
 
 /**
@@ -37,6 +39,7 @@ export const createAnimationController = (
             element: animationConfig.element,
             animator: animationConfig.animator,
             completeAction: animationConfig.completeAction,
+            initializeAction: animationConfig.initializeAction,
             playConfig: animationConfig.playConfig,
           });
         case 'MOTION':
@@ -44,6 +47,7 @@ export const createAnimationController = (
             element: animationConfig.element,
             animator: animationConfig.animator,
             completeAction: animationConfig.completeAction,
+            initializeAction: animationConfig.initializeAction,
             playConfig: animationConfig.playConfig,
           });
       }
@@ -54,6 +58,7 @@ export const createAnimationController = (
         }),
         playConfig: animationConfig.playConfig,
         completeAction: animationConfig.completeAction,
+        initializeAction: animationConfig.initializeAction,
       });
     }
     case 'PARALLEL': {
@@ -63,6 +68,7 @@ export const createAnimationController = (
         }),
         playConfig: animationConfig.playConfig,
         completeAction: animationConfig.completeAction,
+        initializeAction: animationConfig.initializeAction,
       });
     }
   }

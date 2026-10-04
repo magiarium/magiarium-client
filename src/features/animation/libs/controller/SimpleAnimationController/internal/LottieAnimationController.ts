@@ -2,30 +2,24 @@ import lottie, { AnimationItem } from 'lottie-web';
 import { BaseSimpleAnimationController } from '../BaseSimpleAnimationController';
 
 export class LottieAnimationController extends BaseSimpleAnimationController<'LOTTIE'> {
-  private _lottieController: AnimationItem | null = null;
+  private _lottieController: AnimationItem = (() => {
+    const controller = lottie.loadAnimation({
+      container: this._element,
+      path: this._animator.src,
+      loop:
+        this._playState.type === 'INFINITE'
+          ? true
+          : this._playState.type === 'LOOP'
+            ? this._playState.totalCount
+            : false,
+    });
+    controller.addEventListener('enterFrame', () =>
+      this._updateProgress(controller.currentFrame / controller.totalFrames)
+    );
+    return controller;
+  })();
 
-  start = async (): Promise<void> => {
-    if (this._lottieController === null) {
-      const controller = lottie.loadAnimation({
-        container: this._element,
-        path: this._animator.src,
-        loop: (() => {
-          switch (this._playState.type) {
-            case 'INFINITE':
-              return true;
-            case 'LOOP':
-              return this._playState.totalCount;
-            case 'ONCE':
-              return false;
-          }
-        })(),
-      });
-      controller.addEventListener('enterFrame', () => {
-        this._updateProgress(controller.currentFrame / controller.totalFrames);
-      });
-      this._lottieController = controller;
-    }
-
+  async start(): Promise<void> {
     // StateをRUNNING状態に更新
     this._updateControllerState('RUNNING');
 
@@ -38,27 +32,27 @@ export class LottieAnimationController extends BaseSimpleAnimationController<'LO
 
       this._lottieController?.play();
     });
-  };
+  }
 
-  reset = () => {
-    this._lottieController?.destroy();
-    this._updateControllerState('PENDING');
-  };
+  reset() {
+    this._lottieController?.stop();
+    super.reset();
+  }
 
-  pause = () => {
+  pause() {
     if (this._controllerState === 'RUNNING') {
       this._lottieController?.pause();
       this._updateControllerState('PAUSED');
     }
-  };
+  }
 
-  finish = () => {
+  finish() {
+    super.finish();
     this._lottieController?.goToAndStop(this._lottieController.totalFrames);
-    this._onComplete();
-  };
+  }
 
-  destroy = () => {
+  destroy() {
     this._lottieController?.destroy();
     this._updateControllerState('DESTROYED');
-  };
+  }
 }

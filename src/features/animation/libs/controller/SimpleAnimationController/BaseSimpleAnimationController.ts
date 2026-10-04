@@ -39,6 +39,11 @@ export abstract class BaseSimpleAnimationController<
   protected readonly _onComplete: () => void;
 
   /**
+   *初期化アクション
+   */
+  protected readonly _onInitialize: () => void;
+
+  /**
    * コントローラーの状態
    */
   protected _controllerState: AnimationControllerState;
@@ -53,11 +58,13 @@ export abstract class BaseSimpleAnimationController<
     animator,
     playConfig,
     completeAction = () => {},
+    initializeAction = () => {},
   }: {
     element: HTMLElement;
     animator: Animator<U>;
     playConfig: PlayConfig;
     completeAction?: () => void;
+    initializeAction?: () => void;
   }) {
     const targetSelector = getSelector(element);
 
@@ -105,13 +112,15 @@ export abstract class BaseSimpleAnimationController<
         };
         break;
     }
+
+    this._onInitialize = initializeAction;
   }
 
-  getId = (): AnimationControllerId => {
+  getId(): AnimationControllerId {
     return this._controllerId;
-  };
+  }
 
-  getParams = (): AnimationControllerParams => {
+  getParams(): AnimationControllerParams {
     return {
       controllerId: this._controllerId,
       controllerState: this._controllerState,
@@ -119,19 +128,21 @@ export abstract class BaseSimpleAnimationController<
       playState: this._playState,
       animatorId: this._animator.id,
     };
-  };
+  }
 
-  getElements = (): HTMLElement[] => {
+  getElements(): HTMLElement[] {
     return [this._element];
-  };
+  }
 
-  finish = (): void => {
+  finish(): void {
     this._onComplete();
-  };
+  }
+  reset(): void {
+    this._onInitialize();
+    this._updateControllerState('PENDING');
+  }
 
   abstract start(): Promise<void>;
-
-  abstract reset(): void;
 
   abstract pause(): void;
 

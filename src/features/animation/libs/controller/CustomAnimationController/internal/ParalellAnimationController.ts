@@ -2,11 +2,12 @@ import { AnimationControllerParams } from '../../type';
 import { BaseCustomAnimationController } from '../BaseCustomAnimationController';
 
 export class ParalellAnimationController extends BaseCustomAnimationController {
-  start = async (): Promise<void> => {
+  async start(): Promise<void> {
     this._updateControllerState('RUNNING');
 
     switch (this._playState.type) {
       case 'ONCE':
+        this._onInitialize();
         await Promise.all(
           this._childrenController.map(async (targetController) => {
             await targetController.start();
@@ -16,37 +17,41 @@ export class ParalellAnimationController extends BaseCustomAnimationController {
         break;
       case 'INFINITE':
         while (this._playState.type === 'INFINITE') {
+          this._onInitialize();
           await Promise.all(
             this._childrenController.map(async (targetController) => {
               await targetController.start();
               targetController.destroy(); // ゴミが残るのでループ毎にリソース破棄
             })
           );
+          this.reset();
         }
         break;
       case 'LOOP':
         while (this._playState.currentCount < this._playState.totalCount) {
+          this._onInitialize();
           await Promise.all(
             this._childrenController.map(async (targetController) => {
               await targetController.start();
               targetController.destroy(); // ゴミが残るのでループ毎にリソース破棄
             })
           );
+          this.reset();
           this._playState.currentCount++;
         }
         this._onComplete();
         break;
     }
-  };
+  }
 
-  pause = (): void => {
+  pause(): void {
     for (const targetChild of this._childrenController) {
       targetChild.pause();
     }
     this._updateControllerState('PAUSED');
-  };
+  }
 
-  getParams = (): AnimationControllerParams => {
+  getParams(): AnimationControllerParams {
     // 子コントローラーのパラメータを全取得
     const childControllersParam = this._childrenController.map((value) =>
       value.getParams()
@@ -89,5 +94,5 @@ export class ParalellAnimationController extends BaseCustomAnimationController {
       usedSelector: this._usedSelectors,
       children: childControllersParam,
     };
-  };
+  }
 }

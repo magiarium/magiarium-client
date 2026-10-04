@@ -4,11 +4,27 @@ import { BaseCustomAnimationController } from '../BaseCustomAnimationController'
 export class ChainAnimationController extends BaseCustomAnimationController {
   private _currentIndex: number = 0;
 
-  start = async (): Promise<void> => {
+  private isInitialize = false;
+
+  reset() {
+    super.reset();
+    this._currentIndex = 0;
+  }
+
+  finish(): void {
+    super.finish();
+    this._currentIndex = this._childrenController.length - 1;
+  }
+
+  async start(): Promise<void> {
     this._updateControllerState('RUNNING');
 
     switch (this._playState.type) {
       case 'ONCE':
+        if (!this.isInitialize) {
+          this._onInitialize();
+          this.isInitialize = true;
+        }
         while (this._currentIndex < this._childrenController.length) {
           await this._childrenController[this._currentIndex].start();
           this._currentIndex++;
@@ -17,24 +33,34 @@ export class ChainAnimationController extends BaseCustomAnimationController {
         break;
       case 'INFINITE':
         while (this._playState.type === 'INFINITE') {
+          if (!this.isInitialize) {
+            this._onInitialize();
+            this.isInitialize = true;
+          }
           while (this._currentIndex < this._childrenController.length) {
             await this._childrenController[this._currentIndex].start();
             this._currentIndex++;
           }
+          this.reset();
         }
         break;
       case 'LOOP':
         while (this._playState.currentCount < this._playState.totalCount) {
+          if (!this.isInitialize) {
+            this._onInitialize();
+            this.isInitialize = true;
+          }
           while (this._currentIndex < this._childrenController.length) {
             await this._childrenController[this._currentIndex].start();
             this._currentIndex++;
           }
+          this.reset();
           this._playState.currentCount++;
         }
         this._onComplete();
         break;
     }
-  };
+  }
 
   pause() {
     this._childrenController[this._currentIndex].pause();

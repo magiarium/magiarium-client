@@ -31,6 +31,11 @@ export abstract class BaseCustomAnimationController implements AnimationControll
   protected readonly _onComplete: () => void;
 
   /**
+   * 初期化アクション
+   */
+  protected readonly _onInitialize: () => void;
+
+  /**
    * 再生設定
    */
   protected _playState: PlayState;
@@ -44,10 +49,12 @@ export abstract class BaseCustomAnimationController implements AnimationControll
     children,
     playConfig,
     completeAction = () => {},
+    initializeAction = () => {},
   }: {
     children: AnimationController[];
     playConfig: PlayConfig;
     completeAction?: () => void;
+    initializeAction?: () => void;
   }) {
     this._usedSelectors = children
       .map((targetValue) => targetValue.getParams().usedSelector)
@@ -88,32 +95,40 @@ export abstract class BaseCustomAnimationController implements AnimationControll
       completeAction();
       this._updateControllerState('FINISHED');
     };
+
+    this._onInitialize = () => {
+      initializeAction();
+      for (const childController of this._childrenController) {
+        childController.reset();
+      }
+    };
   }
 
-  getId = (): AnimationControllerId => {
+  getId(): AnimationControllerId {
     return this._controllerId;
-  };
+  }
 
-  finish = (): void => {
+  finish(): void {
     for (const targetChild of this._childrenController) {
       targetChild.finish();
     }
     this._onComplete();
-  };
+  }
 
-  reset = (): void => {
+  reset(): void {
     for (const targetChild of this._childrenController) {
       targetChild.reset();
     }
+    this._onInitialize();
     this._updateControllerState('PENDING');
-  };
+  }
 
-  destroy = (): void => {
+  destroy(): void {
     for (const targetChild of this._childrenController) {
       targetChild.destroy();
     }
     this._updateControllerState('DESTROYED');
-  };
+  }
 
   abstract start(): Promise<void>;
 
