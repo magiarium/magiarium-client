@@ -21,6 +21,8 @@
     "classnames": "^2.5.1",
     "destyle.css": "^4.0.1",
     "js-cookie": "^3.0.8",
+    "lottie-web": "^5.13.0",
+    "motion": "^13.4.6",
     "next": "^16.3.5",
     "qrcode.react": "^4.2.0",
     "react": "^19.3.0",

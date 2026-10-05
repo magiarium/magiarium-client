@@ -1,4 +1,5 @@
 import { AdobeFontsLoader } from '@/common/components/AdobeFontsLoader';
+import { ApplicationContextProvider } from '@/features/app-controller/contexts/ApplicationContext';
 import { AuthExpiredNotice } from '@/features/auth/components/AuthExpiredNotice';
 import { UserDataManagerContextProvider } from '@/features/auth/contexts/UserDataManagerContext';
 import { getUserDataFromCookies } from '@/features/auth/libs/getUserDataFromCookies';
@@ -18,11 +19,15 @@ const RootLayout = async ({ children }: Readonly<{ children: ReactNode }>) => {
       <AdobeFontsLoader />
       <body>
         <main>
-          <header></header>
-          <UserDataManagerContextProvider userData={userData}>
-            {children}
-            <AuthExpiredNotice isAuthExpired={isAuthExpired} />
-          </UserDataManagerContextProvider>
+          <header>
+            <h1 className="sr-only">まぎありうむ</h1>
+          </header>
+          <ApplicationContextProvider>
+            <UserDataManagerContextProvider userData={userData}>
+              {children}
+              <AuthExpiredNotice isAuthExpired={isAuthExpired} />
+            </UserDataManagerContextProvider>
+          </ApplicationContextProvider>
         </main>
       </body>
     </html>
