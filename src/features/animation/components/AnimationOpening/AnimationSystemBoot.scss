@@ -1,0 +1,70 @@
+.animation-system-boot {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #d9a9d8;
+
+  &__content {
+    width: 30%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__logo {
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  &__progress-bar {
+    width: 50%;
+    position: relative;
+  }
+
+  &__progress-frame {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    padding: 2px;
+
+    background: #ffffff;
+    border-radius: 2rem;
+
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  &__progress-indicator {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+
+    width: 30%;
+
+    background: #d9a9d8;
+    border-radius: 2rem;
+
+    box-sizing: border-box;
+
+    animation: one-way-progress var(--progress-duration, 1.5s) linear infinite;
+  }
+}
+
+@keyframes one-way-progress {
+  0% {
+    left: -30%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}

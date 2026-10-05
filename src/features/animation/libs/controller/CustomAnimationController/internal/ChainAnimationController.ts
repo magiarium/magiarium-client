@@ -1,6 +1,9 @@
 import { AnimationControllerParams } from '../../type';
 import { BaseCustomAnimationController } from '../BaseCustomAnimationController';
 
+/**
+ * SimpleAnimationControllerを順次実行するコントローラーのクラス
+ */
 export class ChainAnimationController extends BaseCustomAnimationController {
   private _currentIndex: number = 0;
 

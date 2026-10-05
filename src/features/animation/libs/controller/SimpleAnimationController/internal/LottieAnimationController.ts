@@ -1,6 +1,8 @@
 import lottie, { AnimationItem } from 'lottie-web';
 import { BaseSimpleAnimationController } from '../BaseSimpleAnimationController';
-
+/**
+ * アニメーターにLottieを使用するコントローラーのクラス
+ */
 export class LottieAnimationController extends BaseSimpleAnimationController<'LOTTIE'> {
   private _lottieController: AnimationItem = (() => {
     const controller = lottie.loadAnimation({
@@ -47,8 +49,11 @@ export class LottieAnimationController extends BaseSimpleAnimationController<'LO
   }
 
   finish() {
+    this._lottieController?.goToAndStop(
+      this._lottieController.totalFrames - 1,
+      true
+    );
     super.finish();
-    this._lottieController?.goToAndStop(this._lottieController.totalFrames);
   }
 
   destroy() {

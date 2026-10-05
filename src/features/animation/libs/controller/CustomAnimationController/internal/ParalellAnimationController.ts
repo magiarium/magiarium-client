@@ -1,6 +1,9 @@
 import { AnimationControllerParams } from '../../type';
 import { BaseCustomAnimationController } from '../BaseCustomAnimationController';
 
+/**
+ * SimpleAnimationControllerを並列実行するコントローラーのクラス
+ */
 export class ParalellAnimationController extends BaseCustomAnimationController {
   async start(): Promise<void> {
     this._updateControllerState('RUNNING');

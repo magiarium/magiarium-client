@@ -1,5 +1,6 @@
 'use client';
 import { LoadingCircle } from '@/common/components/LoadingCircle';
+import { LoadingOverlay } from '@/common/components/LoadingOverlay';
 import { useAppState } from '@/features/app-controller/hooks/useAppState';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -25,7 +26,7 @@ export const LockPage = () => {
     accountName: '',
   });
 
-  const { setAppState } = useAppState();
+  const { appState, setAppState } = useAppState();
 
   // マウント時に"LOCKED"状態に、アンマウント時に"READY"状態に更新する
   useEffect(() => {
@@ -49,41 +50,44 @@ export const LockPage = () => {
   }, [authStep]);
 
   return (
-    <AuthStepContext value={{ authStep, setAuthStep }}>
-      <div className="lock-page">
-        <div className="lock-page__screen">
-          {(() => {
-            switch (authStep.type) {
-              case 'SELECT_ACCOUNT':
-                return <SelectAccount />;
-              case 'INPUT_PASSWORD':
-                return <InputPassword />;
-              case 'SIGNIN_OTHER_ACCOUNT':
-                return <SigninOtherAccount />;
-              case 'INPUT_TOTP_CODE':
-                return <InputTOTPCode />;
-              case 'SETUP_TOTP_CODE':
-                return <SetupTOTPCode />;
-              case 'SETUP_PASSWORD':
-                return <SetupPassword />;
-              case 'DONE':
-                return (
-                  <>
-                    ようこそ、{authStep.accountName} さま
-                    <LoadingCircle />
-                  </>
-                );
-              default:
-                // 存在しないルートのため、あくまでもデバッグ用
-                return (
-                  <ErrorMessage>
-                    [システムエラー]予期せぬ操作が検知されました。
-                  </ErrorMessage>
-                );
-            }
-          })()}
+    <>
+      <LoadingOverlay isLoading={appState !== 'LOCKED'} overlayColor="black" />
+      <AuthStepContext value={{ authStep, setAuthStep }}>
+        <div className="lock-page">
+          <div className="lock-page__screen">
+            {(() => {
+              switch (authStep.type) {
+                case 'SELECT_ACCOUNT':
+                  return <SelectAccount />;
+                case 'INPUT_PASSWORD':
+                  return <InputPassword />;
+                case 'SIGNIN_OTHER_ACCOUNT':
+                  return <SigninOtherAccount />;
+                case 'INPUT_TOTP_CODE':
+                  return <InputTOTPCode />;
+                case 'SETUP_TOTP_CODE':
+                  return <SetupTOTPCode />;
+                case 'SETUP_PASSWORD':
+                  return <SetupPassword />;
+                case 'DONE':
+                  return (
+                    <>
+                      ようこそ、{authStep.accountName} さま
+                      <LoadingCircle />
+                    </>
+                  );
+                default:
+                  // 存在しないルートのため、あくまでもデバッグ用
+                  return (
+                    <ErrorMessage>
+                      [システムエラー]予期せぬ操作が検知されました。
+                    </ErrorMessage>
+                  );
+              }
+            })()}
+          </div>
         </div>
-      </div>
-    </AuthStepContext>
+      </AuthStepContext>
+    </>
   );
 };

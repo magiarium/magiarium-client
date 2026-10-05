@@ -1,6 +1,9 @@
 import { animate, AnimationPlaybackControlsWithThen } from 'motion';
 import { BaseSimpleAnimationController } from '../BaseSimpleAnimationController';
 
+/**
+ * アニメーターにMotionを使用するコントローラーのクラス
+ */
 export class MotionAnimationController extends BaseSimpleAnimationController<'MOTION'> {
   private _motionController: AnimationPlaybackControlsWithThen = animate(
     this._element,

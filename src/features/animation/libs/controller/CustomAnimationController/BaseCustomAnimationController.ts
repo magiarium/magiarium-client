@@ -9,6 +9,11 @@ import {
   PlayState,
 } from '../type';
 
+/**
+ * CustomAnimationControllerクラスの基本定義
+ *
+ * 複数SimpleAnimationControllerのアニメーション処理を制御する
+ */
 export abstract class BaseCustomAnimationController implements AnimationController {
   /**
    * アニメーションコントローラーID

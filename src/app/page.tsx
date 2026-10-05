@@ -1,5 +1,5 @@
 'use client';
-import { AnimationOpening } from '@/features/animation/components/AnimationOpening';
+import { AnimationOpening } from '@/features/animation/components/AnimationOpening/Main';
 import { useAppState } from '@/features/app-controller/hooks/useAppState';
 import { useUserData } from '@/features/auth/hooks/useUserData';
 import Link from 'next/link';

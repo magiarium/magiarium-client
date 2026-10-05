@@ -1,0 +1,15 @@
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  width: 100dvw;
+
+  &--white {
+    background-color: white;
+  }
+
+  &--black {
+    background-color: black;
+  }
+}

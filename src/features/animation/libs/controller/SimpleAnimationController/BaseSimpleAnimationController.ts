@@ -10,6 +10,11 @@ import {
   PlayState,
 } from '../type';
 
+/**
+ * SimpleAnimationControllerクラスの基本定義
+ *
+ * アニメーターによる単一アニメーションを制御する
+ */
 export abstract class BaseSimpleAnimationController<
   U extends AnimatorType = AnimatorType,
 > implements AnimationController {
