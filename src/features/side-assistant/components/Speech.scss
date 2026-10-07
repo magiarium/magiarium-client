@@ -1,0 +1,19 @@
+.speech {
+  position: relative;
+
+  &__content {
+    position: relative;
+
+    display: inline-block;
+
+    padding: 0.5rem;
+
+    z-index: 1;
+
+    p {
+      margin-block-start: 0;
+      margin-block-end: 0;
+      font-size: 1.25rem;
+    }
+  }
+}
