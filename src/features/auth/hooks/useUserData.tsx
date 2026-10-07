@@ -1,5 +1,5 @@
 'use client';
-import { useContext } from 'react';
+import { useContext, useSyncExternalStore } from 'react';
 import { UserDataManagerContext } from '../contexts/UserDataManagerContext';
 
 export const useUserData = () => {
@@ -10,6 +10,11 @@ export const useUserData = () => {
   }
 
   const userDataManager = context;
+  useSyncExternalStore(
+    userDataManager.subscribe,
+    userDataManager.getSnapshot,
+    userDataManager.getServerSnapShot
+  );
 
   return {
     changeCurrentAccount: userDataManager.changeCurrentAccount,
