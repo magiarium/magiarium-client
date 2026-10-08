@@ -51,11 +51,13 @@ export abstract class BaseCustomAnimationController implements AnimationControll
   protected _controllerState: AnimationControllerState;
 
   constructor({
+    id,
     children,
     playConfig,
     completeAction = () => {},
     initializeAction = () => {},
   }: {
+    id?: string;
     children: AnimationController[];
     playConfig: PlayConfig;
     completeAction?: () => void;
@@ -65,9 +67,13 @@ export abstract class BaseCustomAnimationController implements AnimationControll
       .map((targetValue) => targetValue.getParams().usedSelector)
       .flat();
 
-    this._controllerId = cyrb53(
-      this._usedSelectors.join('-')
-    ).toString() as AnimationControllerId;
+    if (id) {
+      this._controllerId = id as AnimationControllerId;
+    } else {
+      this._controllerId = cyrb53(
+        this._usedSelectors.join('-')
+      ).toString() as AnimationControllerId;
+    }
 
     this._controllerState = 'PENDING';
 

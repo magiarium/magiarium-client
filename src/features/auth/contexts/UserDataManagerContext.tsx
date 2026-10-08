@@ -1,12 +1,7 @@
 'use client';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
-import {
-  createContext,
-  ReactNode,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import { createContext, ReactNode, useState } from 'react';
 import { amplifyConfig } from '../libs/amplifyConfig';
 import { UserDataManager } from '../libs/UserDataManager';
 import { UserData } from '../type';
@@ -24,12 +19,6 @@ const UserDataManagerContextProvider = ({
 }) => {
   // Providerのライフサイクル中は同じインスタンスを使用
   const [userDataManager] = useState(() => new UserDataManager(userData));
-
-  useSyncExternalStore(
-    userDataManager.subscribe,
-    userDataManager.getSnapshot,
-    userDataManager.getServerSnapShot
-  );
 
   return (
     <Authenticator.Provider>

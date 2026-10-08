@@ -1,14 +1,18 @@
 import { LoadingOverlay } from '@/common/components/LoadingOverlay';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useAnimationController } from '../../hooks/useAnimationController';
 import { AnimatorId } from '../../libs/animator/type';
-import { AnimationController } from '../../libs/controller/AnimationController';
+import { AnimationControllerId } from '../../libs/controller/type';
 import { createAnimationController } from '../../libs/factory/createAnimationController';
 import { AnimationSkipOverlay } from '../AnimationSkipOverlay';
 import './AnimationSystemBoot.scss';
 
+const CONTROLLER_ID = 'system-boot-animation' as AnimationControllerId;
+
 /**
  * システム起動風のアニメーションを再生するコンポーネント
+ *
  * @param params.onComplete 完了アクション
  * @returns Reactコンポーネント
  */
@@ -18,14 +22,19 @@ export const AnimationSystemBoot = ({
   onComplete: () => void;
 }) => {
   const titleContainerRef = useRef<HTMLDivElement>(null);
-  const [animationController, setAnimationController] =
-    useState<AnimationController>();
+
+  const {
+    registerAnimationController,
+    deleteAnimationController,
+    getAnimationController,
+  } = useAnimationController();
 
   useEffect(() => {
     if (!titleContainerRef.current) {
       return;
     }
     const animationController = createAnimationController({
+      id: CONTROLLER_ID,
       controllerType: 'SIMPLE',
       element: titleContainerRef.current,
       playConfig: { type: 'ONCE' },
@@ -36,9 +45,10 @@ export const AnimationSystemBoot = ({
       },
       completeAction: onComplete,
     });
-    setAnimationController(animationController);
+    registerAnimationController(animationController);
     animationController.start();
     return () => {
+      deleteAnimationController(animationController.getId());
       animationController.destroy();
     };
   }, []);
@@ -65,8 +75,13 @@ export const AnimationSystemBoot = ({
           </div>
         </div>
       </div>
-      <AnimationSkipOverlay animationController={animationController} />
-      <LoadingOverlay isLoading={!animationController} overlayColor="black" />
+      <AnimationSkipOverlay
+        animationController={getAnimationController(CONTROLLER_ID)}
+      />
+      <LoadingOverlay
+        isLoading={!getAnimationController(CONTROLLER_ID)}
+        overlayColor="black"
+      />
     </>
   );
 };

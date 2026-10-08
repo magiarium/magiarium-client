@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useSyncExternalStore } from 'react';
 import { ApplicationContext } from '../contexts/ApplicationContext';
 
 export const useAppState = () => {
@@ -6,6 +6,12 @@ export const useAppState = () => {
   if (!context) {
     throw new Error('ApplicationContextを初期化してください。');
   }
+
+  useSyncExternalStore(
+    context.subscribe,
+    context.getSnapshot,
+    context.getServerSnapShot
+  );
 
   return {
     appState: context.getAppState(),
