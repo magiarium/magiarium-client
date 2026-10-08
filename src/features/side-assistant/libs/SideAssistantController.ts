@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 
 export class SideAssistantController extends BaseStore {
   private _speechContent: ReactNode;
-
   constructor({ speechContext }: { speechContext: ReactNode }) {
     super();
     this._speechContent = speechContext;

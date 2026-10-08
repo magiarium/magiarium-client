@@ -1,4 +1,8 @@
 import { ReactNode } from 'react';
+import { AnimationControllerId } from '../animation/libs/controller/type';
+
+export const SIDE_ASSISTANT_SPEECH_ANIMATION_ID: AnimationControllerId =
+  'side-assistant-speech' as AnimationControllerId;
 
 export const GRAB_CHARACTER_SIZE = { width: 300, height: 300 };
 export const GRAB_POINT = {

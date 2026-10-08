@@ -1,5 +1,6 @@
 import { isOpaquePixel } from '@/common/libs/isOpaquePixel';
 import { Coordinates } from '@/common/type';
+import { useAnimationController } from '@/features/animation/hooks/useAnimationController';
 import { useEffect, useRef, useState } from 'react';
 import { DraggableData } from 'react-rnd';
 import {
@@ -7,6 +8,7 @@ import {
   GRAB_CHARACTER_SIZE,
   GRAB_POINT,
   GRAB_SIDE_ASSISTANT_CHARACTER,
+  SIDE_ASSISTANT_SPEECH_ANIMATION_ID,
   SPEECH_ASSETS,
 } from '../constants';
 import { useSideAsssistant } from './useSideAssistant';
@@ -14,13 +16,15 @@ const SPEECH_MAX_HEIGHT = 75;
 const PADDING = 10;
 
 /**
- * サイドアシスタントのインタラクション処理一覧
+ * サイドアシスタントのインタラクション処理用hook
  */
 export const useSideAssistantInteraction = () => {
   const [isHover, setIsHover] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState<Coordinates>();
-  const { setSpeechContent } = useSideAsssistant();
+  const { setSpeechContent, sideAssistant } = useSideAsssistant();
+  const { getAnimationControllerState, finishAnimationController } =
+    useAnimationController();
 
   const dragStartPosition = useRef({ x: 0, y: 0 });
   const characterRef = useRef<HTMLImageElement>(null);
@@ -36,7 +40,12 @@ export const useSideAssistantInteraction = () => {
     });
   }, []);
 
-  const handleDragStart = (e: MouseEvent) => {
+  /**
+   * ドラッグ開始処理ハンドラー
+   *
+   * @param e マウスイベント
+   */
+  const handleDragStart = (e: MouseEvent): void => {
     if (
       !isOpaquePixel({
         img: characterRef.current,
@@ -44,7 +53,7 @@ export const useSideAssistantInteraction = () => {
         positionY: e.clientY,
       })
     ) {
-      return false;
+      return;
     }
 
     dragStartPosition.current = {
@@ -55,7 +64,13 @@ export const useSideAssistantInteraction = () => {
     setIsDragging(false);
   };
 
-  const handleDrag = (e: MouseEvent, d: DraggableData) => {
+  /**
+   * ドラッグ処理ハンドラー
+   *
+   * @param e マウスイベント
+   * @param d ドラッグデータ
+   */
+  const handleDrag = (e: MouseEvent, d: DraggableData): void => {
     const dx = e.clientX - dragStartPosition.current.x;
     const dy = e.clientY - dragStartPosition.current.y;
 
@@ -76,7 +91,13 @@ export const useSideAssistantInteraction = () => {
     }
   };
 
-  const handleDragStop = (e: MouseEvent, d: DraggableData) => {
+  /**
+   * ドラッグ停止処理ハンドラー
+   *
+   * @param e マウスイベント
+   * @param d ドラッグデータ
+   */
+  const handleDragStop = (e: MouseEvent, d: DraggableData): void => {
     if (isDragging) {
       setPosition({
         x: Math.min(
@@ -97,7 +118,12 @@ export const useSideAssistantInteraction = () => {
     }
   };
 
-  const handleClick = (e: MouseEvent) => {
+  /**
+   * クリックハンドラー
+   *
+   * @param e マウスイベント
+   */
+  const handleClick = (e: MouseEvent): void => {
     if (
       isOpaquePixel({
         img: characterRef.current,
@@ -105,12 +131,32 @@ export const useSideAssistantInteraction = () => {
         positionY: e.clientY,
       })
     ) {
-      const randowSpeech =
-        SPEECH_ASSETS[Math.floor(Math.random() * SPEECH_ASSETS.length)];
-      setSpeechContent(randowSpeech);
+      const state = getAnimationControllerState(
+        SIDE_ASSISTANT_SPEECH_ANIMATION_ID
+      );
+      if (state === 'RUNNING') {
+        finishAnimationController(SIDE_ASSISTANT_SPEECH_ANIMATION_ID);
+      } else {
+        const availableSpeeches = SPEECH_ASSETS.filter(
+          (speech) => speech !== sideAssistant.speechContent
+        );
+
+        const randomSpeech =
+          availableSpeeches[
+            Math.floor(Math.random() * availableSpeeches.length)
+          ];
+
+        setSpeechContent(randomSpeech);
+      }
     }
   };
-  const handleMouseMove = (e: MouseEvent) => {
+
+  /**
+   * マウス移動ハンドラー
+   *
+   * @param e マウスイベント
+   */
+  const handleMouseMove = (e: MouseEvent): void => {
     setIsHover(
       isOpaquePixel({
         img: characterRef.current,
@@ -119,6 +165,7 @@ export const useSideAssistantInteraction = () => {
       })
     );
   };
+
   const currentCharacter = isDragging
     ? GRAB_SIDE_ASSISTANT_CHARACTER
     : DEFAULT_SIDE_ASSISTANT_CHARACTER;

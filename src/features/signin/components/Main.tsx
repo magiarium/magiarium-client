@@ -51,8 +51,7 @@ export const LockPage = () => {
 
   return (
     <>
-      <LoadingOverlay isLoading={appState !== 'LOCKED'} overlayColor="black" />
-      <AuthStepContext value={{ authStep, setAuthStep }}>
+      <AuthStepContext.Provider value={{ authStep, setAuthStep }}>
         <div className="lock-page">
           <div className="lock-page__screen">
             {(() => {
@@ -87,7 +86,8 @@ export const LockPage = () => {
             })()}
           </div>
         </div>
-      </AuthStepContext>
+      </AuthStepContext.Provider>
+      <LoadingOverlay isLoading={appState !== 'LOCKED'} overlayColor="black" />
     </>
   );
 };

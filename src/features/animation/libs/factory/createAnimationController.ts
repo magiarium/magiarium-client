@@ -8,6 +8,7 @@ import { PlayConfig } from '../controller/type';
 
 export type AnimationConfig =
   | {
+      id?: string;
       controllerType: 'CHAIN' | 'PARALLEL';
       playConfig: PlayConfig;
       children: AnimationConfig[];
@@ -15,6 +16,7 @@ export type AnimationConfig =
       initializeAction?: () => void;
     }
   | {
+      id?: string;
       controllerType: 'SIMPLE';
       playConfig: PlayConfig;
       element: HTMLElement;
@@ -25,6 +27,7 @@ export type AnimationConfig =
 
 /**
  * AnimationController作成処理
+ *
  * @param animationConfig AnimationController設定
  * @returns AnimationController
  */
@@ -36,6 +39,7 @@ export const createAnimationController = (
       switch (animationConfig.animator.type) {
         case 'LOTTIE':
           return new LottieAnimationController({
+            id: animationConfig.id,
             element: animationConfig.element,
             animator: animationConfig.animator,
             completeAction: animationConfig.completeAction,
@@ -44,6 +48,7 @@ export const createAnimationController = (
           });
         case 'MOTION':
           return new MotionAnimationController({
+            id: animationConfig.id,
             element: animationConfig.element,
             animator: animationConfig.animator,
             completeAction: animationConfig.completeAction,
@@ -53,6 +58,7 @@ export const createAnimationController = (
       }
     case 'CHAIN': {
       return new ChainAnimationController({
+        id: animationConfig.id,
         children: animationConfig.children.map((childDefine) => {
           return createAnimationController(childDefine);
         }),
@@ -63,6 +69,7 @@ export const createAnimationController = (
     }
     case 'PARALLEL': {
       return new ParalellAnimationController({
+        id: animationConfig.id,
         children: animationConfig.children.map((childDefine) => {
           return createAnimationController(childDefine);
         }),

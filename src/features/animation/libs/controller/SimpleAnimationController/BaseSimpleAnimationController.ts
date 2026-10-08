@@ -59,12 +59,14 @@ export abstract class BaseSimpleAnimationController<
   protected _playState: PlayState;
 
   constructor({
+    id,
     element,
     animator,
     playConfig,
     completeAction = () => {},
     initializeAction = () => {},
   }: {
+    id?: string;
     element: HTMLElement;
     animator: Animator<U>;
     playConfig: PlayConfig;
@@ -73,10 +75,13 @@ export abstract class BaseSimpleAnimationController<
   }) {
     const targetSelector = getSelector(element);
 
-    this._controllerId = cyrb53(
-      `${targetSelector}_${animator.id}`
-    ).toString() as AnimationControllerId;
-
+    if (id) {
+      this._controllerId = id as AnimationControllerId;
+    } else {
+      this._controllerId = cyrb53(
+        `${targetSelector}_${animator.id}`
+      ).toString() as AnimationControllerId;
+    }
     this._controllerState = 'PENDING';
 
     this._element = element;

@@ -11,16 +11,19 @@ import {
  *
  * 詳細仕様は`createWaterfallRenderAnimationConfig`を参照
  *
+ * @param params.id コントローラーID(強制指定時のみ指定)
  * @param params.element 対象HTMLエレメント
  * @param params.playConfig 再生設定
  * @param params.completeAction アニメーション完了アクション
  * @returns アニメーションコントローラー
  */
 export const createToVisibleChainAnimationController = ({
+  id,
   element,
   playConfig,
   completeAction,
 }: {
+  id?: string;
   element: HTMLElement;
   playConfig?: PlayConfig;
   completeAction?: () => void;
@@ -31,7 +34,7 @@ export const createToVisibleChainAnimationController = ({
     completeAction,
   });
 
-  return createAnimationController(toVisibleChainAnimationConfig);
+  return createAnimationController({ id, ...toVisibleChainAnimationConfig });
 };
 
 /**

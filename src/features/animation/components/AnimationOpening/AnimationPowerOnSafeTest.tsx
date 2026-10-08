@@ -1,9 +1,12 @@
 import { LoadingOverlay } from '@/common/components/LoadingOverlay';
-import { useEffect, useRef, useState } from 'react';
-import { AnimationController } from '../../libs/controller/AnimationController';
+import { useEffect, useRef } from 'react';
+import { useAnimationController } from '../../hooks/useAnimationController';
+import { AnimationControllerId } from '../../libs/controller/type';
 import { createToVisibleChainAnimationController } from '../../libs/factory/createToVisibleChainAnimationController';
 import { AnimationSkipOverlay } from '../AnimationSkipOverlay';
 import './AnimationPowerOnSafeTest.scss';
+
+const CONTROLLER_ID = 'power-on-safe-test-animation' as AnimationControllerId;
 
 /**
  * PowerOnSafeTest風のアニメーションを再生するコンポーネント
@@ -17,20 +20,25 @@ export const AnimationPowerOnSafeTest = ({
   onComplete: () => void;
 }) => {
   const postContainerRef = useRef<HTMLDivElement>(null);
-  const [animationController, setAnimationController] =
-    useState<AnimationController>();
+  const {
+    registerAnimationController,
+    deleteAnimationController,
+    getAnimationController,
+  } = useAnimationController();
 
   useEffect(() => {
     if (!postContainerRef.current) {
       return;
     }
     const animationController = createToVisibleChainAnimationController({
+      id: CONTROLLER_ID,
       element: postContainerRef.current,
       completeAction: onComplete,
     });
-    setAnimationController(animationController);
+    registerAnimationController(animationController);
     animationController.start();
     return () => {
+      deleteAnimationController(animationController.getId());
       animationController.destroy();
     };
   }, []);
@@ -228,8 +236,13 @@ export const AnimationPowerOnSafeTest = ({
           All's right with the world!
         </p>
       </div>
-      <AnimationSkipOverlay animationController={animationController} />
-      <LoadingOverlay isLoading={!animationController} overlayColor="black" />
+      <AnimationSkipOverlay
+        animationController={getAnimationController(CONTROLLER_ID)}
+      />
+      <LoadingOverlay
+        isLoading={!getAnimationController(CONTROLLER_ID)}
+        overlayColor="black"
+      />
     </>
   );
 };

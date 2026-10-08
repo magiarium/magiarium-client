@@ -50,13 +50,16 @@ export const SideAssistant = (): ReactNode => {
       onClick={handleClick}
       onMouseMove={handleMouseMove}
     >
-      {!isDragging && (
-        <div className="side-assistant__speech">
-          <Speech tailPosition={SPEECH_TAIL_POSITION}>
-            {sideAssistant.speechContent}
-          </Speech>
-        </div>
-      )}
+      <div
+        className={classNames(
+          'side-assistant__speech',
+          isDragging && 'side-assistant__speech--hidden'
+        )}
+      >
+        <Speech tailPosition={SPEECH_TAIL_POSITION}>
+          {sideAssistant.speechContent}
+        </Speech>
+      </div>
 
       <div
         className={classNames(
