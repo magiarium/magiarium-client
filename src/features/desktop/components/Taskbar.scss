@@ -1,0 +1,30 @@
+.taskbar {
+  position: relative;
+
+  height: 100%;
+
+  z-index: var(--taskbar-index);
+
+  background-color: var(--main-color);
+  border-color: var(--shadow-color);
+
+  border-style: solid;
+  border-width: 2.5px 0 0 0;
+
+  display: flex;
+
+  &__button-list {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+
+    margin-left: 15px;
+    padding: 4px 0 0;
+
+    li {
+      display: flex;
+      align-items: stretch;
+      min-width: 0;
+    }
+  }
+}

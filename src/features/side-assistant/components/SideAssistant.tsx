@@ -33,6 +33,7 @@ export const SideAssistant = (): ReactNode => {
   if (appState === 'INITIAL' || appState === 'LOCKED') {
     return null;
   }
+
   return (
     <Rnd
       className="side-assistant"
