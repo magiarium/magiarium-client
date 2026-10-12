@@ -1,0 +1,38 @@
+.taskbar__button {
+  position: relative;
+
+  background-color: var(--main-color);
+
+  min-width: 100px;
+  max-width: 220px;
+
+  height: 90%;
+
+  margin: 0;
+  padding: 0 14px;
+
+  border-radius: 0.5rem;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  border-style: solid;
+  border-width: 2.5px;
+  border-color: var(--main-color);
+
+  cursor: pointer;
+
+  &--active {
+    background-color: var(--accent-color);
+  }
+
+  &:hover:not(&--active) {
+    border-style: solid;
+    border-width: 2.5px;
+    border-color: var(--shadow-color);
+  }
+}

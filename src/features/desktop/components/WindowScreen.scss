@@ -1,0 +1,12 @@
+.window-screen {
+  --taskbar-height: 50px;
+
+  &__content {
+    position: relative;
+    height: calc(100dvh - var(--taskbar-height));
+  }
+
+  &__footer {
+    height: var(--taskbar-height);
+  }
+}

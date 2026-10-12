@@ -1,2 +1,2 @@
 /** アプリケーションの状態 */
-export type AppState = 'INITIAL' | 'LOCKED' | 'READY';
+export type AppState = 'INITIAL' | 'LOCKED' | 'READY' | 'RESTART';

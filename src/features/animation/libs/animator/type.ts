@@ -24,6 +24,7 @@ type AnimatorDefinition =
   | {
       type: 'LOTTIE';
       src: string;
+      speed?: number;
     };
 
 /** アニメーター型 */

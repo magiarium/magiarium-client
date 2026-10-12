@@ -6,6 +6,7 @@ export class Application extends BaseStore {
 
   /**
    * AppState更新処理
+   *
    * @param appState AppState
    */
   setAppState = (appState: AppState) => {
@@ -14,8 +15,8 @@ export class Application extends BaseStore {
   };
 
   /**
-   *AppState取得処理
-
+   * AppState取得処理
+   *
    * @returns AppState
    */
   getAppState = () => {

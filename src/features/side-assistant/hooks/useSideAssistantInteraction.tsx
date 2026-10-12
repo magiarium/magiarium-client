@@ -14,6 +14,7 @@ import {
 import { useSideAsssistant } from './useSideAssistant';
 const SPEECH_MAX_HEIGHT = 75;
 const PADDING = 10;
+const TASKBAR_HEIGHT = 50;
 
 /**
  * サイドアシスタントのインタラクション処理用hook
@@ -34,9 +35,10 @@ export const useSideAssistantInteraction = () => {
       x: window.innerWidth - GRAB_CHARACTER_SIZE.width,
       y:
         window.innerHeight -
-        GRAB_CHARACTER_SIZE.height *
+        (GRAB_CHARACTER_SIZE.height *
           (DEFAULT_SIDE_ASSISTANT_CHARACTER.height /
-            DEFAULT_SIDE_ASSISTANT_CHARACTER.width),
+            DEFAULT_SIDE_ASSISTANT_CHARACTER.width) +
+          TASKBAR_HEIGHT),
     });
   }, []);
 
@@ -110,7 +112,7 @@ export const useSideAssistantInteraction = () => {
             GRAB_CHARACTER_SIZE.height *
               (DEFAULT_SIDE_ASSISTANT_CHARACTER.height /
                 DEFAULT_SIDE_ASSISTANT_CHARACTER.width) -
-            PADDING
+            (PADDING + TASKBAR_HEIGHT)
         ),
       });
 

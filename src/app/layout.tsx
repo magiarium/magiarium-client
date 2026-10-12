@@ -4,6 +4,7 @@ import { ApplicationContextProvider } from '@/features/app-controller/contexts/A
 import { AuthExpiredNotice } from '@/features/auth/components/AuthExpiredNotice';
 import { UserDataManagerContextProvider } from '@/features/auth/contexts/UserDataManagerContext';
 import { getUserDataFromCookies } from '@/features/auth/libs/getUserDataFromCookies';
+import { WindowContextProvider } from '@/features/desktop/contexts/WindowContext';
 import { SideAssistantContextProvider } from '@/features/side-assistant/contexts/SideAssistantContext';
 import { ReactNode } from 'react';
 import './global.scss';
@@ -27,10 +28,12 @@ const RootLayout = async ({ children }: Readonly<{ children: ReactNode }>) => {
           <ApplicationContextProvider>
             <UserDataManagerContextProvider userData={userData}>
               <AnimationControllerContextProvider>
-                <SideAssistantContextProvider>
-                  {children}
-                  <AuthExpiredNotice isAuthExpired={isAuthExpired} />
-                </SideAssistantContextProvider>
+                <WindowContextProvider>
+                  <SideAssistantContextProvider>
+                    {children}
+                    <AuthExpiredNotice isAuthExpired={isAuthExpired} />
+                  </SideAssistantContextProvider>
+                </WindowContextProvider>
               </AnimationControllerContextProvider>
             </UserDataManagerContextProvider>
           </ApplicationContextProvider>

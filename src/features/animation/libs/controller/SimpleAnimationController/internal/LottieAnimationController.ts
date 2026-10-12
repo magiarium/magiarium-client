@@ -15,6 +15,7 @@ export class LottieAnimationController extends BaseSimpleAnimationController<'LO
             ? this._playState.totalCount
             : false,
     });
+    controller.setSpeed(this._animator.speed ?? 1);
     controller.addEventListener('enterFrame', () =>
       this._updateProgress(controller.currentFrame / controller.totalFrames)
     );

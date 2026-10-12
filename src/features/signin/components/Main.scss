@@ -1,5 +1,6 @@
 .lock-page {
   position: fixed;
+  z-index: var(--lock-index);
   inset: 0;
   overflow: hidden;
 
@@ -13,7 +14,6 @@
 
   &__screen {
     position: relative;
-    z-index: 1;
     width: 100%;
     height: 100%;
     display: flex;
