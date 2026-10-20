@@ -5,7 +5,7 @@ import { useWindowController } from '@/features/desktop/hooks/useWindowControlle
 import { WindowControllerId } from '@/features/desktop/type';
 import { Tabs } from 'radix-ui';
 import { BsEnvelope, BsPlusSquareFill } from 'react-icons/bs';
-import { BlogMetadataEditor } from '../../common/components/MetadataEditor';
+import { MetadataEditor } from '../../common/components/MetadataEditor';
 import { createBlogItemTemplate } from '../libs/createBlogItemTemplate';
 import { BlogListContent } from './BlogList.Content';
 import './BlogList.scss';
@@ -25,10 +25,16 @@ export const BlogList = () => {
           <button
             className="blog-list__button"
             onClick={() => {
-              createWindowController({
+              const windowController = createWindowController({
                 id: 'blog-metadata-edit' as WindowControllerId,
                 children: (
-                  <BlogMetadataEditor itemData={createBlogItemTemplate()} />
+                  <MetadataEditor
+                    itemData={createBlogItemTemplate()}
+                    onClose={() => {
+                      windowController.setWindowState('CLOSED');
+                      windowController.delete();
+                    }}
+                  />
                 ),
                 title: 'ブログメタデータ編集',
               });

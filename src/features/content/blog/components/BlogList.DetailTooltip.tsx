@@ -22,7 +22,7 @@ export const BlogListDtailTooltip = ({
     >
       <Image
         className="blog-list tooltip__thumbnail"
-        src={thumbnailSrc}
+        src={thumbnailSrc || '/assets/images/default-blog-icon.png'}
         alt="ブログ記事サムネイル"
         width={515}
         height={515}

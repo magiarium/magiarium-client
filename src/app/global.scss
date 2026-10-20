@@ -7,12 +7,14 @@
 
 :root {
   // 色彩
-  --background-color: #f3edff;
+  --wallpaper-color: #f3edff;
   --main-color: #d9a9d8;
   --text-color: #4c3b4c;
   --accent-color: #bd85b9;
   --surface-color: #ffffff;
   --shadow-color: rgba(150, 100, 150, 0.25);
+  --error-color: #d32f2f;
+  --disabled-color: #9e9e9e;
 
   // 各コンテンツの重ね順
   --wallpaper-index: -1;
