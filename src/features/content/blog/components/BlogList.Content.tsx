@@ -76,7 +76,7 @@ export const BlogListContent = <
           {blogItemMetadataList.map((targetItem, index) => {
             return (
               <li key={`blog-list-item-${index}`}>
-                <BlogListRecord metadata={targetItem} />
+                <BlogListRecord metadata={targetItem} refresh={refresh} />
               </li>
             );
           })}
