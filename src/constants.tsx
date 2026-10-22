@@ -1,5 +1,7 @@
 // AWS
 export const MAGIARIUM_API_URL = process.env.NEXT_PUBLIC_MAGIARIUM_API_URL!;
+export const MAGIARIUM_BUCKET_NAME =
+  process.env.NEXT_PUBLIC_MAGIARIUM_BUCKET_NAME!;
 
 // Adobe
 export const ADOBE_PROJECT_ID = process.env.NEXT_PUBLIC_ADOBE_PROJECT_ID!;

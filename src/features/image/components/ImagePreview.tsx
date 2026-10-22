@@ -20,14 +20,14 @@ export const ImagePreview = ({
         type="button"
         onClick={() => {
           createWindowController({
-            id: `preview_image_${currentImageMetadata.title}` as WindowControllerId,
-            title: `"${currentImageMetadata.title}"プレビュー`,
+            id: `preview_image_${currentImageMetadata.fileName}` as WindowControllerId,
+            title: `"${currentImageMetadata.fileName}"プレビュー`,
             children: (
               <Image
                 src={currentImageMetadata.path}
-                alt="サムネイルプレビュー"
-                width={currentImageMetadata.attributes.width}
-                height={currentImageMetadata.attributes.height}
+                alt="プレビュー"
+                width={currentImageMetadata.size.width}
+                height={currentImageMetadata.size.height}
               />
             ),
           });
@@ -36,11 +36,18 @@ export const ImagePreview = ({
         <Image
           className="image-preview__image"
           src={currentImageMetadata.path}
-          alt="サムネイルプレビュー"
-          width={currentImageMetadata.attributes.width}
-          height={currentImageMetadata.attributes.height}
+          alt="プレビュー"
+          width={currentImageMetadata.size.width}
+          height={currentImageMetadata.size.height}
         />
       </button>
+      <div className="image-preview__input-field">
+        <label title="ファイル名">
+          ファイル名
+          <input type="text" value={currentImageMetadata.alt} disabled />
+        </label>
+      </div>
+
       <div className="image-preview__input-field">
         <label title="代替テキスト">
           代替テキスト
@@ -51,21 +58,6 @@ export const ImagePreview = ({
               onChange({
                 ...currentImageMetadata,
                 alt: event.target.value,
-              });
-            }}
-          />
-        </label>
-      </div>
-      <div className="image-preview__input-field">
-        <label title="ファイル名">
-          ファイル名
-          <input
-            type="text"
-            value={currentImageMetadata.alt}
-            onChange={(event) => {
-              onChange({
-                ...currentImageMetadata,
-                title: event.target.value,
               });
             }}
           />

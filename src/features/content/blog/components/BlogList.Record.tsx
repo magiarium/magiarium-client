@@ -105,6 +105,7 @@ export const BlogListRecord = ({
                             <Button
                               onClick={async () => {
                                 onLoading(true);
+                                closeNotice();
                                 await fetchContentApi('DeleteDraftItemData', {
                                   params: {
                                     itemId: metadata.itemId,

@@ -1,21 +1,14 @@
 'use client';
 import { Button } from '@/common/components/Button';
+import { LoadingCircle } from '@/common/components/LoadingCircle';
 import { useNotice } from '@/features/app-controller/hooks/useNotice';
 import { usePermission } from '@/features/auth/hooks/usePermission';
-import { ItemData } from '@magiarium/structure';
+import { ImageMetadata, ItemData } from '@magiarium/structure';
 import { FormEvent, useState } from 'react';
 import { ImageUploader } from '../../../image/components/ImageUploader';
 import { OGP_TEMPLATES, THUMBNAIL_TEMPLATES } from '../constants';
-import { fetchContentApi } from '../libs/fetchContentApi';
+import { saveItemData } from '../libs/saveItemData';
 import './MetadataEditor.scss';
-
-/**
- * メタデータ入力フォーム
- */
-type MetadataForm = Pick<
-  ItemData,
-  'title' | 'description' | 'thumbnailImage' | 'ogpImage'
->;
 
 /**
  * メタデータ編集画面 ※メタデータはアイテム種別ごとに差分ない想定のため、共通処理扱い
@@ -27,21 +20,15 @@ export const MetadataEditor = ({
   itemData: ItemData;
   onClose: () => void;
 }) => {
-  const { content: _content, ...metadata } = itemData;
-
   // 入力フォーム制御用
-  const [form, setForm] = useState<MetadataForm>({
-    title: metadata.title,
-    description: metadata.description,
-    thumbnailImage: metadata.thumbnailImage,
-    ogpImage: metadata.ogpImage,
-  });
+  const [editItemData, setEditItemData] = useState<ItemData>(itemData);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleChange = <K extends keyof MetadataForm>(
+  const handleChange = <K extends keyof ItemData>(
     key: K,
-    value: MetadataForm[K]
+    value: ItemData[K]
   ) => {
-    setForm((current) => ({
+    setEditItemData((current) => ({
       ...current,
       [key]: value,
     }));
@@ -53,7 +40,7 @@ export const MetadataEditor = ({
   // 権限チェック
   const { can } = usePermission();
   if (!can('EDIT')) {
-    return <>認証エラー</>;
+    return <>[認証エラー]対象ユーザーに編集権限がありません。</>;
   }
 
   return (
@@ -61,18 +48,11 @@ export const MetadataEditor = ({
       className="metadata-editor__form"
       onSubmit={async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        // TODO:ここでリソースアップロード
-
-        // データ保存
-        const result = await fetchContentApi('SaveDraftItemData', {
-          params: {
-            itemId: itemData.itemId,
-            itemType: itemData.itemType,
-          },
-          body: itemData,
+        setIsLoading(true);
+        const uploadMetadataResourceResult = await saveItemData({
+          editItemData: editItemData,
         });
-
-        if (result.success) {
+        if (uploadMetadataResourceResult.success) {
           setNotice({
             type: 'DEFAULT',
             title: 'メタデータ編集通知',
@@ -86,6 +66,7 @@ export const MetadataEditor = ({
             children: <>メタデータ保存処理に失敗しました。</>,
           });
         }
+        setIsLoading(false);
       }}
     >
       <fieldset>
@@ -94,21 +75,21 @@ export const MetadataEditor = ({
         <div className="metadata-editor__field">
           <label>
             アイテムID
-            <input type="text" value={metadata.itemId} disabled />
+            <input type="text" value={editItemData.itemId} disabled />
           </label>
         </div>
 
         <div className="metadata-editor__field">
           <label>
             アイテム種別
-            <input type="text" value={metadata.itemType} disabled />
+            <input type="text" value={editItemData.itemType} disabled />
           </label>
         </div>
 
         <div className="metadata-editor__field">
           <label>
             アイテム状態
-            <input type="text" value={metadata.itemState} disabled />
+            <input type="text" value={editItemData.itemState} disabled />
           </label>
         </div>
 
@@ -117,7 +98,7 @@ export const MetadataEditor = ({
             ページタイトル
             <input
               type="text"
-              value={form.title}
+              value={editItemData.title}
               onChange={(event) => handleChange('title', event.target.value)}
             />
           </label>
@@ -128,7 +109,7 @@ export const MetadataEditor = ({
             ページ説明
             <textarea
               rows={5}
-              value={form.description}
+              value={editItemData.description}
               onChange={(event) =>
                 handleChange('description', event.target.value)
               }
@@ -139,9 +120,11 @@ export const MetadataEditor = ({
         <div className="metadata-editor__field">
           サムネイル画像
           <ImageUploader
-            currentImage={form.thumbnailImage}
+            currentImage={editItemData.thumbnailImage}
             clipSize={{ width: 515, height: 515 }}
-            onChange={(value) => handleChange('thumbnailImage', value)}
+            onChange={(value: ImageMetadata) =>
+              handleChange('thumbnailImage', value)
+            }
             templates={THUMBNAIL_TEMPLATES}
           />
         </div>
@@ -149,9 +132,9 @@ export const MetadataEditor = ({
         <div className="metadata-editor__field">
           OGP画像
           <ImageUploader
-            currentImage={form.ogpImage}
+            currentImage={editItemData.ogpImage}
             clipSize={{ width: 1200, height: 630 }}
-            onChange={(value) => handleChange('ogpImage', value)}
+            onChange={(value: ImageMetadata) => handleChange('ogpImage', value)}
             templates={OGP_TEMPLATES}
           />
         </div>
@@ -159,33 +142,44 @@ export const MetadataEditor = ({
         <div className="metadata-editor__field">
           <label>
             作成日時
-            <input type="text" value={metadata.createdAt} disabled />
+            <input type="text" value={editItemData.createdAt} disabled />
           </label>
         </div>
 
         <div className="metadata-editor__field">
           <label>
             更新日時
-            <input type="text" value={metadata.updatedAt} disabled />
+            <input type="text" value={editItemData.updatedAt} disabled />
           </label>
         </div>
 
         <div className="metadata-editor__field">
           <label>
             公開日時
-            <input type="text" value={metadata.publishedAt} disabled />
+            <input type="text" value={editItemData.publishedAt} disabled />
           </label>
         </div>
 
         <div className="metadata-editor__field">
           <label>
             閲覧数
-            <input type="number" value={metadata.viewCount} disabled />
+            <input type="number" value={editItemData.viewCount} disabled />
           </label>
         </div>
 
-        <Button className="metadata-editor__submit-button" type="submit">
-          保存
+        <Button
+          className="metadata-editor__submit-button"
+          type="submit"
+          isDisabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              保存中
+              <LoadingCircle />
+            </>
+          ) : (
+            <>保存</>
+          )}
         </Button>
       </fieldset>
     </form>

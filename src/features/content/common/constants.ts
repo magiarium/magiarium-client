@@ -154,7 +154,7 @@ export const THUMBNAIL_TEMPLATES: ImageMetadata[] = [
     path: '/assets/images/thumbnail/template_1.webp',
     mimeType: 'image/webp',
     alt: 'サムネイル画像',
-    title: 'サムネイル画像',
+    title: 'thumbnail.webp',
     attributes: {
       height: 515,
       width: 515,
@@ -165,7 +165,7 @@ export const THUMBNAIL_TEMPLATES: ImageMetadata[] = [
     path: '/assets/images/thumbnail/template_2.webp',
     mimeType: 'image/webp',
     alt: 'サムネイル画像',
-    title: 'サムネイル画像',
+    title: 'thumbnail.webp',
     attributes: {
       height: 515,
       width: 515,
@@ -179,7 +179,7 @@ export const OGP_TEMPLATES: ImageMetadata[] = [
     path: '/assets/images/ogp/template_1.webp',
     mimeType: 'image/webp',
     alt: 'OGP画像',
-    title: 'OGP画像',
+    title: 'ogp.webp',
     attributes: {
       height: 630,
       width: 1200,
@@ -190,7 +190,7 @@ export const OGP_TEMPLATES: ImageMetadata[] = [
     path: '/assets/images/ogp/template_2.webp',
     mimeType: 'image/webp',
     alt: 'OGP画像',
-    title: 'OGP画像',
+    title: 'ogp.webp',
     attributes: {
       height: 630,
       width: 1200,

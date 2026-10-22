@@ -18,6 +18,7 @@ export const ImageSelector = ({
       {templates.map((targetImage, index) => {
         return (
           <button
+            type="button"
             key={`template-image-${index}`}
             className="image-selector__swatch"
             onClick={() => {
@@ -27,8 +28,8 @@ export const ImageSelector = ({
             <Image
               src={targetImage.path}
               alt={targetImage.alt}
-              width={targetImage.attributes.width}
-              height={targetImage.attributes.height}
+              width={targetImage.size.width}
+              height={targetImage.size.height}
             />
           </button>
         );

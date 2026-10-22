@@ -47,8 +47,8 @@ export const useImageUploader = ({
                   path: editImageInfo.blobUrl,
                   mimeType: editImageInfo.mimeType,
                   alt: '',
-                  title: editImageInfo.fileName,
-                  attributes: {
+                  fileName: editImageInfo.fileName,
+                  size: {
                     height: editImageInfo.size.height,
                     width: editImageInfo.size.width,
                   },
@@ -72,8 +72,8 @@ export const useImageUploader = ({
         path: imageInfo.blobUrl,
         mimeType: imageInfo.mimeType,
         alt: '',
-        title: imageInfo.fileName,
-        attributes: {
+        fileName: imageInfo.fileName,
+        size: {
           height: imageInfo.size.height,
           width: imageInfo.size.width,
         },

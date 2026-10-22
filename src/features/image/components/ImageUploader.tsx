@@ -16,7 +16,10 @@ export const ImageUploader = ({
   clipSize?: Size;
   templates?: ImageMetadata[];
 }) => {
-  const { error, handleImageInput } = useImageUploader({ clipSize, onChange });
+  const { error, handleImageInput } = useImageUploader({
+    clipSize,
+    onChange,
+  });
 
   if (currentImage.path) {
     // 既に選択済みであればプレビュー
