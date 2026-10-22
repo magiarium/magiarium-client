@@ -1,6 +1,7 @@
 import { LoadingCircle } from '@/common/components/LoadingCircle';
 import { BlogItemMetadata } from '@magiarium/structure';
 import { Tooltip } from 'radix-ui';
+import { useState } from 'react';
 import { BsArrowClockwise } from 'react-icons/bs';
 import { ContentApiRequest } from '../../common/constants';
 import { useFetchContentApi } from '../../common/hooks/useFetchContentApi';
@@ -27,8 +28,9 @@ export const BlogListContent = <
 }) => {
   const { result, refresh, isLoading } =
     useFetchContentApi<BlogItemListUnionType>(target, request);
+  const [isLoadingItem, setIsLoadingItem] = useState<boolean>(false);
 
-  if (isLoading) {
+  if (isLoading || isLoadingItem) {
     return (
       <>
         ローディング中
@@ -76,7 +78,13 @@ export const BlogListContent = <
           {blogItemMetadataList.map((targetItem, index) => {
             return (
               <li key={`blog-list-item-${index}`}>
-                <BlogListRecord metadata={targetItem} refresh={refresh} />
+                <BlogListRecord
+                  metadata={targetItem}
+                  refresh={refresh}
+                  onLoading={(isLoading: boolean) => {
+                    setIsLoadingItem(isLoading);
+                  }}
+                />
               </li>
             );
           })}

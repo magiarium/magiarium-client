@@ -1,10 +1,15 @@
+import { Button } from '@/common/components/Button';
 import { ContextMenu } from '@/common/components/ContextMenu';
+import { useNotice } from '@/features/app-controller/hooks/useNotice';
+import { useWindowController } from '@/features/desktop/hooks/useWindowController';
+import { WindowControllerId } from '@/features/desktop/type';
 import { BlogItemMetadata } from '@magiarium/structure';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Tooltip } from 'radix-ui';
 import { useState } from 'react';
-import { BsTrashFill } from 'react-icons/bs';
+import { BsPencilFill, BsTrashFill } from 'react-icons/bs';
+import { MetadataEditor } from '../../common/components/MetadataEditor';
 import { fetchContentApi } from '../../common/libs/fetchContentApi';
 import { BlogListDtailTooltip } from './BlogList.DetailTooltip';
 import './BlogList.Record.scss';
@@ -15,43 +20,114 @@ import './BlogList.Record.scss';
 export const BlogListRecord = ({
   metadata,
   refresh,
+  onLoading,
 }: {
   metadata: BlogItemMetadata;
   refresh: () => Promise<void>;
+  onLoading: (isLoading: boolean) => void;
 }) => {
   const [thumbnailSrc, setThumbnailSrc] = useState<string>(
     metadata.thumbnailImage.path
   );
+  const { setNotice, closeNotice } = useNotice();
+  const { createWindowController } = useWindowController();
 
   return (
     <Tooltip.Root>
       {/** 行データ本体 */}
-      <Tooltip.Trigger asChild>
-        <ContextMenu
-          contextItems={
-            metadata.itemState === 'draft'
-              ? [
-                  {
-                    children: (
-                      <>
-                        <BsTrashFill />
-                        下書き削除
-                      </>
-                    ),
-                    onSelect: async () => {
-                      await fetchContentApi('DeleteDraftItemData', {
-                        params: {
-                          itemId: metadata.itemId,
-                          itemType: metadata.itemType,
-                        },
-                      });
-                      await refresh();
-                    },
+      <ContextMenu
+        contextItems={
+          metadata.itemState === 'draft'
+            ? [
+                {
+                  children: (
+                    <>
+                      <BsPencilFill />
+                      メタデータ編集
+                    </>
+                  ),
+                  onSelect: async () => {
+                    onLoading(true);
+                    const itemData = await fetchContentApi('GetDraftItemData', {
+                      params: {
+                        itemId: metadata.itemId,
+                        itemType: metadata.itemType,
+                      },
+                    });
+                    if (!itemData.success) {
+                      return;
+                    }
+                    const windowController = createWindowController({
+                      id: 'blog-metadata-edit' as WindowControllerId,
+                      children: (
+                        <>
+                          {itemData.success ? (
+                            <MetadataEditor
+                              itemData={itemData.results}
+                              onClose={() => {
+                                windowController.setWindowState('CLOSED');
+                                windowController.delete();
+                              }}
+                            />
+                          ) : (
+                            <>対象コンテンツが見つかりません。</>
+                          )}
+                        </>
+                      ),
+                      title: 'ブログメタデータ編集',
+                    });
+                    onLoading(false);
                   },
-                ]
-              : undefined
-          }
-        >
+                },
+                {
+                  children: (
+                    <>
+                      <BsTrashFill />
+                      下書き削除
+                    </>
+                  ),
+                  onSelect: () => {
+                    setNotice({
+                      title: '最終確認',
+                      type: 'ALERT',
+                      children: (
+                        <div className="delete-confirm">
+                          <span>本当に削除しますか？</span>
+                          <div className="delete-confirm__actions">
+                            <Button
+                              onClick={() => {
+                                closeNotice();
+                              }}
+                              priority={'SECONDARY'}
+                            >
+                              いいえ
+                            </Button>
+                            <Button
+                              onClick={async () => {
+                                onLoading(true);
+                                await fetchContentApi('DeleteDraftItemData', {
+                                  params: {
+                                    itemId: metadata.itemId,
+                                    itemType: metadata.itemType,
+                                  },
+                                });
+                                await refresh();
+                                onLoading(false);
+                              }}
+                            >
+                              はい
+                            </Button>
+                          </div>
+                        </div>
+                      ),
+                    });
+                  },
+                },
+              ]
+            : undefined
+        }
+      >
+        <Tooltip.Trigger asChild>
           <Link
             className="blog-list record__link"
             href={
@@ -76,8 +152,8 @@ export const BlogListRecord = ({
               {metadata.publishedAt}
             </time>
           </Link>
-        </ContextMenu>
-      </Tooltip.Trigger>
+        </Tooltip.Trigger>
+      </ContextMenu>
       {/** 詳細ツールチップ */}
       <Tooltip.Portal>
         <BlogListDtailTooltip metadata={metadata} />
