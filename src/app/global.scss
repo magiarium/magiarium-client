@@ -13,8 +13,9 @@
   --accent-color: #bd85b9;
   --surface-color: #ffffff;
   --shadow-color: rgba(150, 100, 150, 0.25);
-  --error-color: #d32f2f;
-  --disabled-color: #9e9e9e;
+  --warn-color: #d32f2f;
+  --disabled-color: #f5f6f8;
+  --disabled-text-color: #9e9e9e;
 
   // 各コンテンツの重ね順
   --wallpaper-index: -1;
@@ -25,6 +26,13 @@
   --lock-index: 8000;
   --opening-index: 9000;
   --loading-index: 9999;
+
+  //
+  --background-checkerboard:
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
 }
 
 //////// ユーティリティ ////////
