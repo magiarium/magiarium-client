@@ -1,0 +1,69 @@
+.metadata-editor {
+  &__form {
+    width: 100%;
+    max-width: 800px;
+    margin: 32px auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+
+    fieldset {
+      padding: 32px;
+      border: 1px solid var(--shadow-color);
+      border-radius: 10px;
+      background: var(--surface-color);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    legend {
+      padding: 0 12px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+  }
+
+  &__field {
+    margin-top: 20px;
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid var(--shadow-color);
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    input {
+      min-height: 42px;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    input[disabled] {
+      background: var(--disabled-color);
+      color: var(--disabled-text-color);
+    }
+  }
+
+  &__submit-button {
+    width: 100%;
+    margin-top: 28px;
+    padding: 12px 20px;
+    border-radius: 6px;
+
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+  }
+}
