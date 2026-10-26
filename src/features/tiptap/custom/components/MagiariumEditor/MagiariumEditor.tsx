@@ -4,7 +4,7 @@ import { Content, EditorContent, Extensions, useEditor } from '@tiptap/react';
 import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus';
 import { BsGripVertical } from 'react-icons/bs';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
-import { MarkSelector } from '../MarkSelector';
+import { MarkToolbar } from '../MarkToolbar';
 import { NodeSelectorCustom } from '../NodeSelector.Custom';
 import { NodeSelectorStandard } from '../NodeSelector.Standard';
 import { MAGIARIUM_EDITOR_EXTENSIONS } from './extension';
@@ -44,7 +44,7 @@ export const MagiariumEditor = ({
           </DragHandle>
           <BubbleMenu editor={editor} className="magiarium-editor__bubble-menu">
             <NodeSelectorStandard editor={editor} />
-            <MarkSelector editor={editor} />
+            <MarkToolbar editor={editor} />
           </BubbleMenu>
           <FloatingMenu
             editor={editor}
@@ -67,7 +67,7 @@ export const MagiariumEditor = ({
             </Button>
             <NodeSelectorStandard editor={editor} />
             <NodeSelectorCustom editor={editor} />
-            <MarkSelector editor={editor} />
+            <MarkToolbar editor={editor} />
           </FloatingMenu>
         </>
       )}
