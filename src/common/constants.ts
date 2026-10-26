@@ -4,8 +4,8 @@ export const INITIAL_IMAGE_METADATA: ImageMetadata = {
   path: '',
   mimeType: '',
   alt: '',
-  title: '',
-  attributes: {
+  fileName: '',
+  size: {
     height: 0,
     width: 0,
   },
