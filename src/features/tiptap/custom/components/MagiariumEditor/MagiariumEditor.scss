@@ -1,0 +1,32 @@
+@use '@/features/tiptap/basic/styles/_keyframe-animations.scss';
+@use '@/features/tiptap/basic/styles/_variables.scss';
+
+.magiarium-editor {
+  &__bubble-menu,
+  &__floating-menu {
+    background-color: var(--surface-color);
+    border: 1px solid var(--main-color);
+    border-radius: 0.7rem;
+    box-shadow: var(--shadow-color);
+    display: flex;
+    padding: 0.2rem;
+  }
+}
+.ProseMirror {
+  // プレースホルダー表示用
+  .is-empty::before {
+    content: attr(data-placeholder);
+    pointer-events: none;
+    float: left;
+    height: 0;
+    color: #aaa;
+  }
+}
+
+// エディターフォーカス時の演出を無効化
+.ProseMirror:focus,
+.ProseMirror-focused {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
