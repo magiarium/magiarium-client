@@ -3,7 +3,7 @@
 import { Button } from '@/common/components/Button';
 import { LoadingCircle } from '@/common/components/LoadingCircle';
 import { usePermission } from '@/features/auth/hooks/usePermission';
-import { MagiariumEditor } from '@/features/tiptap/custom/components/MagiariumEditor';
+import { MagiariumEditor } from '@/features/tiptap/components/ui/MagiariumEditor';
 import { ItemId, ItemState } from '@magiarium/structure';
 import { useFetchContentApi } from '../../common/hooks/useFetchContentApi';
 import './BlogItem.Content.scss';

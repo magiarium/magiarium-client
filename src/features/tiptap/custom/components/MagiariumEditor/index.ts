@@ -1,1 +1,0 @@
-export { MagiariumEditor } from './MagiariumEditor';
