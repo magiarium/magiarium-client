@@ -1,0 +1,15 @@
+.font-size__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.font-size__label {
+  position: absolute;
+  right: -4px;
+  bottom: -1px;
+  font-size: 0.75rem;
+  line-height: 1;
+  background-color: white;
+  padding: 1px;
+}

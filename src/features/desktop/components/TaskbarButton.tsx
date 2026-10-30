@@ -2,14 +2,14 @@ import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useWindowManager } from '../hooks/useWindowManager';
 import { WindowController } from '../libs/WindowController';
-import './TaskBarButton.scss';
+import './TaskbarButton.scss';
 
 /**
  * タスクバーのウィンドウ開閉ボタン
  *
  * @param params.windowController WindowController
  */
-export const TaskBarButton = ({
+export const TaskbarButton = ({
   windowController,
 }: {
   windowController: WindowController;

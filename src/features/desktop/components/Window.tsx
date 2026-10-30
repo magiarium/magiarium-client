@@ -1,11 +1,18 @@
+import { ContextMenu } from '@/common/components/ContextMenu';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { BsDashLg, BsSquare, BsXLg } from 'react-icons/bs';
+import {
+  BsBoxArrowUpRight,
+  BsDashLg,
+  BsLink45Deg,
+  BsSquare,
+  BsWindowPlus,
+  BsXLg,
+} from 'react-icons/bs';
 import { Rnd } from 'react-rnd';
 import { useRndResize } from '../hooks/useRndResize';
 import { useWindowManager } from '../hooks/useWindowManager';
 import { WindowController } from '../libs/WindowController';
-import { ContextMenu } from './ContextMenu';
 import './Window.scss';
 
 /**
@@ -67,7 +74,59 @@ export const Window = ({
         }}
       >
         <div className="window">
-          <ContextMenu href={windowController.href}>
+          <ContextMenu
+            contextItems={[
+              {
+                children: (
+                  <>
+                    <BsBoxArrowUpRight />
+                    <span>新しいタブで開く</span>
+                  </>
+                ),
+                onSelect: () => {
+                  window.open(
+                    windowController.href,
+                    '_blank',
+                    'noopener,noreferrer'
+                  );
+                },
+              },
+              {
+                children: (
+                  <>
+                    <BsWindowPlus />
+                    <span>新しいウィンドウで開く</span>
+                  </>
+                ),
+                onSelect: () => {
+                  window.open(
+                    windowController.href,
+                    '_blank',
+                    'noopener,noreferrer,popup,width=1200,height=800'
+                  );
+                },
+              },
+              {
+                children: (
+                  <>
+                    <BsLink45Deg />
+                    <span>リンクのアドレスをコピー</span>
+                  </>
+                ),
+                onSelect: async () => {
+                  try {
+                    const fullUrl = new URL(
+                      windowController.href ?? '',
+                      window.location.origin
+                    ).href;
+                    await navigator.clipboard.writeText(fullUrl);
+                  } catch (error) {
+                    console.error('リンクのコピーに失敗しました:', error);
+                  }
+                },
+              },
+            ]}
+          >
             <header className="window__header">
               <div className="window__title">
                 <h2>{windowController.title}</h2>

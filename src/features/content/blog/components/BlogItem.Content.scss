@@ -1,0 +1,80 @@
+.blog-content {
+  // 個別記事コンテナ
+  &__container {
+    min-width: 0;
+    padding: 24px;
+
+    color: var(--text-color);
+    background: var(--surface-color);
+  }
+
+  // 記事タイトル・メタデータ編集
+  &__header {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 24px;
+    padding: 0 0 16px;
+
+    border-bottom: 2px solid var(--main-color);
+
+    border-radius: 4px 4px 0 0;
+
+    transition:
+      background-color 0.18s ease,
+      border-color 0.18s ease;
+
+    &:hover {
+      background-color: var(--background-color);
+      border-bottom-color: var(--accent-color);
+    }
+
+    h2 {
+      color: var(--text-color);
+
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.6;
+
+      overflow-wrap: anywhere;
+    }
+  }
+
+  // 記事本文
+  &__main {
+  }
+
+  // 編集操作エリア
+  &__edit-aside {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: 28px;
+    padding: 16px 0 0;
+
+    border-top: 1px solid var(--main-color);
+
+    // 「下書き保存」「下書き公開」
+    > button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 38px;
+      padding: 8px 16px;
+
+      border: 1px solid var(--main-color);
+      border-radius: 8px;
+
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.5;
+
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+}

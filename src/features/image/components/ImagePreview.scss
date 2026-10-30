@@ -1,0 +1,79 @@
+.image-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--shadow-color);
+  border-radius: 10px;
+  background-color: var(--surface-color);
+  box-sizing: border-box;
+
+  &__image {
+    display: block;
+    height: 100%;
+    max-height: 150px;
+    width: auto;
+
+    border-radius: 5px;
+
+    background-color: var(--shadow-color);
+    padding: 10px;
+  }
+
+  &__input-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      color: var(--text-color);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--shadow-color);
+      border-radius: 4px;
+      background-color: var(--surface-color);
+      color: var(--text-color);
+      font-size: 14px;
+      box-sizing: border-box;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+  }
+
+  &__delete-button {
+    align-self: flex-start;
+    padding: 10px 16px;
+    border: 1px solid var(--warn-color);
+    border-radius: 4px;
+    background-color: var(--surface-color);
+    color: var(--warn-color);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+
+    &:hover {
+      background-color: var(--warn-color);
+      color: var(--surface-color);
+    }
+
+    &:active {
+      background-color: var(--warn-color);
+      color: var(--surface-color);
+    }
+  }
+}

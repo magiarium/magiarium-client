@@ -1,0 +1,66 @@
+.standard-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 2.5px;
+  border-radius: 10%;
+
+  box-shadow: 0 3px 8px var(--shadow-color);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &--primary {
+    background-color: var(--main-color);
+    color: var(--surface-color);
+
+    &:hover {
+      filter: brightness(1.1);
+    }
+  }
+
+  &--secondary {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    border: 2.5px solid var(--main-color);
+
+    &:hover {
+      background-color: var(--main-color);
+      color: var(--surface-color);
+    }
+  }
+
+  &--disabled {
+    background-color: var(--shadow-color);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+  }
+
+  &:hover:not(.standard-button--disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px var(--shadow-color);
+  }
+
+  &:active:not(.standard-button--disabled) {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 1px 3px var(--shadow-color);
+    filter: brightness(0.95);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
