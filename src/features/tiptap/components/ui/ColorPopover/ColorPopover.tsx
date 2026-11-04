@@ -33,6 +33,7 @@ import { PopoverContent } from '@radix-ui/react-popover';
 import { Editor } from '@tiptap/react';
 import { forwardRef, useMemo, useRef, useState } from 'react';
 import { BsPalette } from 'react-icons/bs';
+import { ChevronDownIcon } from '../../icons/ChevronDownIcon';
 import {
   FontColor,
   pickFontColorByValue,
@@ -74,7 +75,12 @@ export const ColorPopoverButton = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       {...props}
     >
-      {children ?? <BsPalette className="tiptap-button-icon" />}
+      {children ?? (
+        <>
+          <BsPalette className="tiptap-button-icon" />
+          <ChevronDownIcon className="tiptap-button-dropdown-small" />
+        </>
+      )}
     </Button>
   )
 );
@@ -243,7 +249,7 @@ export const ColorPopover = ({
           aria-label={`${colorHighlightLabel} & ${fontColorLabel}`}
           tooltip={`${colorHighlightLabel} & ${fontColorLabel}`}
           {...props}
-        ></ColorPopoverButton>
+        />
       </PopoverTrigger>
       <PopoverContent aria-label={`${colorHighlightLabel} & ${fontColorLabel}`}>
         <FontColorPopoverContent

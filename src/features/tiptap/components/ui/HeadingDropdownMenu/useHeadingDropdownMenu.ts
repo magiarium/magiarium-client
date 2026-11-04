@@ -17,27 +17,31 @@ import {
 } from '@/features/tiptap/components/ui/HeadingButton';
 
 /**
- * Configuration for the heading dropdown menu functionality
+ * 見出しドロップダウン機能の設定
  */
 export interface UseHeadingDropdownMenuConfig {
   /**
-   * The Tiptap editor instance.
+   * Tiptapエディターのインスタンス(任意)
    */
   editor?: Editor | null;
+
   /**
-   * Available heading levels to show in the dropdown
+   * ドロップダウンに表示する見出しレベル
    * @default [1, 2, 3, 4, 5, 6]
    */
   levels?: Level[];
+
   /**
-   * Whether the dropdown should hide when headings are not available.
+   * 見出しが使用できない場合に、ボタンを非表示にするかどうか。
    * @default false
    */
   hideWhenUnavailable?: boolean;
 }
 
 /**
- * Gets the currently active heading level from the available levels
+ * 用可能な見出しレベルの中から、現在アクティブな見出しレベルを取得する処理
+ * @param editor Tiptapエディターのインスタンス
+ * @param levels 見出しレベル一覧
  */
 export function getActiveHeadingLevel(
   editor: Editor | null,
@@ -48,11 +52,11 @@ export function getActiveHeadingLevel(
 }
 
 /**
- * Custom hook that provides heading dropdown menu functionality for Tiptap editor
+ * Tiptapエディター向けのパラグラフ機能を提供するカスタムフック。
  *
  * @example
  * ```tsx
- * // Simple usage
+ * // シンプルな使用方法 - パラメーター不要
  * function MyHeadingDropdown() {
  *   const {
  *     isVisible,
@@ -66,12 +70,12 @@ export function getActiveHeadingLevel(
  *
  *   return (
  *     <DropdownMenu>
- *       // dropdown content
+ *       // ドロップダウンコンテンツ
  *     </DropdownMenu>
  *   )
  * }
  *
- * // Advanced usage with configuration
+ * // 設定を指定した高度な使用方法
  * function MyAdvancedHeadingDropdown() {
  *   const {
  *     isVisible,
@@ -82,7 +86,7 @@ export function getActiveHeadingLevel(
  *     hideWhenUnavailable: true,
  *   })
  *
- *   // component implementation
+ *   // 実際のコンポーネント
  * }
  * ```
  */

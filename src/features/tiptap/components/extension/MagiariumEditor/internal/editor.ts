@@ -1,3 +1,4 @@
+import { detectEditorType } from '@/features/tiptap/lib/detectEditorType';
 import FileHandler from '@tiptap/extension-file-handler';
 import Placeholder from '@tiptap/extension-placeholder';
 import {
@@ -70,12 +71,20 @@ export const EDITOR_EXTENSIONS: Extensions = [
   LineHeight,
   Placeholder.configure({
     showOnlyWhenEditable: false, // 編集可能な場合のみ表
-    placeholder: ({ node }) => {
-      switch (node.type.name) {
-        case 'paragraph':
-          return '本文を入力してください。';
+    includeChildren: true,
+    placeholder: ({ editor }) => {
+      const currentNode = detectEditorType(editor);
+      switch (currentNode) {
+        case 'codeBlock':
+          return 'コードブロックの内容を入力してください。';
+        case 'blockquote':
+          return '引用要素の本文を入力してください。';
+        case 'list':
+          return 'リストアイテムの内容を入力してください。';
         case 'heading':
           return '見出しを入力してください。';
+        case 'paragraph':
+          return '本文を入力してください。';
         default:
           return 'ノードブロックを選択してください';
       }

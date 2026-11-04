@@ -1,23 +1,42 @@
+import { forwardRef, useCallback } from 'react';
+// --- Hooks ---
+import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- Lib ---
+import { parseShortcutKeys } from '@/features/tiptap/lib/tiptapUtils';
+
+// --- Tiptap UI ---
+import {
+  PARAGRAPH_SHORTCUT_KEY,
+  useParagraph,
+  UseParagraphConfig,
+} from '@/features/tiptap/components/ui/ParagrahButton';
+
+// --- UI Primitives ---
 import { Badge } from '@/features/tiptap/components/ui-primitive/Badge';
 import {
   Button,
   ButtonProps,
 } from '@/features/tiptap/components/ui-primitive/Button';
-import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
-import { parseShortcutKeys } from '@/features/tiptap/lib/tiptapUtils';
-import { forwardRef, useCallback } from 'react';
-import {
-  PARAGRAPH_SHORTCUT_KEY,
-  useParagraph,
-  UseParagraphConfig,
-} from './useParagraphButton';
 
 interface ParagraphButtonProps
   extends Omit<ButtonProps, 'type'>, UseParagraphConfig {
+  /**
+   * アイコンの横に表示する補足テキスト(任意)
+   */
   text?: string;
 
+  /**
+   * ボタン内にショートカットキーを表示するかどうか(任意)
+   * @default false
+   */
   showShortcut?: boolean;
 }
+
+/**
+ * パラグラフ切り替えショートカットバッジ
+ * @param params.shortcutKeys ショートカットキー
+ */
 export const ParagraphShortcutBadge = ({
   shortcutKeys = PARAGRAPH_SHORTCUT_KEY,
 }: {
@@ -26,6 +45,11 @@ export const ParagraphShortcutBadge = ({
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
 };
 
+/**
+ * Tiptapエディター内のパラグラフを切り替えるためのボタンコンポーネント
+ *
+ * カスタムボタンを実装する場合は、代わりに `useParagraph` フックを使用してください。
+ */
 export const ParagraphButton = forwardRef<
   HTMLButtonElement,
   ParagraphButtonProps

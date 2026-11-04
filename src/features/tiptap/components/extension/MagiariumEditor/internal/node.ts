@@ -8,6 +8,10 @@ import Paragraph from '@tiptap/extension-paragraph';
 import { Table, TableKit } from '@tiptap/extension-table';
 import Youtube from '@tiptap/extension-youtube';
 import type { Extensions } from '@tiptap/react';
+import css from 'highlight.js/lib/languages/css';
+import js from 'highlight.js/lib/languages/javascript';
+import ts from 'highlight.js/lib/languages/typescript';
+import html from 'highlight.js/lib/languages/xml';
 
 // lowlight
 import {
@@ -22,6 +26,10 @@ import { LinkCard } from '../../LinkCard';
 import { Tips } from '../../Tips';
 
 const lowlight = createLowlight(all);
+lowlight.register('html', html);
+lowlight.register('css', css);
+lowlight.register('js', js);
+lowlight.register('ts', ts);
 
 const CustomTable = Table.extend({
   addAttributes() {

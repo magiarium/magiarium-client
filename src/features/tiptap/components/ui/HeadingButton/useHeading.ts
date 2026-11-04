@@ -30,28 +30,34 @@ import {
 export type Level = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
- * Configuration for the heading functionality
+ * 見出し機能の設定
  */
 export interface UseHeadingConfig {
   /**
-   * The Tiptap editor instance.
+   * Tiptapエディターのインスタンス(任意)
    */
   editor?: Editor | null;
+
   /**
-   * The heading level.
+   * 見出しレベル
    */
   level: Level;
+
   /**
-   * Whether the button should hide when heading is not available.
+   * 見出しが使用できない場合に、ボタンを非表示にするかどうか。
    * @default false
    */
   hideWhenUnavailable?: boolean;
+
   /**
-   * Callback function called after a successful heading toggle.
+   * 見出しの切り替えが正常に完了した後に呼び出されるコールバック関数
    */
   onToggled?: () => void;
 }
 
+/**
+ * 見出しアイコンの一覧
+ */
 export const headingIcons = {
   1: BsTypeH1,
   2: BsTypeH2,
@@ -60,7 +66,9 @@ export const headingIcons = {
   5: BsTypeH5,
   6: BsTypeH6,
 };
-
+/**
+ * 見出しアイコンショートカットキーの一覧
+ */
 export const HEADING_SHORTCUT_KEYS: Record<Level, string> = {
   1: 'ctrl+alt+1',
   2: 'ctrl+alt+2',
@@ -71,7 +79,11 @@ export const HEADING_SHORTCUT_KEYS: Record<Level, string> = {
 };
 
 /**
- * Checks if heading can be toggled in the current editor state
+ * 現在のエディター状態で、見出しの切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param level 見出しレベル(任意)
+ * @param turnInfo パラグラフへの変換時に追加の判定を行うかどうか
  */
 export function canToggle(
   editor: Editor | null,
@@ -91,7 +103,7 @@ export function canToggle(
       : editor.can().setNode('heading');
   }
 
-  // Ensure selection is in nodes we're allowed to convert
+  // 選択範囲が、変換を許可されているノード内であるかチェック
   if (
     !selectionWithinConvertibleTypes(editor, [
       'paragraph',
@@ -102,18 +114,22 @@ export function canToggle(
       'blockquote',
       'codeBlock',
     ])
-  )
+  ) {
     return false;
+  }
 
-  // Either we can set heading directly on the selection,
-  // or we can clear formatting/nodes to arrive at a heading.
+  // 選択範囲に対して見出しを直接設定できるか、
+  // または書式やノードをクリアすることで見出しに変換できるかをチェック
   return level
     ? editor.can().setNode('heading', { level }) || editor.can().clearNodes()
     : editor.can().setNode('heading') || editor.can().clearNodes();
 }
 
 /**
- * Checks if heading is currently active
+ * 見出し要素が現在アクティブ状態かどうかチェックする
+ *
+ * @param editor Tiptapエディターインスタンス
+ * @param level 見出しレベル(任意)
  */
 export function isHeadingActive(
   editor: Editor | null,
@@ -131,7 +147,11 @@ export function isHeadingActive(
 }
 
 /**
- * Toggles heading in the editor
+ * エディター内の見出しのオン・オフを切り替える処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param level 見出しレベル(任意)
+ * @return true:切り替え成功, false:切り替え失敗
  */
 export function toggleHeading(
   editor: Editor | null,
@@ -151,9 +171,8 @@ export function toggleHeading(
 
     const blocks = getSelectedBlockNodes(editor);
 
-    // In case a selection contains multiple blocks, we only allow
-    // toggling to node if there's exactly one block selected
-    // we also dont block the canToggle since it will fall back to the bottom logic
+    // 選択範囲に複数のブロックが含まれる場合、ノードへの切り替えを許可するのは、選択されているブロックが1つの場合のみとする。
+    // また後続のロジックにフォールバックするため、canToggle は制限しない。
     const isPossibleToTurnInto =
       selectionWithinConvertibleTypes(editor, [
         'paragraph',
@@ -165,7 +184,7 @@ export function toggleHeading(
         'codeBlock',
       ]) && blocks.length === 1;
 
-    // No selection, find the the cursor position
+    // 選択範囲がない場合は、カーソルの位置を取得する。
     if (
       (state.selection.empty || state.selection instanceof TextSelection) &&
       isPossibleToTurnInto
@@ -184,7 +203,7 @@ export function toggleHeading(
     const selection = state.selection;
     let chain = editor.chain().focus();
 
-    // Handle NodeSelection
+    // NodeSelection（ノード選択）の場合を処理
     if (selection instanceof NodeSelection) {
       const firstChild = selection.node.firstChild?.firstChild;
       const lastChild = selection.node.lastChild?.lastChild;
@@ -224,7 +243,11 @@ export function toggleHeading(
 }
 
 /**
- * Determines if the heading button should be shown
+ * 見出しボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable 見出しが使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
  */
 export function shouldShowButton(props: {
   editor: Editor | null;
@@ -254,11 +277,11 @@ export function shouldShowButton(props: {
 }
 
 /**
- * Custom hook that provides heading functionality for Tiptap editor
+ * Tiptapエディター向けのパラグラフ機能を提供するカスタムフック。
  *
  * @example
  * ```tsx
- * // Simple usage
+ * // シンプルな使用方法 - パラメーター不要
  * function MySimpleHeadingButton() {
  *   const { isVisible, isActive, handleToggle, Icon } = useHeading({ level: 1 })
  *
@@ -275,13 +298,13 @@ export function shouldShowButton(props: {
  *   )
  * }
  *
- * // Advanced usage with configuration
+ * // 設定を指定した高度な使用方法
  * function MyAdvancedHeadingButton() {
  *   const { isVisible, isActive, handleToggle, label, Icon } = useHeading({
  *     level: 2,
  *     editor: myEditor,
  *     hideWhenUnavailable: true,
- *     onToggled: (isActive) => console.log('Heading toggled:', isActive)
+ *     onToggled: (isActive) => console.log('見出しの切り替え:', isActive)
  *   })
  *
  *   if (!isVisible) return null
@@ -293,7 +316,7 @@ export function shouldShowButton(props: {
  *       aria-pressed={isActive}
  *     >
  *       <Icon />
- *       Toggle Heading 2
+ *       見出しを切り替える
  *     </MyButton>
  *   )
  * }

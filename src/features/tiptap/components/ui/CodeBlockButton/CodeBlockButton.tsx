@@ -21,16 +21,19 @@ import { Button } from '@/features/tiptap/components/ui-primitive/Button';
 export interface CodeBlockButtonProps
   extends Omit<ButtonProps, 'type'>, UseCodeBlockConfig {
   /**
-   * Optional text to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   text?: string;
   /**
-   * Optional show shortcut keys in the button.
+   * ボタン内にショートカットキーを表示するかどうか(任意)
    * @default false
    */
   showShortcut?: boolean;
 }
-
+/**
+ * コードブロック切り替えショートカットバッジ
+ * @param params.shortcutKeys ショートカットキー
+ */
 export function CodeBlockShortcutBadge({
   shortcutKeys = CODE_BLOCK_SHORTCUT_KEY,
 }: {
@@ -40,9 +43,9 @@ export function CodeBlockShortcutBadge({
 }
 
 /**
- * Button component for toggling code block in a Tiptap editor.
+ * Tiptapエディター内のコードブロックを切り替えるためのボタンコンポーネント
  *
- * For custom button implementations, use the `useCodeBlock` hook instead.
+ * カスタムボタンを実装する場合は、代わりに `useCodeBlock` フックを使用してください。
  */
 export const CodeBlockButton = forwardRef<
   HTMLButtonElement,

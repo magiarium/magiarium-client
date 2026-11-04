@@ -1,4 +1,13 @@
+'use client';
+import { NodeSelection, TextSelection } from '@tiptap/pm/state';
+import { Editor } from '@tiptap/react';
+import { useCallback, useEffect, useState } from 'react';
+
+// --- Hooks ---
+import { useCurrentNode } from '@/features/tiptap/hooks/useCurrentNode';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- Lib ---
 import {
   findNodePosition,
   getSelectedBlockNodes,
@@ -7,22 +16,41 @@ import {
   isValidPosition,
   selectionWithinConvertibleTypes,
 } from '@/features/tiptap/lib/tiptapUtils';
-import { NodeSelection, TextSelection } from '@tiptap/pm/state';
-import { Editor } from '@tiptap/react';
-import { useCallback, useEffect, useState } from 'react';
+
+// --- Icons ---
 import { BsParagraph } from 'react-icons/bs';
 
+// パラグラフ切り替え用ショートカットキー
 export const PARAGRAPH_SHORTCUT_KEY = 'mod+shift+p';
 
+/**
+ * パラグラフ機能の設定
+ */
 export interface UseParagraphConfig {
+  /**
+   * Tiptapエディターのインスタンス(任意)
+   */
   editor?: Editor | null;
 
+  /**
+   * パラグラフが使用できない場合に、ボタンを非表示にするかどうか。
+   * @default false
+   */
   hideWhenUnavailable?: boolean;
 
+  /**
+   * パラグラフの切り替えが正常に完了した後に呼び出されるコールバック関数
+   */
   onToggled?: () => void;
 }
 
-export const canToggleParagraph = (
+/**
+ * 現在のエディター状態で、パラグラフの切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param turnInfo パラグラフへの変換時に追加の判定を行うかどうか
+ */
+export const canToggle = (
   editor: Editor | null,
   turnInfo: boolean = true
 ): boolean => {
@@ -41,10 +69,11 @@ export const canToggleParagraph = (
     return editor.can().toggleWrap('paragraph');
   }
 
+  // 選択範囲が、変換を許可されているノード内であるかチェック
   if (
     !selectionWithinConvertibleTypes(editor, [
       'paragraph',
-      'heaeding',
+      'heading',
       'bulletList',
       'orderedList',
       'taskList',
@@ -55,35 +84,20 @@ export const canToggleParagraph = (
     return false;
   }
 
+  // 選択範囲に対してパラグラフを直接設定できるか、
+  // または書式やノードをクリアすることでパラグラフに変換できるかをチェック
   return editor.can().toggleWrap('paragraph') || editor.can().clearNodes();
 };
 
-export const shouldShowButton = (props: {
-  editor: Editor | null;
-  hideWhenUnavailable: boolean;
-}) => {
-  const { editor, hideWhenUnavailable } = props;
-
-  if (!editor) return false;
-
-  if (!hideWhenUnavailable) {
-    return true;
-  }
-
-  if (!editor.isEditable) return false;
-
-  if (!isNodeInSchema('paragraph', editor)) return false;
-
-  if (!editor.isActive('code')) {
-    return canToggleParagraph(editor);
-  }
-
-  return true;
-};
-
+/**
+ * エディター内のパラグラフのオン・オフを切り替える処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @return true:切り替え成功, false:切り替え失敗
+ */
 export const toggleParagraph = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
-  if (!canToggleParagraph(editor)) return false;
+  if (!canToggle(editor)) return false;
 
   try {
     const view = editor.view;
@@ -92,6 +106,8 @@ export const toggleParagraph = (editor: Editor | null): boolean => {
 
     const blocks = getSelectedBlockNodes(editor);
 
+    // 選択範囲に複数のブロックが含まれる場合、ノードへの切り替えを許可するのは、選択されているブロックが1つの場合のみとする。
+    // また後続のロジックにフォールバックするため、canToggle は制限しない。
     const isPossibleToTurnInto =
       selectionWithinConvertibleTypes(editor, [
         'paragraph',
@@ -102,6 +118,8 @@ export const toggleParagraph = (editor: Editor | null): boolean => {
         'blockquote',
         'codeBlock',
       ]) && blocks.length === 1;
+
+    // 選択範囲がない場合は、カーソルの位置を取得する。
     if (
       (state.selection.empty || state.selection instanceof TextSelection) &&
       isPossibleToTurnInto
@@ -118,9 +136,10 @@ export const toggleParagraph = (editor: Editor | null): boolean => {
     }
 
     const selection = state.selection;
+
     let chain = editor.chain().focus();
 
-    // Handle NodeSelection
+    // NodeSelection（ノード選択）の場合を処理
     if (selection instanceof NodeSelection) {
       const firstChild = selection.node.firstChild?.firstChild;
       const lastChild = selection.node.lastChild?.lastChild;
@@ -153,6 +172,41 @@ export const toggleParagraph = (editor: Editor | null): boolean => {
   }
 };
 
+/**
+ * パラグラフボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable パラグラフが使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
+ */
+export const shouldShowButton = (props: {
+  editor: Editor | null;
+  hideWhenUnavailable: boolean;
+}) => {
+  const { editor, hideWhenUnavailable } = props;
+
+  if (!editor) return false;
+
+  if (!hideWhenUnavailable) {
+    return true;
+  }
+
+  if (!editor.isEditable) return false;
+
+  if (!isNodeInSchema('paragraph', editor)) return false;
+
+  if (!editor.isActive('code')) {
+    return canToggle(editor);
+  }
+
+  return true;
+};
+
+/**
+ * Tiptapエディター向けのパラグラフ機能を提供するカスタムフック。
+ *
+ * @param config パラグラフ機能の設定
+ */
 export const useParagraph = (config?: UseParagraphConfig) => {
   const {
     editor: providedEditor,
@@ -162,8 +216,8 @@ export const useParagraph = (config?: UseParagraphConfig) => {
 
   const { editor } = useTiptapEditor(providedEditor);
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const canToggle = canToggleParagraph(editor);
-  const isActive = editor?.isActive('blockquote') || false;
+  const canToggleState = canToggle(editor);
+  const isActive = editor !== null && useCurrentNode(editor) === 'paragraph'; // isActiveでチェックすると引用ブロックなどもtrueになるため厳密にチェック
 
   useEffect(() => {
     if (!editor) return;
@@ -197,7 +251,7 @@ export const useParagraph = (config?: UseParagraphConfig) => {
     isVisible,
     isActive,
     handleToggle,
-    canToggle,
+    canToggle: canToggleState,
     label: 'Paragraph',
     shortcutKeys: PARAGRAPH_SHORTCUT_KEY,
     Icon: BsParagraph,

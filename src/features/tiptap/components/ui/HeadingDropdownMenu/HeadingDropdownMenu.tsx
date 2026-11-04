@@ -27,19 +27,25 @@ import {
 export interface HeadingDropdownMenuProps
   extends Omit<ButtonProps, 'type'>, UseHeadingDropdownMenuConfig {
   /**
-   * Callback for when the dropdown opens or closes
+   * ドロップダウン開閉時のコールバック関数(任意)
    */
   onOpenChange?: (isOpen: boolean) => void;
+
   /**
-   * Whether the dropdown should use a modal
+   * ドロップダウンにモーダルを使用するか否か(任意)
+   * @default false
    */
   modal?: boolean;
-}
 
+  /**
+   * アイコンの横に表示する補足テキスト(任意)
+   */
+  text?: string;
+}
 /**
- * Dropdown menu component for selecting heading levels in a Tiptap editor.
+ * Tiptapエディターで見出しレベルを選択するためのドロップダウンメニューコンポーネント。
  *
- * For custom dropdown implementations, use the `useHeadingDropdownMenu` hook instead.
+ * カスタムのドロップダウンメニューを実装する場合、代わりに `useHeadingDropdownMenu` フックを使用してください。
  */
 export const HeadingDropdownMenu = forwardRef<
   HTMLButtonElement,
@@ -48,6 +54,7 @@ export const HeadingDropdownMenu = forwardRef<
   (
     {
       editor: providedEditor,
+      text,
       levels = [1, 2, 3, 4, 5, 6],
       hideWhenUnavailable = false,
       onOpenChange,
@@ -100,6 +107,7 @@ export const HeadingDropdownMenu = forwardRef<
             ) : (
               <>
                 <Icon className="tiptap-button-icon" />
+                {text && <span className="tiptap-button-text">{text}</span>}
                 <ChevronDownIcon className="tiptap-button-dropdown-small" />
               </>
             )}

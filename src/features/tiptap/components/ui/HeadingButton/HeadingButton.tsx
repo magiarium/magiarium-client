@@ -22,16 +22,20 @@ import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 export interface HeadingButtonProps
   extends Omit<ButtonProps, 'type'>, UseHeadingConfig {
   /**
-   * Optional text to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   text?: string;
+
   /**
-   * Optional show shortcut keys in the button.
+   * ボタン内にショートカットキーを表示するかどうか(任意)
    * @default false
    */
   showShortcut?: boolean;
 }
-
+/**
+ * 見出し切り替えショートカットバッジ
+ * @param params.shortcutKeys ショートカットキー
+ */
 export function HeadingShortcutBadge({
   level,
   shortcutKeys = HEADING_SHORTCUT_KEYS[level],
@@ -43,9 +47,9 @@ export function HeadingShortcutBadge({
 }
 
 /**
- * Button component for toggling heading in a Tiptap editor.
+ * Tiptapエディター内のパラグラフを切り替えるためのボタンコンポーネント
  *
- * For custom button implementations, use the `useHeading` hook instead.
+ * カスタムボタンを実装する場合は、代わりに `useHeading` フックを使用してください。
  */
 export const HeadingButton = forwardRef<HTMLButtonElement, HeadingButtonProps>(
   (

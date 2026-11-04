@@ -48,11 +48,14 @@ export interface ListDropdownMenuProps extends Omit<ButtonProps, 'type'> {
    * Whether the dropdown should use a modal
    */
   modal?: boolean;
+
+  text?: string;
 }
 
 function ListDropdownMenuImpl(
   {
     editor: providedEditor,
+    text,
     types = ['bulletList', 'orderedList', 'taskList'],
     hideWhenUnavailable = false,
     onOpenChange,
@@ -103,6 +106,7 @@ function ListDropdownMenuImpl(
           {children ?? (
             <>
               <Icon className="tiptap-button-icon" />
+              {text && <span className="tiptap-button-text">{text}</span>}
               <ChevronDownIcon className="tiptap-button-dropdown-small" />
             </>
           )}

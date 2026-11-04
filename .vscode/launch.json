@@ -1,6 +1,21 @@
 {
   "configurations": [
     {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "magiarium-client:src/features/tiptap/components/ui/CodeBlockButton/useCodeBlock.toggleCodeBlock (nodejs14.x)",
+      "invokeTarget": {
+        "target": "code",
+        "projectRoot": "${workspaceFolder}/",
+        "lambdaHandler": "src/features/tiptap/components/ui/CodeBlockButton/useCodeBlock.toggleCodeBlock"
+      },
+      "lambda": {
+        "runtime": "nodejs14.x",
+        "payload": {},
+        "environmentVariables": {}
+      }
+    },
+    {
       "type": "node-terminal",
       "name": "ローカル起動",
       "request": "launch",

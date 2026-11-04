@@ -1,91 +1,144 @@
-import { ChevronDownIcon } from '@/features/tiptap/components/icons/ChevronDownIcon';
-import { Button } from '@/features/tiptap/components/ui-primitive/Button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/features/tiptap/components/ui-primitive/DropdownMenu';
 import { CharacterSpeechPopover } from '@/features/tiptap/components/ui/CharacterSpeechPopover';
 import { ImageUploadButton } from '@/features/tiptap/components/ui/ImageUploadButton';
 import { Editor } from '@tiptap/react';
-import { BsPuzzleFill } from 'react-icons/bs';
+import {
+  BsCardText,
+  BsChatFill,
+  BsInfoCircleFill,
+  BsPuzzleFill,
+  BsTable,
+  BsYoutube,
+} from 'react-icons/bs';
+import { ImagePlusIcon } from '../../icons/ImagePlusIcon';
 import { LinkCardPopover } from '../LinkCardButton/LinkCardButton';
 import { TablePopover } from '../TablePopover';
 import { TipsButton } from '../TipsButton/TipsButton';
 import { YoutubePopover } from '../YoutubePopover';
+import { NodeDropdownMenu } from './NodeDropdownMenu';
+
+const CUSTOM_NODE_SELECTOR_ITEMS = [
+  {
+    key: 'undefined',
+    label: 'カスタム要素',
+    renderIcon: ({ className }: { className: string }) => {
+      return <BsPuzzleFill className={className} />;
+    },
+  },
+  {
+    key: 'characterSpeech',
+    label: 'キャラクタースピーチ',
+    renderIcon: ({ className }: { className: string }) => {
+      return <BsChatFill className={className} />;
+    },
+    renderItem: (
+      editor: Editor,
+      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
+    ) => (
+      <CharacterSpeechPopover
+        editor={editor}
+        text="キャラクタースピーチ"
+        onOpenChange={(isOpen) => {
+          if (setIsOpen) {
+            setIsOpen(isOpen);
+          }
+        }}
+      />
+    ),
+    asChild: true,
+  },
+  {
+    key: 'tips',
+    label: 'Tips',
+    renderIcon: ({ className }: { className: string }) => {
+      return <BsInfoCircleFill className={className} />;
+    },
+    renderItem: (editor: Editor) => <TipsButton editor={editor} text="Tips" />,
+    asChild: true,
+  },
+  {
+    key: 'linkCard',
+    label: 'リンクカード',
+    renderIcon: ({ className }: { className: string }) => {
+      return <BsCardText className={className} />;
+    },
+    renderItem: (
+      editor: Editor,
+      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
+    ) => (
+      <LinkCardPopover
+        editor={editor}
+        text="リンクカード"
+        onOpenChange={(isOpen) => {
+          if (setIsOpen) {
+            setIsOpen(isOpen);
+          }
+        }}
+      />
+    ),
+    asChild: true,
+  },
+  {
+    key: 'image',
+    label: '画像',
+    renderIcon: ({ className }: { className: string }) => {
+      return <ImagePlusIcon className={className} />;
+    },
+    renderItem: (editor: Editor) => (
+      <ImageUploadButton editor={editor} text="画像" />
+    ),
+    asChild: true,
+  },
+  {
+    key: 'table',
+    label: 'テーブル',
+    renderIcon: ({ className }: { className: string }) => {
+      return <BsTable className={className} />;
+    },
+    renderItem: (
+      editor: Editor,
+      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
+    ) => (
+      <TablePopover
+        editor={editor}
+        text="テーブル"
+        onOpenChange={(isOpen) => {
+          if (setIsOpen) {
+            setIsOpen(isOpen);
+          }
+        }}
+      />
+    ),
+    asChild: true,
+  },
+  {
+    key: 'youtube',
+    label: 'Youtube',
+    renderIcon: ({ className }: { className: string }) => {
+      return <BsYoutube className={className} />;
+    },
+    renderItem: (
+      editor: Editor,
+      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
+    ) => (
+      <YoutubePopover
+        editor={editor}
+        text="Youtube"
+        onOpenChange={(isOpen) => {
+          if (setIsOpen) {
+            setIsOpen(isOpen);
+          }
+        }}
+      />
+    ),
+    asChild: true,
+  },
+];
 
 export const NodeDropdownMenuCustom = ({ editor }: { editor: Editor }) => {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          role="button"
-          tabIndex={-1}
-          aria-label="standard-block"
-          tooltip="カスタム要素"
-        >
-          <BsPuzzleFill className="tiptap-button-icon" />
-          カスタム要素
-          <ChevronDownIcon className="tiptap-button-dropdown-small" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        side="bottom"
-        align="start"
-        className="magiarium-editor__dropdown-menu"
-      >
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <CharacterSpeechPopover editor={editor} text="キャラクタースピーチ" />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <TipsButton editor={editor} text="Tips" />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <LinkCardPopover editor={editor} text="リンクカード" />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <ImageUploadButton editor={editor} text="画像" />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <TablePopover editor={editor} text="テーブル" />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <YoutubePopover editor={editor} text="Youtube" />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <NodeDropdownMenu
+      editor={editor}
+      selectorItems={CUSTOM_NODE_SELECTOR_ITEMS}
+    />
   );
 };
