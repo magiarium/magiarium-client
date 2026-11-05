@@ -19,6 +19,7 @@ import {
 
 // --- Icons ---
 import { CodeBlockIcon } from '@/features/tiptap/components/icons/CodeBlockIcon';
+import { useCurrentNode } from '@/features/tiptap/hooks/useCurrentNode';
 
 // コードブロック切り替え用ショートカットキー
 export const CODE_BLOCK_SHORTCUT_KEY = 'mod+alt+c';
@@ -50,10 +51,10 @@ export interface UseCodeBlockConfig {
  * @param editor Tiptapエディターのインスタンス
  * @param turnInfo コードブロックへの変換時に追加の判定を行うかどうか
  */
-export function canToggle(
+export const canToggle = (
   editor: Editor | null,
   turnInto: boolean = true
-): boolean {
+): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (
     !isNodeInSchema('codeBlock', editor) ||
@@ -85,14 +86,14 @@ export function canToggle(
     editor.can().toggleNode('codeBlock', 'paragraph') ||
     editor.can().clearNodes()
   );
-}
+};
 
 /**
  * エディター内のコードブロックのオン・オフを切り替える処理
  * @param editor Tiptapエディターのインスタンス
  * @return true:切り替え成功, false:切り替え失敗
  */
-export function toggleCodeBlock(editor: Editor | null): boolean {
+export const toggleCodeBlock = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (!canToggle(editor)) return false;
 
@@ -169,7 +170,7 @@ export function toggleCodeBlock(editor: Editor | null): boolean {
   } catch {
     return false;
   }
-}
+};
 
 /**
  * コードブロックボタンを表示するかどうかを判定する処理
@@ -178,10 +179,10 @@ export function toggleCodeBlock(editor: Editor | null): boolean {
  * @param props.hideWhenUnavailable コードブロックが使用できない場合に、ボタンを非表示にするかどうか。
  * @returns false:表示する, true:非表示
  */
-export function shouldShowButton(props: {
+export const shouldShowButton = (props: {
   editor: Editor | null;
   hideWhenUnavailable: boolean;
-}): boolean {
+}): boolean => {
   const { editor, hideWhenUnavailable } = props;
 
   if (!editor) return false;
@@ -199,7 +200,7 @@ export function shouldShowButton(props: {
   }
 
   return true;
-}
+};
 
 /**
  * Tiptapエディター向けのコードブロック機能を提供するカスタムフック。
@@ -245,7 +246,7 @@ export function shouldShowButton(props: {
  * }
  * ```
  */
-export function useCodeBlock(config?: UseCodeBlockConfig) {
+export const useCodeBlock = (config?: UseCodeBlockConfig) => {
   const {
     editor: providedEditor,
     hideWhenUnavailable = false,
@@ -255,7 +256,7 @@ export function useCodeBlock(config?: UseCodeBlockConfig) {
   const { editor } = useTiptapEditor(providedEditor);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const canToggleState = canToggle(editor);
-  const isActive = editor?.isActive('codeBlock') || false;
+  const isActive = useCurrentNode(editor) === 'codeBlock';
 
   useEffect(() => {
     if (!editor) return;
@@ -292,4 +293,4 @@ export function useCodeBlock(config?: UseCodeBlockConfig) {
     shortcutKeys: CODE_BLOCK_SHORTCUT_KEY,
     Icon: CodeBlockIcon,
   };
-}
+};

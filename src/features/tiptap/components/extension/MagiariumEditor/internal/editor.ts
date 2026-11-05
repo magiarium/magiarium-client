@@ -1,4 +1,4 @@
-import { detectEditorType } from '@/features/tiptap/lib/detectEditorType';
+import { detectNodeTypeFromEditor } from '@/features/tiptap/lib/detectNodeTypeFromEditor';
 import FileHandler from '@tiptap/extension-file-handler';
 import Placeholder from '@tiptap/extension-placeholder';
 import {
@@ -73,7 +73,7 @@ export const EDITOR_EXTENSIONS: Extensions = [
     showOnlyWhenEditable: false, // 編集可能な場合のみ表
     includeChildren: true,
     placeholder: ({ editor }) => {
-      const currentNode = detectEditorType(editor);
+      const currentNode = detectNodeTypeFromEditor(editor);
       switch (currentNode) {
         case 'codeBlock':
           return 'コードブロックの内容を入力してください。';

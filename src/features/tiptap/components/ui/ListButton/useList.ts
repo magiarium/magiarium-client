@@ -20,43 +20,56 @@ import {
   selectionWithinConvertibleTypes,
 } from '@/features/tiptap/lib/tiptapUtils';
 
+// リスト切り替え用ショートカットキー
 export type ListType = 'bulletList' | 'orderedList' | 'taskList';
 
 /**
- * Configuration for the list functionality
+ * リスト機能の設定
  */
 export interface UseListConfig {
   /**
-   * The Tiptap editor instance.
+   * Tiptapエディターのインスタンス(任意)
    */
   editor?: Editor | null;
+
   /**
-   * The type of list to toggle.
+   * ListType
    */
   type: ListType;
+
   /**
-   * Whether the button should hide when list is not available.
+   * リストが使用できない場合に、ボタンを非表示にするかどうか。
    * @default false
    */
   hideWhenUnavailable?: boolean;
+
   /**
-   * Callback function called after a successful toggle.
+   * リストの切り替えが正常に完了した後に呼び出されるコールバック関数
    */
   onToggled?: () => void;
 }
 
+/**
+ * リストアイコン一覧
+ */
 export const listIcons = {
   bulletList: ListIcon,
   orderedList: ListOrderedIcon,
   taskList: ListTodoIcon,
 };
 
+/**
+ * リストラベル一覧
+ */
 export const listLabels: Record<ListType, string> = {
-  bulletList: 'Bullet List',
-  orderedList: 'Ordered List',
-  taskList: 'Task List',
+  bulletList: '箇条書きリスト',
+  orderedList: '順序付きリスト',
+  taskList: 'チェック付きリスト',
 };
 
+/**
+ * リストショートカットキー一覧
+ */
 export const LIST_SHORTCUT_KEYS: Record<ListType, string> = {
   bulletList: 'mod+shift+8',
   orderedList: 'mod+shift+7',
@@ -64,13 +77,18 @@ export const LIST_SHORTCUT_KEYS: Record<ListType, string> = {
 };
 
 /**
- * Checks if a list can be toggled in the current editor state
+ * 現在のエディター状態で、リストの切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param type ListType
+ * @param turnInfo リストへの変換時に追加の判定を行うかどうか
+ * @returns true:可能、false:不可
  */
-export function canToggleList(
+export const canToggleList = (
   editor: Editor | null,
   type: ListType,
   turnInto: boolean = true
-): boolean {
+): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (!isNodeInSchema(type, editor) || isNodeTypeSelected(editor, ['image']))
     return false;
@@ -88,7 +106,7 @@ export function canToggleList(
     }
   }
 
-  // Ensure selection is in nodes we're allowed to convert
+  // 選択範囲が、変換を許可されているノード内であるかチェック
   if (
     !selectionWithinConvertibleTypes(editor, [
       'paragraph',
@@ -102,8 +120,7 @@ export function canToggleList(
   )
     return false;
 
-  // Either we can set list directly on the selection,
-  // or we can clear formatting/nodes to arrive at a list.
+  // 選択範囲に直接リストを設定する/あるいは書式やノードをクリアする
   switch (type) {
     case 'bulletList':
       return editor.can().toggleBulletList() || editor.can().clearNodes();
@@ -117,12 +134,19 @@ export function canToggleList(
     default:
       return false;
   }
-}
+};
 
 /**
- * Checks if list is currently active
+ * 現在のノードでリストが有効になっているかチェックする
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param type ListType
+ * @return true:有効、flase：無効
  */
-export function isListActive(editor: Editor | null, type: ListType): boolean {
+export const isListActive = (
+  editor: Editor | null,
+  type: ListType
+): boolean => {
   if (!editor || !editor.isEditable) return false;
 
   switch (type) {
@@ -135,12 +159,16 @@ export function isListActive(editor: Editor | null, type: ListType): boolean {
     default:
       return false;
   }
-}
+};
 
 /**
- * Toggles list in the editor
+ * エディター内のリストクのオン・オフを切り替える処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param type ListType
+ * @return true:切り替え成功, false:切り替え失敗
  */
-export function toggleList(editor: Editor | null, type: ListType): boolean {
+export const toggleList = (editor: Editor | null, type: ListType): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (!canToggleList(editor, type)) return false;
 
@@ -151,9 +179,8 @@ export function toggleList(editor: Editor | null, type: ListType): boolean {
 
     const blocks = getSelectedBlockNodes(editor);
 
-    // In case a selection contains multiple blocks, we only allow
-    // toggling to node if there's exactly one block selected
-    // we also dont block the canToggle since it will fall back to the bottom logic
+    // 選択範囲に複数のブロックが含まれる場合、ノードへの切り替えを許可するのは、選択されているブロックが1つの場合のみとする。
+    // また後続のロジックにフォールバックするため、canToggle は制限しない。
     const isPossibleToTurnInto =
       selectionWithinConvertibleTypes(editor, [
         'paragraph',
@@ -165,7 +192,7 @@ export function toggleList(editor: Editor | null, type: ListType): boolean {
         'codeBlock',
       ]) && blocks.length === 1;
 
-    // No selection, find the the cursor position
+    // 選択範囲がない場合は、カーソルの位置を取得する。
     if (
       (state.selection.empty || state.selection instanceof TextSelection) &&
       isPossibleToTurnInto
@@ -185,7 +212,7 @@ export function toggleList(editor: Editor | null, type: ListType): boolean {
 
     let chain = editor.chain().focus();
 
-    // Handle NodeSelection
+    // NodeSelection（ノード選択）の場合を処理
     if (selection instanceof NodeSelection) {
       const firstChild = selection.node.firstChild?.firstChild;
       const lastChild = selection.node.lastChild?.lastChild;
@@ -207,7 +234,7 @@ export function toggleList(editor: Editor | null, type: ListType): boolean {
     }
 
     if (editor.isActive(type)) {
-      // Unwrap list
+      // リスト構造の解除
       chain
         .liftListItem('listItem')
         .lift('bulletList')
@@ -215,7 +242,7 @@ export function toggleList(editor: Editor | null, type: ListType): boolean {
         .lift('taskList')
         .run();
     } else {
-      // Wrap in specific list type
+      // 種別ごとのリストを適用
       const toggleMap: Record<ListType, () => typeof chain> = {
         bulletList: () => chain.toggleBulletList(),
         orderedList: () => chain.toggleOrderedList(),
@@ -234,16 +261,21 @@ export function toggleList(editor: Editor | null, type: ListType): boolean {
   } catch {
     return false;
   }
-}
+};
 
 /**
- * Determines if the list button should be shown
+ * リストボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param prosp.type ListType
+ * @param props.hideWhenUnavailable リストボタンが使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
  */
-export function shouldShowButton(props: {
+export const shouldShowButton = (props: {
   editor: Editor | null;
   type: ListType;
   hideWhenUnavailable: boolean;
-}): boolean {
+}): boolean => {
   const { editor, type, hideWhenUnavailable } = props;
 
   if (!editor) return false;
@@ -261,14 +293,15 @@ export function shouldShowButton(props: {
   }
 
   return true;
-}
+};
 
 /**
- * Custom hook that provides list functionality for Tiptap editor
+ * Tiptapエディター向けのリスト機能を提供するカスタムフック。
+ * @param config リスト機能の設定
  *
  * @example
  * ```tsx
- * // Simple usage
+ * // シンプルな使用方法 - パラメーター不要
  * function MySimpleListButton() {
  *   const { isVisible, handleToggle, isActive } = useList({ type: "bulletList" })
  *
@@ -277,13 +310,13 @@ export function shouldShowButton(props: {
  *   return <button onClick={handleToggle}>Bullet List</button>
  * }
  *
- * // Advanced usage with configuration
+ * // 設定を指定した高度な使用方法
  * function MyAdvancedListButton() {
  *   const { isVisible, handleToggle, label, isActive } = useList({
  *     type: "orderedList",
  *     editor: myEditor,
  *     hideWhenUnavailable: true,
- *     onToggled: () => console.log('List toggled!')
+ *     onToggled: () => console.log('リストの切り替え')
  *   })
  *
  *   if (!isVisible) return null
@@ -294,13 +327,13 @@ export function shouldShowButton(props: {
  *       aria-label={label}
  *       aria-pressed={isActive}
  *     >
- *       Toggle List
+ *       リストの切り替え
  *     </MyButton>
  *   )
  * }
  * ```
  */
-export function useList(config: UseListConfig) {
+export const useList = (config: UseListConfig) => {
   const {
     editor: providedEditor,
     type,
@@ -348,4 +381,4 @@ export function useList(config: UseListConfig) {
     shortcutKeys: LIST_SHORTCUT_KEYS[type],
     Icon: listIcons[type],
   };
-}
+};

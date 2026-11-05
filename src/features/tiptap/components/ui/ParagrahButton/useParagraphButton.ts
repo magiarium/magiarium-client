@@ -160,8 +160,8 @@ export const toggleParagraph = (editor: Editor | null): boolean => {
         .clearNodes();
     }
     const toggle = editor.isActive('paragraph')
-      ? chain.lift('paragraph')
-      : chain.wrapIn('paragraph');
+      ? chain.unsetAllMarks()
+      : chain.setParagraph();
 
     toggle.run();
     editor.chain().focus().selectTextblockEnd().run();

@@ -1,59 +1,77 @@
-import type { Editor } from "@tiptap/react"
-import { useEffect, useState } from "react"
+import type { Editor } from '@tiptap/react';
+import { useEffect, useState } from 'react';
 
-type Orientation = "horizontal" | "vertical" | "both"
+// 向き
+type Orientation = 'horizontal' | 'vertical' | 'both';
 
 interface MenuNavigationOptions<T> {
   /**
-   * The Tiptap editor instance, if using with a Tiptap editor.
+   * Tiptapエディターのインスタンス（任意）
    */
-  editor?: Editor | null
+  editor?: Editor | null;
+
   /**
-   * Reference to the container element for handling keyboard events.
+   * キーボードイベントを処理するコンテナ要素への参照。
    */
-  containerRef?: React.RefObject<HTMLElement | null>
+  containerRef?: React.RefObject<HTMLElement | null>;
+
   /**
-   * Search query that affects the selected item.
+   * 選択対象の項目に影響する検索クエリ。
    */
-  query?: string
+  query?: string;
+
   /**
-   * Array of items to navigate through.
+   * ナビゲーション対象となる項目の配列。
    */
-  items: T[]
+  items: T[];
+
   /**
-   * Callback fired when an item is selected.
+   * 項目が選択されたときに呼び出されるコールバック関数。
+   *
+   * @param item - 選択された項目
    */
-  onSelect?: (item: T) => void
+  onSelect?: (item: T) => void;
+
   /**
-   * Callback fired when the menu should close.
+   * メニューを閉じる際に呼び出されるコールバック関数。
    */
-  onClose?: () => void
+  onClose?: () => void;
+
   /**
-   * The navigation orientation of the menu.
+   * メニューのナビゲーション方向。
+   *
    * @default "vertical"
    */
-  orientation?: Orientation
+  orientation?: Orientation;
+
   /**
-   * Whether to automatically select the first item when the menu opens.
+   * メニューを開いたときに、最初の項目を自動的に選択するかどうか。
+   *
    * @default true
    */
-  autoSelectFirstItem?: boolean
+  autoSelectFirstItem?: boolean;
+
   /**
-   * Whether Tab/Shift+Tab should loop through the items.
-   * Disable this for ARIA toolbars, where Tab must leave the toolbar.
+   * TabキーおよびShift+Tabキーによる項目間の循環移動を有効にするかどうか。
+   *
+   * ARIAツールバーでは、Tabキーでツールバーの外へ移動する必要があるため、
+   * このオプションを無効にする。
+   *
    * @default true
    */
-  loopOnTab?: boolean
+  loopOnTab?: boolean;
 }
 
 /**
- * Hook that implements keyboard navigation for dropdown menus and command palettes.
+ * ドロップダウンメニューやコマンドパレットのキーボード操作によるナビゲーションを実装するフック。
  *
- * Handles arrow keys, tab, home/end, enter for selection, and escape to close.
- * Works with both Tiptap editors and regular DOM elements.
+ * 矢印キー、Tabキー、Homeキー、Endキー、Enterキーによる項目の選択、
+ * Escapeキーによるメニューの閉じる操作を処理する。
  *
- * @param options - Configuration options for the menu navigation
- * @returns Object containing the selected index and a setter function
+ * Tiptapエディターと通常のDOM要素の両方に対応する。
+ *
+ * @param options - メニューのキーボードナビゲーションに関する設定オプション
+ * @returns 選択中のインデックスと、その値を更新するためのセッター関数を含むオブジェクト
  */
 export function useMenuNavigation<T>({
   editor,
@@ -62,124 +80,124 @@ export function useMenuNavigation<T>({
   items,
   onSelect,
   onClose,
-  orientation = "vertical",
+  orientation = 'vertical',
   autoSelectFirstItem = true,
   loopOnTab = true,
 }: MenuNavigationOptions<T>) {
   const [selectedIndex, setSelectedIndex] = useState<number>(
     autoSelectFirstItem ? 0 : -1
-  )
+  );
 
   useEffect(() => {
     const handleKeyboardNavigation = (event: KeyboardEvent) => {
-      if (!items.length) return false
+      if (!items.length) return false;
 
       const moveNext = () =>
         setSelectedIndex((currentIndex) => {
-          if (currentIndex === -1) return 0
-          return (currentIndex + 1) % items.length
-        })
+          if (currentIndex === -1) return 0;
+          return (currentIndex + 1) % items.length;
+        });
 
       const movePrev = () =>
         setSelectedIndex((currentIndex) => {
-          if (currentIndex === -1) return items.length - 1
-          return (currentIndex - 1 + items.length) % items.length
-        })
+          if (currentIndex === -1) return items.length - 1;
+          return (currentIndex - 1 + items.length) % items.length;
+        });
 
       switch (event.key) {
-        case "ArrowUp": {
-          if (orientation === "horizontal") return false
-          event.preventDefault()
-          movePrev()
-          return true
+        case 'ArrowUp': {
+          if (orientation === 'horizontal') return false;
+          event.preventDefault();
+          movePrev();
+          return true;
         }
 
-        case "ArrowDown": {
-          if (orientation === "horizontal") return false
-          event.preventDefault()
-          moveNext()
-          return true
+        case 'ArrowDown': {
+          if (orientation === 'horizontal') return false;
+          event.preventDefault();
+          moveNext();
+          return true;
         }
 
-        case "ArrowLeft": {
-          if (orientation === "vertical") return false
-          event.preventDefault()
-          movePrev()
-          return true
+        case 'ArrowLeft': {
+          if (orientation === 'vertical') return false;
+          event.preventDefault();
+          movePrev();
+          return true;
         }
 
-        case "ArrowRight": {
-          if (orientation === "vertical") return false
-          event.preventDefault()
-          moveNext()
-          return true
+        case 'ArrowRight': {
+          if (orientation === 'vertical') return false;
+          event.preventDefault();
+          moveNext();
+          return true;
         }
 
-        case "Tab": {
-          if (!loopOnTab) return false
-          event.preventDefault()
+        case 'Tab': {
+          if (!loopOnTab) return false;
+          event.preventDefault();
           if (event.shiftKey) {
-            movePrev()
+            movePrev();
           } else {
-            moveNext()
+            moveNext();
           }
-          return true
+          return true;
         }
 
-        case "Home": {
-          event.preventDefault()
-          setSelectedIndex(0)
-          return true
+        case 'Home': {
+          event.preventDefault();
+          setSelectedIndex(0);
+          return true;
         }
 
-        case "End": {
-          event.preventDefault()
-          setSelectedIndex(items.length - 1)
-          return true
+        case 'End': {
+          event.preventDefault();
+          setSelectedIndex(items.length - 1);
+          return true;
         }
 
-        case "Enter": {
-          if (event.isComposing) return false
-          event.preventDefault()
+        case 'Enter': {
+          if (event.isComposing) return false;
+          event.preventDefault();
           if (selectedIndex !== -1 && items[selectedIndex]) {
-            onSelect?.(items[selectedIndex])
+            onSelect?.(items[selectedIndex]);
           }
-          return true
+          return true;
         }
 
-        case "Escape": {
-          if (!onClose) return false
-          event.preventDefault()
-          onClose?.()
-          return true
+        case 'Escape': {
+          if (!onClose) return false;
+          event.preventDefault();
+          onClose?.();
+          return true;
         }
 
         default:
-          return false
+          return false;
       }
-    }
+    };
 
-    let targetElement: HTMLElement | null = null
+    let targetElement: HTMLElement | null = null;
 
     if (editor) {
-      targetElement = editor.view.dom
+      targetElement = editor.view.dom;
     } else if (containerRef?.current) {
-      targetElement = containerRef.current
+      targetElement = containerRef.current;
     }
 
     if (targetElement) {
-      targetElement.addEventListener("keydown", handleKeyboardNavigation, true)
+      targetElement.addEventListener('keydown', handleKeyboardNavigation, true);
 
       return () => {
         targetElement?.removeEventListener(
-          "keydown",
+          'keydown',
           handleKeyboardNavigation,
           true
-        )
-      }
+        );
+      };
     }
 
-    return undefined
+    return undefined;
   }, [
     editor,
     containerRef,
@@ -189,16 +207,16 @@ export function useMenuNavigation<T>({
     onClose,
     orientation,
     loopOnTab,
-  ])
+  ]);
 
   useEffect(() => {
     if (query) {
-      setSelectedIndex(autoSelectFirstItem ? 0 : -1)
+      setSelectedIndex(autoSelectFirstItem ? 0 : -1);
     }
-  }, [query, autoSelectFirstItem])
+  }, [query, autoSelectFirstItem]);
 
   return {
     selectedIndex: items.length ? selectedIndex : undefined,
     setSelectedIndex,
-  }
+  };
 }

@@ -23,31 +23,48 @@ import {
 } from '@/features/tiptap/components/ui/ListButton';
 
 /**
- * Configuration for the list dropdown menu functionality
+ * リストドロップダウン機能の設定
  */
 export interface UseListDropdownMenuConfig {
   /**
-   * The Tiptap editor instance.
+   * Tiptapエディターのインスタンス(任意)
    */
   editor?: Editor | null;
+
   /**
-   * The list types to display in the dropdown.
+   * ドロップダウンに表示するリスト種別の一覧
    * @default ["bulletList", "orderedList", "taskList"]
    */
   types?: ListType[];
+
   /**
-   * Whether the dropdown should be hidden when no list types are available
+   * リストが使用できない場合に、ボタンを非表示にするかどうか。
    * @default false
    */
   hideWhenUnavailable?: boolean;
 }
 
+/**
+ * リストオプション
+ */
 export interface ListOption {
+  /**
+   * ラベル
+   */
   label: string;
+  /**
+   * リスト種別
+   */
   type: ListType;
+  /**
+   * アイコン
+   */
   icon: React.ElementType;
 }
 
+/**
+ * リストオプション一覧
+ */
 export const listOptions: ListOption[] = [
   {
     label: '箇条書きリスト',
@@ -66,37 +83,66 @@ export const listOptions: ListOption[] = [
   },
 ];
 
-export function canToggleAnyList(
+/**
+ * 現在のエディター状態で、任意のリストに切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param listTypes リスト種別一覧
+ * @returns true:可能、false:不可
+ */
+export const canToggleAnyList = (
   editor: Editor | null,
   listTypes: ListType[]
-): boolean {
+): boolean => {
   if (!editor || !editor.isEditable) return false;
   return listTypes.some((type) => canToggleList(editor, type));
-}
+};
 
-export function isAnyListActive(
+/**
+ * 現在のノードで任意のリストが有効になっているかチェックする
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param type リスト種別一覧
+ * @return true:有効、flase：無効
+ */
+export const isAnyListActive = (
   editor: Editor | null,
   listTypes: ListType[]
-): boolean {
+): boolean => {
   if (!editor || !editor.isEditable) return false;
   return listTypes.some((type) => isListActive(editor, type));
-}
+};
 
-export function getFilteredListOptions(
+/**
+ * 利用可能なリスト種別に基づいて、リストの選択肢を絞り込む。
+ *
+ * @param availableTypes 利用可能なリスト種別一覧
+ * @returns リスト種別
+ */
+export const getFilteredListOptions = (
   availableTypes: ListType[]
-): typeof listOptions {
+): typeof listOptions => {
   return listOptions.filter(
     (option) => !option.type || availableTypes.includes(option.type)
   );
-}
-
-export function shouldShowListDropdown(params: {
+};
+/**
+ * リストボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param prosp.listTypes リスト種別一覧
+ * @param props.hideWhenUnavailable リストボタンが使用できない場合に、ボタンを非表示にするかどうか。
+ * @param props.listInSchema スキーマに対象リストが含まれているか
+ * @param props.canToggleAny 切り替え可能か
+ * @returns false:表示する, true:非表示
+ */
+export const shouldShowListDropdown = (params: {
   editor: Editor | null;
   listTypes: ListType[];
   hideWhenUnavailable: boolean;
   listInSchema: boolean;
   canToggleAny: boolean;
-}): boolean {
+}): boolean => {
   const { editor, hideWhenUnavailable, listInSchema, canToggleAny } = params;
 
   if (!editor) return false;
@@ -112,25 +158,30 @@ export function shouldShowListDropdown(params: {
   }
 
   return true;
-}
+};
 
 /**
- * Gets the currently active list type from the available types
+ * エディタで現在有効になっているリスト種別を取得する。
+ *
+ * @param editor エディタインスタンス
+ * @param availableTypes 利用可能なリスト種別一覧
+ * @returns 現在有効なリスト種別。該当する種別がない場合は undefined
  */
-export function getActiveListType(
+export const getActiveListType = (
   editor: Editor | null,
   availableTypes: ListType[]
-): ListType | undefined {
+): ListType | undefined => {
   if (!editor || !editor.isEditable) return undefined;
   return availableTypes.find((type) => isListActive(editor, type));
-}
+};
 
 /**
- * Custom hook that provides list dropdown menu functionality for Tiptap editor
+ * Tiptapエディター向けのリスト機能を提供するカスタムフック。
+ * @param config リスト機能の設定
  *
  * @example
  * ```tsx
- * // Simple usage
+ * // シンプルな使用方法 - パラメーター不要
  * function MyListDropdown() {
  *   const {
  *     isVisible,
@@ -144,12 +195,12 @@ export function getActiveListType(
  *
  *   return (
  *     <DropdownMenu>
- *       // dropdown content
+ *       // ドロップダウンコンテキスト
  *     </DropdownMenu>
  *   )
  * }
  *
- * // Advanced usage with configuration
+ * // 設定を指定した高度な使用方法
  * function MyAdvancedListDropdown() {
  *   const {
  *     isVisible,
@@ -160,11 +211,11 @@ export function getActiveListType(
  *     hideWhenUnavailable: true,
  *   })
  *
- *   // component implementation
+ *    実際のコンポーネントを実装
  * }
  * ```
  */
-export function useListDropdownMenu(config?: UseListDropdownMenuConfig) {
+export const useListDropdownMenu = (config?: UseListDropdownMenuConfig) => {
   const {
     editor: providedEditor,
     types = ['bulletList', 'orderedList', 'taskList'],
@@ -217,4 +268,4 @@ export function useListDropdownMenu(config?: UseListDropdownMenuConfig) {
     label: 'List',
     Icon: activeList ? listIcons[activeList.type] : ListIcon,
   };
-}
+};

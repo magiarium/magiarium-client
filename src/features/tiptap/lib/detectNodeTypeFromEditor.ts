@@ -1,6 +1,11 @@
 import { Editor } from '@tiptap/react';
 
-export const detectEditorType = (editor: Editor) => {
+/**
+ * エディターから現在アクティブ状態のノード種別を取得する処理
+ * @param editor Tiptapエディターのインスタンス
+ * @return ノード種別
+ */
+export const detectNodeTypeFromEditor = (editor: Editor | null) => {
   if (!editor) return 'undefined';
 
   if (editor.isActive('codeBlock')) return 'codeBlock';

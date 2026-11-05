@@ -11,6 +11,7 @@ import { RubyTextPopover } from '@/features/tiptap/components/ui/RubyTextButton'
 import { TextAlignDropdownMenu } from '@/features/tiptap/components/ui/TextAlignDropdownMenu';
 import { Editor } from '@tiptap/react';
 import { Separator } from '../../ui-primitive/Separator';
+import { KbdButton } from '../KbdButton/KbdButton';
 import './MarkToolbar.scss';
 
 export const textAlignIcons = {
@@ -32,10 +33,11 @@ export const MarkToolbar = ({ editor }: { editor: Editor }) => {
       <FontSizeDropdownMenu editor={editor} />
       <TextAlignDropdownMenu editor={editor} />
       <Separator />
-      <LinkPopover editor={editor} />
+      <LinkPopover editor={editor} autoOpenOnLinkActive={false} />
       <MarkButton editor={editor} type="code" />
       <InlineQuoteButton editor={editor} />
       <RubyTextPopover editor={editor} />
+      <KbdButton editor={editor} />
     </div>
   );
 };

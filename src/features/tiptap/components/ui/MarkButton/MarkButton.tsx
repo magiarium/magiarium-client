@@ -24,30 +24,35 @@ import { Button } from '@/features/tiptap/components/ui-primitive/Button';
 export interface MarkButtonProps
   extends Omit<ButtonProps, 'type'>, UseMarkConfig {
   /**
-   * Optional text to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   text?: string;
+
   /**
-   * Optional show shortcut keys in the button.
+   * ボタン内にショートカットキーを表示するかどうか(任意)
    * @default false
    */
   showShortcut?: boolean;
 }
-
-export function MarkShortcutBadge({
+/**
+ * マーク切り替えショートカットバッジ
+ * @param params.type マーク種別
+ * @param params.shortcutKeys ショートカットキー
+ */
+export const MarkShortcutBadge = ({
   type,
   shortcutKeys = MARK_SHORTCUT_KEYS[type],
 }: {
   type: Mark;
   shortcutKeys?: string;
-}) {
+}) => {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
-}
+};
 
 /**
- * Button component for toggling marks in a Tiptap editor.
+ * Tiptapエディター内のキーボードを切り替えるためのボタンコンポーネント
  *
- * For custom button implementations, use the `useMark` hook instead.
+ * カスタムボタンを実装する場合は、代わりに `useMark` フックを使用してください。
  */
 export const MarkButton = forwardRef<HTMLButtonElement, MarkButtonProps>(
   (

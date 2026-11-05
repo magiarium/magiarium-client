@@ -134,5 +134,3 @@ export const HeadingDropdownMenu = forwardRef<
 );
 
 HeadingDropdownMenu.displayName = 'HeadingDropdownMenu';
-
-export default HeadingDropdownMenu;

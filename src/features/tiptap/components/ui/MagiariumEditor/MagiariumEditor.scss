@@ -51,8 +51,7 @@
   // 本文
   p {
     font-size: 1rem;
-    line-height: 2;
-    margin: 0 0 1.5rem;
+    line-height: 1.5rem;
     letter-spacing: 0.03em;
   }
 
@@ -160,12 +159,36 @@
 
   // 引用ブロック
   blockquote {
-    border-left: 3px solid #e0e0e0;
-    margin: 1.5rem 0;
-    padding-left: 1rem;
+    background-color: #f6f6f6;
+    border-left: 3px solid var(--main-color);
+    margin: 0;
+    padding: 0rem 0rem 0.5rem 1rem;
+
+    &::before {
+      content: '“';
+      font-size: 2.5rem;
+      color: var(--main-color);
+    }
   }
 
-  /* List styles */
+  // キーボード
+  kbd {
+    background-color: #eeeeee;
+    border-radius: 3px;
+    border: 1px solid #b4b4b4;
+    box-shadow:
+      0 1px 1px rgb(0 0 0 / 0.2),
+      0 2px 0 0 rgb(255 255 255 / 0.7) inset;
+    color: #333333;
+    display: inline-block;
+    font-size: 0.85em;
+    font-weight: bold;
+    line-height: 1;
+    padding: 2px 4px;
+    white-space: nowrap;
+  }
+
+  // list
   ul,
   ol {
     padding: 0 1rem;
@@ -176,15 +199,29 @@
       margin-bottom: 0.25em;
     }
   }
+
+  /* ul：肉球アイコン */
   ul {
-    list-style-type: disc;
+    list-style: none;
+  }
+  ul li::before {
+    font-family: 'Font Awesome 7 Free';
+    font-weight: 900;
+    font-style: normal;
+    content: '\f1b0';
+    position: absolute;
+    left: 0.1rem;
+    top: 0.15em;
+    color: var(--main-color);
   }
 
+  /* ol：数字 */
   ol {
     list-style-type: decimal;
   }
 
-  li {
-    display: list-item;
+  ol li::marker {
+    color: var(--main-color);
+    font-weight: 900;
   }
 }

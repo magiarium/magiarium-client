@@ -23,6 +23,7 @@ import {
   BsTypeUnderline,
 } from 'react-icons/bs';
 
+/** マーク種別 */
 export type Mark =
   | 'bold'
   | 'italic'
@@ -33,28 +34,32 @@ export type Mark =
   | 'subscript';
 
 /**
- * Configuration for the mark functionality
+ * マーク機能の設定
  */
 export interface UseMarkConfig {
   /**
-   * The Tiptap editor instance.
+   * Tiptapエディターのインスタンス(任意)
    */
   editor?: Editor | null;
+
   /**
-   * The type of mark to toggle
+   * マーク種別
    */
   type: Mark;
+
   /**
-   * Whether the button should hide when mark is not available.
+   * 引用ブロックが使用できない場合に、ボタンを非表示にするかどうか。
    * @default false
    */
   hideWhenUnavailable?: boolean;
+
   /**
-   * Callback function called after a successful mark toggle.
+   * マークの切り替えが正常に完了した後に呼び出されるコールバック関数
    */
   onToggled?: () => void;
 }
 
+/** マークアイコン一覧 */
 export const markIcons = {
   bold: BsTypeBold,
   italic: BsTypeItalic,
@@ -65,6 +70,7 @@ export const markIcons = {
   subscript: BsSubscript,
 };
 
+/** マークショートカットキー一覧 */
 export const MARK_SHORTCUT_KEYS: Record<Mark, string> = {
   bold: 'mod+b',
   italic: 'mod+i',
@@ -76,42 +82,60 @@ export const MARK_SHORTCUT_KEYS: Record<Mark, string> = {
 };
 
 /**
- * Checks if a mark can be toggled in the current editor state
+ * 現在のエディター状態で、マークの切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param type マーク種別
  */
-export function canToggleMark(editor: Editor | null, type: Mark): boolean {
+export const canToggleMark = (editor: Editor | null, type: Mark): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (!isMarkInSchema(type, editor) || isNodeTypeSelected(editor, ['image']))
     return false;
 
   return editor.can().toggleMark(type);
-}
+};
 
 /**
  * Checks if a mark is currently active
  */
-export function isMarkActive(editor: Editor | null, type: Mark): boolean {
+/**
+ * マークが現在有効かチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param type マーク種別
+ * @returns true:有効、false:無効
+ */
+export const isMarkActive = (editor: Editor | null, type: Mark): boolean => {
   if (!editor || !editor.isEditable) return false;
   return editor.isActive(type);
-}
+};
 
 /**
- * Toggles a mark in the editor
+ * エディター内のマークのオン・オフを切り替える処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param type マーク種別
+ * @return true:切り替え成功, false:切り替え失敗
  */
-export function toggleMark(editor: Editor | null, type: Mark): boolean {
+export const toggleMark = (editor: Editor | null, type: Mark): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (!canToggleMark(editor, type)) return false;
 
   return editor.chain().focus().toggleMark(type).run();
-}
-
+};
 /**
- * Determines if the mark button should be shown
+ * キーボードボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.type マーク種別
+ * @param props.hideWhenUnavailable キーボードボタンが使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
  */
-export function shouldShowButton(props: {
+export const shouldShowButton = (props: {
   editor: Editor | null;
   type: Mark;
   hideWhenUnavailable: boolean;
-}): boolean {
+}): boolean => {
   const { editor, type, hideWhenUnavailable } = props;
 
   if (!editor) return false;
@@ -129,21 +153,25 @@ export function shouldShowButton(props: {
   }
 
   return true;
-}
+};
 
 /**
- * Gets the formatted mark name
+ * フォーマットされたマーク名を取得する処理
+ *
+ * @param type マーク種別
+ * @returns マーク種別
  */
-export function getFormattedMarkName(type: Mark): string {
+export const getFormattedMarkName = (type: Mark): string => {
   return type.charAt(0).toUpperCase() + type.slice(1);
-}
+};
 
 /**
- * Custom hook that provides mark functionality for Tiptap editor
+ * Tiptapエディター向けのマーク機能を提供するカスタムフック。
+ * @param config マーク機能の設定
  *
  * @example
  * ```tsx
- * // Simple usage
+ * // シンプルな使用方法 - パラメーター不要
  * function MySimpleBoldButton() {
  *   const { isVisible, handleMark } = useMark({ type: "bold" })
  *
@@ -152,13 +180,13 @@ export function getFormattedMarkName(type: Mark): string {
  *   return <button onClick={handleMark}>Bold</button>
  * }
  *
- * // Advanced usage with configuration
+ * // 設定を指定した高度な使用方法
  * function MyAdvancedItalicButton() {
  *   const { isVisible, handleMark, label, isActive } = useMark({
  *     editor: myEditor,
  *     type: "italic",
  *     hideWhenUnavailable: true,
- *     onToggled: () => console.log('Mark toggled!')
+ *     onToggled: () => console.log('マークを切り替えました。')
  *   })
  *
  *   if (!isVisible) return null
@@ -175,7 +203,7 @@ export function getFormattedMarkName(type: Mark): string {
  * }
  * ```
  */
-export function useMark(config: UseMarkConfig) {
+export const useMark = (config: UseMarkConfig) => {
   const {
     editor: providedEditor,
     type,
@@ -223,4 +251,4 @@ export function useMark(config: UseMarkConfig) {
     shortcutKeys: MARK_SHORTCUT_KEYS[type],
     Icon: markIcons[type],
   };
-}
+};

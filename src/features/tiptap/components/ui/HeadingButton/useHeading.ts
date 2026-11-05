@@ -85,11 +85,11 @@ export const HEADING_SHORTCUT_KEYS: Record<Level, string> = {
  * @param level 見出しレベル(任意)
  * @param turnInfo パラグラフへの変換時に追加の判定を行うかどうか
  */
-export function canToggle(
+export const canToggle = (
   editor: Editor | null,
   level?: Level,
   turnInto: boolean = true
-): boolean {
+): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (
     !isNodeInSchema('heading', editor) ||
@@ -123,7 +123,7 @@ export function canToggle(
   return level
     ? editor.can().setNode('heading', { level }) || editor.can().clearNodes()
     : editor.can().setNode('heading') || editor.can().clearNodes();
-}
+};
 
 /**
  * 見出し要素が現在アクティブ状態かどうかチェックする
@@ -131,10 +131,10 @@ export function canToggle(
  * @param editor Tiptapエディターインスタンス
  * @param level 見出しレベル(任意)
  */
-export function isHeadingActive(
+export const isHeadingActive = (
   editor: Editor | null,
   level?: Level | Level[]
-): boolean {
+): boolean => {
   if (!editor || !editor.isEditable) return false;
 
   if (Array.isArray(level)) {
@@ -144,7 +144,7 @@ export function isHeadingActive(
   return level
     ? editor.isActive('heading', { level })
     : editor.isActive('heading');
-}
+};
 
 /**
  * エディター内の見出しのオン・オフを切り替える処理
@@ -153,10 +153,10 @@ export function isHeadingActive(
  * @param level 見出しレベル(任意)
  * @return true:切り替え成功, false:切り替え失敗
  */
-export function toggleHeading(
+export const toggleHeading = (
   editor: Editor | null,
   level: Level | Level[]
-): boolean {
+): boolean => {
   if (!editor || !editor.isEditable) return false;
 
   const levels = Array.isArray(level) ? level : [level];
@@ -240,7 +240,7 @@ export function toggleHeading(
   } catch {
     return false;
   }
-}
+};
 
 /**
  * 見出しボタンを表示するかどうかを判定する処理
@@ -249,11 +249,11 @@ export function toggleHeading(
  * @param props.hideWhenUnavailable 見出しが使用できない場合に、ボタンを非表示にするかどうか。
  * @returns false:表示する, true:非表示
  */
-export function shouldShowButton(props: {
+export const shouldShowButton = (props: {
   editor: Editor | null;
   level?: Level | Level[];
   hideWhenUnavailable: boolean;
-}): boolean {
+}): boolean => {
   const { editor, level, hideWhenUnavailable } = props;
 
   if (!editor) return false;
@@ -274,7 +274,7 @@ export function shouldShowButton(props: {
   }
 
   return true;
-}
+};
 
 /**
  * Tiptapエディター向けのパラグラフ機能を提供するカスタムフック。
@@ -322,7 +322,7 @@ export function shouldShowButton(props: {
  * }
  * ```
  */
-export function useHeading(config: UseHeadingConfig) {
+export const useHeading = (config: UseHeadingConfig) => {
   const {
     editor: providedEditor,
     level,
@@ -370,4 +370,4 @@ export function useHeading(config: UseHeadingConfig) {
     shortcutKeys: HEADING_SHORTCUT_KEYS[level],
     Icon: headingIcons[level],
   };
-}
+};

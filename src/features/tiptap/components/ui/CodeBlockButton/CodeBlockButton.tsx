@@ -34,13 +34,13 @@ export interface CodeBlockButtonProps
  * コードブロック切り替えショートカットバッジ
  * @param params.shortcutKeys ショートカットキー
  */
-export function CodeBlockShortcutBadge({
+export const CodeBlockShortcutBadge = ({
   shortcutKeys = CODE_BLOCK_SHORTCUT_KEY,
 }: {
   shortcutKeys?: string;
-}) {
+}) => {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
-}
+};
 
 /**
  * Tiptapエディター内のコードブロックを切り替えるためのボタンコンポーネント

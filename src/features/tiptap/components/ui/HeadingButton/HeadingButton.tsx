@@ -36,15 +36,15 @@ export interface HeadingButtonProps
  * 見出し切り替えショートカットバッジ
  * @param params.shortcutKeys ショートカットキー
  */
-export function HeadingShortcutBadge({
+export const HeadingShortcutBadge = ({
   level,
   shortcutKeys = HEADING_SHORTCUT_KEYS[level],
 }: {
   level: Level;
   shortcutKeys?: string;
-}) {
+}) => {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
-}
+};
 
 /**
  * Tiptapエディター内のパラグラフを切り替えるためのボタンコンポーネント

@@ -1,7 +1,7 @@
 'use client';
 
 import { NodeSelection, TextSelection } from '@tiptap/pm/state';
-import type { Editor } from '@tiptap/react';
+import { type Editor } from '@tiptap/react';
 import { useCallback, useEffect, useState } from 'react';
 
 // --- Hooks ---
@@ -11,6 +11,7 @@ import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 import { BlockquoteIcon } from '@/features/tiptap/components/icons/BlockquoteIcon';
 
 // --- UI Utils ---
+import { useCurrentNode } from '@/features/tiptap/hooks/useCurrentNode';
 import {
   findNodePosition,
   getSelectedBlockNodes,
@@ -20,34 +21,40 @@ import {
   selectionWithinConvertibleTypes,
 } from '@/features/tiptap/lib/tiptapUtils';
 
+// 引用ブロック切り替え用ショートカットキー
 export const BLOCKQUOTE_SHORTCUT_KEY = 'mod+shift+b';
 
 /**
- * Configuration for the blockquote functionality
+ * 引用ブロック機能の設定
  */
 export interface UseBlockquoteConfig {
   /**
-   * The Tiptap editor instance.
+   * Tiptapエディターのインスタンス(任意)
    */
   editor?: Editor | null;
+
   /**
-   * Whether the button should hide when blockquote is not available.
+   * 引用ブロックが使用できない場合に、ボタンを非表示にするかどうか。
    * @default false
    */
   hideWhenUnavailable?: boolean;
+
   /**
-   * Callback function called after a successful toggle.
+   * 引用ブロックの切り替えが正常に完了した後に呼び出されるコールバック関数
    */
   onToggled?: () => void;
 }
 
 /**
- * Checks if blockquote can be toggled in the current editor state
+ * 現在のエディター状態で、引用ブロックの切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param turnInfo 引用ブロックへの変換時に追加の判定を行うかどうか
  */
-export function canToggleBlockquote(
+export const canToggleBlockquote = (
   editor: Editor | null,
   turnInto: boolean = true
-): boolean {
+): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (
     !isNodeInSchema('blockquote', editor) ||
@@ -59,7 +66,7 @@ export function canToggleBlockquote(
     return editor.can().toggleWrap('blockquote');
   }
 
-  // Ensure selection is in nodes we're allowed to convert
+  // 選択範囲が、変換を許可されているノード内であるかチェック
   if (
     !selectionWithinConvertibleTypes(editor, [
       'paragraph',
@@ -70,18 +77,22 @@ export function canToggleBlockquote(
       'blockquote',
       'codeBlock',
     ])
-  )
+  ) {
     return false;
+  }
 
-  // Either we can wrap in blockquote directly on the selection,
-  // or we can clear formatting/nodes to arrive at a blockquote.
+  // 選択範囲に対して引用ブロックを直接設定できるか、
+  // または書式やノードをクリアすることで引用ブロックに変換できるかをチェック
   return editor.can().toggleWrap('blockquote') || editor.can().clearNodes();
-}
+};
 
 /**
- * Toggles blockquote formatting for a specific node or the current selection
+ * エディター内の引用ブロックのオン・オフを切り替える処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @return true:切り替え成功, false:切り替え失敗
  */
-export function toggleBlockquote(editor: Editor | null): boolean {
+export const toggleBlockquote = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (!canToggleBlockquote(editor)) return false;
 
@@ -92,9 +103,8 @@ export function toggleBlockquote(editor: Editor | null): boolean {
 
     const blocks = getSelectedBlockNodes(editor);
 
-    // In case a selection contains multiple blocks, we only allow
-    // toggling to node if there's exactly one block selected
-    // we also dont block the canToggle since it will fall back to the bottom logic
+    // 選択範囲に複数のブロックが含まれる場合、ノードへの切り替えを許可するのは、選択されているブロックが1つの場合のみとする。
+    // また後続のロジックにフォールバックするため、canToggle は制限しない。
     const isPossibleToTurnInto =
       selectionWithinConvertibleTypes(editor, [
         'paragraph',
@@ -106,7 +116,7 @@ export function toggleBlockquote(editor: Editor | null): boolean {
         'codeBlock',
       ]) && blocks.length === 1;
 
-    // No selection, find the the cursor position
+    // 選択範囲がない場合は、カーソルの位置を取得する。
     if (
       (state.selection.empty || state.selection instanceof TextSelection) &&
       isPossibleToTurnInto
@@ -126,7 +136,7 @@ export function toggleBlockquote(editor: Editor | null): boolean {
 
     let chain = editor.chain().focus();
 
-    // Handle NodeSelection
+    // NodeSelection（ノード選択）の場合を処理
     if (selection instanceof NodeSelection) {
       const firstChild = selection.node.firstChild?.firstChild;
       const lastChild = selection.node.lastChild?.lastChild;
@@ -159,15 +169,19 @@ export function toggleBlockquote(editor: Editor | null): boolean {
   } catch {
     return false;
   }
-}
+};
 
 /**
- * Determines if the blockquote button should be shown
+ * 引用ブロックボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable 引用ブロックボタンが使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
  */
-export function shouldShowButton(props: {
+export const shouldShowButton = (props: {
   editor: Editor | null;
   hideWhenUnavailable: boolean;
-}): boolean {
+}): boolean => {
   const { editor, hideWhenUnavailable } = props;
 
   if (!editor) return false;
@@ -185,14 +199,15 @@ export function shouldShowButton(props: {
   }
 
   return true;
-}
+};
 
 /**
- * Custom hook that provides blockquote functionality for Tiptap editor
+ * Tiptapエディター向けの引用ブロック機能を提供するカスタムフック。
+ * @param config 引用ブロック機能の設定
  *
  * @example
  * ```tsx
- * // Simple usage - no params needed
+ * // シンプルな使用方法 - パラメーター不要
  * function MySimpleBlockquoteButton() {
  *   const { isVisible, handleToggle, isActive } = useBlockquote()
  *
@@ -201,12 +216,12 @@ export function shouldShowButton(props: {
  *   return <button onClick={handleToggle}>Blockquote</button>
  * }
  *
- * // Advanced usage with configuration
+ * // 設定を指定した高度な使用方法
  * function MyAdvancedBlockquoteButton() {
  *   const { isVisible, handleToggle, label, isActive } = useBlockquote({
  *     editor: myEditor,
  *     hideWhenUnavailable: true,
- *     onToggled: () => console.log('Blockquote toggled!')
+ *     onToggled: () => console.log('引用ブロックの切り替え')
  *   })
  *
  *   if (!isVisible) return null
@@ -217,13 +232,13 @@ export function shouldShowButton(props: {
  *       aria-label={label}
  *       aria-pressed={isActive}
  *     >
- *       Toggle Blockquote
+ *       引用ブロックの切り替え
  *     </MyButton>
  *   )
  * }
  * ```
  */
-export function useBlockquote(config?: UseBlockquoteConfig) {
+export const useBlockquote = (config?: UseBlockquoteConfig) => {
   const {
     editor: providedEditor,
     hideWhenUnavailable = false,
@@ -233,7 +248,7 @@ export function useBlockquote(config?: UseBlockquoteConfig) {
   const { editor } = useTiptapEditor(providedEditor);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const canToggle = canToggleBlockquote(editor);
-  const isActive = editor?.isActive('blockquote') || false;
+  const isActive = useCurrentNode(editor) === 'blockquote';
 
   useEffect(() => {
     if (!editor) return;
@@ -270,4 +285,4 @@ export function useBlockquote(config?: UseBlockquoteConfig) {
     shortcutKeys: BLOCKQUOTE_SHORTCUT_KEY,
     Icon: BlockquoteIcon,
   };
-}
+};

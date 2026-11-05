@@ -26,30 +26,35 @@ import {
 export interface ListButtonProps
   extends Omit<ButtonProps, 'type'>, UseListConfig {
   /**
-   * Optional text to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   text?: string;
+
   /**
-   * Optional show shortcut keys in the button.
+   * ボタン内にショートカットキーを表示するかどうか(任意)
    * @default false
    */
   showShortcut?: boolean;
 }
-
-export function ListShortcutBadge({
+/**
+ * リスト切り替えショートカットバッジ
+ * @param params.type listType
+ * @param params.shortcutKeys ショートカットキー
+ */
+export const ListShortcutBadge = ({
   type,
   shortcutKeys = LIST_SHORTCUT_KEYS[type],
 }: {
   type: ListType;
   shortcutKeys?: string;
-}) {
+}) => {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
-}
+};
 
 /**
- * Button component for toggling lists in a Tiptap editor.
+ * Tiptapエディター内のリストを切り替えるためのボタンコンポーネント
  *
- * For custom button implementations, use the `useList` hook instead.
+ * カスタムボタンを実装する場合は、代わりに `useList` フックを使用してください。
  */
 export const ListButton = forwardRef<HTMLButtonElement, ListButtonProps>(
   (

@@ -1,4 +1,3 @@
-import { type Editor } from '@tiptap/react';
 import { forwardRef, useCallback, useState, type ForwardedRef } from 'react';
 
 // --- Hooks ---
@@ -8,11 +7,9 @@ import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 import { ChevronDownIcon } from '@/features/tiptap/components/icons/ChevronDownIcon';
 
 // --- Tiptap UI ---
-import {
-  ListButton,
-  type ListType,
-} from '@/features/tiptap/components/ui/ListButton';
+import { ListButton } from '@/features/tiptap/components/ui/ListButton';
 
+import type { UseListDropdownMenuConfig } from './useListDropdownMenu';
 import { useListDropdownMenu } from './useListDropdownMenu';
 
 // --- UI Primitives ---
@@ -26,113 +23,117 @@ import {
   DropdownMenuTrigger,
 } from '@/features/tiptap/components/ui-primitive/DropdownMenu';
 
-export interface ListDropdownMenuProps extends Omit<ButtonProps, 'type'> {
+export interface ListDropdownMenuProps
+  extends Omit<ButtonProps, 'type'>, UseListDropdownMenuConfig {
   /**
-   * The Tiptap editor instance.
-   */
-  editor?: Editor;
-  /**
-   * The list types to display in the dropdown.
-   */
-  types?: ListType[];
-  /**
-   * Whether the dropdown should be hidden when no list types are available
-   * @default false
-   */
-  hideWhenUnavailable?: boolean;
-  /**
-   * Callback for when the dropdown opens or closes
+   * ドロップダウンメニュー開閉時のコールバック関数
    */
   onOpenChange?: (isOpen: boolean) => void;
+
   /**
-   * Whether the dropdown should use a modal
+   * ドロップダウンにモーダルを使用するかどうか
+   * @default false
    */
   modal?: boolean;
 
+  /**
+   * アイコンの横に表示する補足テキスト(任意)
+   */
   text?: string;
 }
 
-function ListDropdownMenuImpl(
-  {
-    editor: providedEditor,
-    text,
-    types = ['bulletList', 'orderedList', 'taskList'],
-    hideWhenUnavailable = false,
-    onOpenChange,
-    modal = true,
-    children,
-    ...props
-  }: ListDropdownMenuProps,
-  ref: ForwardedRef<HTMLButtonElement>
-) {
-  const { editor } = useTiptapEditor(providedEditor);
-  const [isOpen, setIsOpen] = useState(false);
+/**
+ * リストのドロップダウンメニュー
+ * @param param0
+ * @param ref
+ * @returns
+ */
+export const ListDropdownMenu = forwardRef<
+  HTMLButtonElement,
+  ListDropdownMenuProps
+>(
+  (
+    {
+      editor: providedEditor,
+      text,
+      types = ['bulletList', 'orderedList', 'taskList'],
+      hideWhenUnavailable = false,
+      onOpenChange,
+      modal = true,
+      children,
+      ...props
+    }: ListDropdownMenuProps,
+    ref: ForwardedRef<HTMLButtonElement>
+  ) => {
+    const { editor } = useTiptapEditor(providedEditor);
+    const [isOpen, setIsOpen] = useState(false);
 
-  const { filteredLists, canToggle, isActive, isVisible, Icon } =
-    useListDropdownMenu({
-      editor,
-      types,
-      hideWhenUnavailable,
-    });
+    const { filteredLists, canToggle, isActive, isVisible, Icon } =
+      useListDropdownMenu({
+        editor,
+        types,
+        hideWhenUnavailable,
+      });
 
-  const handleOnOpenChange = useCallback(
-    (open: boolean) => {
-      setIsOpen(open);
-      onOpenChange?.(open);
-    },
-    [onOpenChange]
-  );
+    const handleOnOpenChange = useCallback(
+      (open: boolean) => {
+        setIsOpen(open);
+        onOpenChange?.(open);
+      },
+      [onOpenChange]
+    );
 
-  if (!isVisible) {
-    return null;
+    if (!isVisible) {
+      return null;
+    }
+
+    return (
+      <DropdownMenu
+        modal={modal}
+        open={isOpen}
+        onOpenChange={handleOnOpenChange}
+      >
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            data-active-state={isActive ? 'on' : 'off'}
+            role="button"
+            tabIndex={-1}
+            disabled={!canToggle}
+            data-disabled={!canToggle}
+            aria-label="List options"
+            tooltip="List"
+            {...props}
+            ref={ref}
+          >
+            {children ?? (
+              <>
+                <Icon className="tiptap-button-icon" />
+                {text && <span className="tiptap-button-text">{text}</span>}
+                <ChevronDownIcon className="tiptap-button-dropdown-small" />
+              </>
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent side={'right'} align="start">
+          <DropdownMenuGroup>
+            {filteredLists.map((option) => (
+              <DropdownMenuItem key={option.type} asChild>
+                <ListButton
+                  editor={editor}
+                  type={option.type}
+                  text={option.label}
+                  showTooltip={false}
+                />
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
   }
-
-  return (
-    <DropdownMenu modal={modal} open={isOpen} onOpenChange={handleOnOpenChange}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          data-active-state={isActive ? 'on' : 'off'}
-          role="button"
-          tabIndex={-1}
-          disabled={!canToggle}
-          data-disabled={!canToggle}
-          aria-label="List options"
-          tooltip="List"
-          {...props}
-          ref={ref}
-        >
-          {children ?? (
-            <>
-              <Icon className="tiptap-button-icon" />
-              {text && <span className="tiptap-button-text">{text}</span>}
-              <ChevronDownIcon className="tiptap-button-dropdown-small" />
-            </>
-          )}
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent side={'right'} align="start">
-        <DropdownMenuGroup>
-          {filteredLists.map((option) => (
-            <DropdownMenuItem key={option.type} asChild>
-              <ListButton
-                editor={editor}
-                type={option.type}
-                text={option.label}
-                showTooltip={false}
-              />
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-export const ListDropdownMenu = forwardRef(ListDropdownMenuImpl);
+);
 
 ListDropdownMenu.displayName = 'ListDropdownMenu';
-
-export default ListDropdownMenu;

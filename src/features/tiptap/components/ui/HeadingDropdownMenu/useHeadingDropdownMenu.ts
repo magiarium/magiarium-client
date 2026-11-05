@@ -43,13 +43,13 @@ export interface UseHeadingDropdownMenuConfig {
  * @param editor Tiptapエディターのインスタンス
  * @param levels 見出しレベル一覧
  */
-export function getActiveHeadingLevel(
+export const getActiveHeadingLevel = (
   editor: Editor | null,
   levels: Level[] = [1, 2, 3, 4, 5, 6]
-): Level | undefined {
+): Level | undefined => {
   if (!editor || !editor.isEditable) return undefined;
   return levels.find((level) => isHeadingActive(editor, level));
-}
+};
 
 /**
  * Tiptapエディター向けのパラグラフ機能を提供するカスタムフック。
@@ -90,7 +90,9 @@ export function getActiveHeadingLevel(
  * }
  * ```
  */
-export function useHeadingDropdownMenu(config?: UseHeadingDropdownMenuConfig) {
+export const useHeadingDropdownMenu = (
+  config?: UseHeadingDropdownMenuConfig
+) => {
   const {
     editor: providedEditor,
     levels = [1, 2, 3, 4, 5, 6],
@@ -131,4 +133,4 @@ export function useHeadingDropdownMenu(config?: UseHeadingDropdownMenuConfig) {
     label: 'Heading',
     Icon: activeLevel ? headingIcons[activeLevel] : HeadingIcon,
   };
-}
+};

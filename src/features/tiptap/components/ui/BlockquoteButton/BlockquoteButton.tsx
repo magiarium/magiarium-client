@@ -21,28 +21,33 @@ import { Button } from '@/features/tiptap/components/ui-primitive/Button';
 export interface BlockquoteButtonProps
   extends Omit<ButtonProps, 'type'>, UseBlockquoteConfig {
   /**
-   * Optional text to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   text?: string;
+
   /**
-   * Optional show shortcut keys in the button.
+   * ボタン内にショートカットキーを表示するかどうか(任意)
    * @default false
    */
   showShortcut?: boolean;
 }
 
-export function BlockquoteShortcutBadge({
+/**
+ * 引用ブロック切り替えショートカットバッジ
+ * @param params.shortcutKeys ショートカットキー
+ */
+export const BlockquoteShortcutBadge = ({
   shortcutKeys = BLOCKQUOTE_SHORTCUT_KEY,
 }: {
   shortcutKeys?: string;
-}) {
+}) => {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
-}
+};
 
 /**
- * Button component for toggling blockquote in a Tiptap editor.
+ * Tiptapエディター内の引用ブロックを切り替えるためのボタンコンポーネント
  *
- * For custom button implementations, use the `useBlockquote` hook instead.
+ * カスタムボタンを実装する場合は、代わりに `useBlockquote` フックを使用してください。
  */
 export const BlockquoteButton = forwardRef<
   HTMLButtonElement,
