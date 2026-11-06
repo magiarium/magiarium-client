@@ -1,105 +1,120 @@
 import { ChevronDownIcon } from '@/features/tiptap/components/icons/ChevronDownIcon';
-import { Button } from '@/features/tiptap/components/ui-primitive/Button';
+import {
+  Button,
+  ButtonProps,
+} from '@/features/tiptap/components/ui-primitive/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/features/tiptap/components/ui-primitive/DropdownMenu';
-import { Editor, useEditorState } from '@tiptap/react';
+import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+import { forwardRef, useState } from 'react';
 import { FiType } from 'react-icons/fi';
-import './FontSizeDropdownMenu.scss';
+import {
+  FONT_SIZES,
+  FontSize,
+  FontSizeButton,
+  useFontSize,
+  UseFontSizeConfig,
+} from '../FontSizeButton';
 
-const FONT_SIZE = {
-  MEDIUM: '1rem',
-  LARGE: '1.25rem',
-  SMALL: '0.75rem',
-};
+export interface FontSizeDropdownMenuProps
+  extends
+    Omit<ButtonProps, 'type'>,
+    Pick<UseFontSizeConfig, 'editor' | 'hideWhenUnavailable' | 'onApplied'> {
+  /**
+   * フォントサイズ設定一覧
+   */
+  fontSizes?: FontSize[];
+}
 
-export const FontSizeDropdownMenu = ({ editor }: { editor: Editor }) => {
-  const currentFontSize = useEditorState({
+/**
+ * フォントサイズドロップダウンボタンコンポーネント
+ */
+export const FontSizeDropdownMenuButton = forwardRef<
+  HTMLButtonElement,
+  ButtonProps
+>(({ className, children, ...props }, ref) => {
+  return (
+    <Button
+      type="button"
+      className={className}
+      variant="ghost"
+      data-appearance="default"
+      role="button"
+      tabIndex={-1}
+      aria-label="FontSize text"
+      tooltip="FontSize"
+      ref={ref}
+      {...props}
+    >
+      {children ?? (
+        <>
+          <FiType />
+          <ChevronDownIcon className="tiptap-button-dropdown-small" />
+        </>
+      )}
+    </Button>
+  );
+});
+FontSizeDropdownMenuButton.displayName = 'FontSizeDropdownMenuButton';
+
+/**
+ * Tiptapエディター内のフォントサイズを切り替えるためのドロップダウンメニューコンポーネント
+ *
+ * カスタムボタンを実装する場合は、代わりに `useFontSize` フックを使用してください。
+ */
+export const FontSizeDropdownMenu = ({
+  editor: providedEditor,
+  fontSizes = FONT_SIZES,
+  hideWhenUnavailable = false,
+  onApplied,
+  ...props
+}: FontSizeDropdownMenuProps) => {
+  const { editor } = useTiptapEditor(providedEditor);
+  const [isOpen, setIsOpen] = useState(false);
+  const { isVisible, isActive, canFontSize, label, Icon } = useFontSize({
     editor,
-    selector: ({ editor }) => {
-      return editor.getAttributes('textStyle').fontSize ?? FONT_SIZE.MEDIUM;
-    },
+    hideWhenUnavailable,
+    onApplied,
   });
-  const sizeLabel =
-    currentFontSize === FONT_SIZE.SMALL
-      ? 's'
-      : currentFontSize === FONT_SIZE.LARGE
-        ? 'l'
-        : 'm';
+
+  if (!isVisible) return null;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          role="button"
-          tabIndex={-1}
-          tooltip="FontSize"
+        <FontSizeDropdownMenuButton
+          disabled={!canFontSize}
+          data-active-state={isActive ? 'on' : 'off'}
+          data-disabled={!canFontSize}
+          aria-pressed={isActive}
+          aria-label={label}
+          tooltip={label}
+          {...props}
         >
-          <div className="font-size__icon">
-            <FiType />
-            <span className="font-size__label">{sizeLabel}</span>
-          </div>
-          <ChevronDownIcon className="tiptap-button-dropdown-small" />
-        </Button>
+          <Icon className="tiptap-button-icon" />
+        </FontSizeDropdownMenuButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="bottom">
-        <DropdownMenuItem asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            role="button"
-            tabIndex={-1}
-            aria-label="フォントサイズ(ラージ)"
-            tooltip="FontSize Large"
-            data-active-state={sizeLabel === 'l' ? 'on' : 'off'}
-            onClick={() => {
-              editor.chain().focus().setFontSize(FONT_SIZE.LARGE).run();
-            }}
-            style={{ fontSize: FONT_SIZE.LARGE }}
-          >
-            大きめ
-          </Button>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            role="button"
-            tabIndex={-1}
-            aria-label="フォントサイズ(ミディアム)"
-            tooltip="FontSize Medium"
-            data-active-state={sizeLabel === 'm' ? 'on' : 'off'}
-            onClick={() => {
-              editor.chain().focus().setFontSize(FONT_SIZE.MEDIUM).run();
-            }}
-            style={{ fontSize: FONT_SIZE.MEDIUM }}
-          >
-            標準
-          </Button>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            role="button"
-            tabIndex={-1}
-            aria-label="フォントサイズ(スモール)"
-            tooltip="FontSize Large"
-            data-active-state={sizeLabel === 's' ? 'on' : 'off'}
-            onClick={() => {
-              editor.chain().focus().setFontSize(FONT_SIZE.SMALL).run();
-            }}
-            style={{ fontSize: FONT_SIZE.SMALL }}
-          >
-            小さめ
-          </Button>
-        </DropdownMenuItem>
+        {fontSizes.map((fontSize) => {
+          return (
+            <DropdownMenuItem asChild>
+              <FontSizeButton
+                editor={editor}
+                fontSize={fontSize.value}
+                text={fontSize.label}
+                tooltip={fontSize.label}
+                aria-label={`${fontSize.label} fontSize`}
+              />
+            </DropdownMenuItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
+
+FontSizeDropdownMenu.displayName = 'FontSizeDropdownMenu';

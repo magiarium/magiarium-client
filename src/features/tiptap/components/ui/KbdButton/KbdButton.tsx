@@ -9,6 +9,7 @@ import {
 
 // --- Hooks ---
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
 // --- Lib ---
 import { parseShortcutKeys } from '@/features/tiptap/lib/tiptapUtils';
 

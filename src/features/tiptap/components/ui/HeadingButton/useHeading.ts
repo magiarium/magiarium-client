@@ -84,6 +84,7 @@ export const HEADING_SHORTCUT_KEYS: Record<Level, string> = {
  * @param editor Tiptapエディターのインスタンス
  * @param level 見出しレベル(任意)
  * @param turnInfo パラグラフへの変換時に追加の判定を行うかどうか
+ * @returns true:利用可、false:利用不可
  */
 export const canToggle = (
   editor: Editor | null,
@@ -130,6 +131,7 @@ export const canToggle = (
  *
  * @param editor Tiptapエディターインスタンス
  * @param level 見出しレベル(任意)
+ * @returns true:アクティブ状態、false:非アクティブ状態
  */
 export const isHeadingActive = (
   editor: Editor | null,
