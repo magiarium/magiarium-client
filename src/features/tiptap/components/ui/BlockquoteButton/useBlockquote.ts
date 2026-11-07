@@ -172,10 +172,10 @@ export const toggleBlockquote = (editor: Editor | null): boolean => {
 };
 
 /**
- * 引用ブロックボタンを表示するかどうかを判定する処理
+ * ボタンを表示するかどうかを判定する処理
  *
  * @param props.editor Tiptapエディターのインスタンス
- * @param props.hideWhenUnavailable 引用ブロックボタンが使用できない場合に、ボタンを非表示にするかどうか。
+ * @param props.hideWhenUnavailable 対象機能が使用できない場合に、ボタンを非表示にするかどうか。
  * @returns false:表示する, true:非表示
  */
 export const shouldShowButton = (props: {

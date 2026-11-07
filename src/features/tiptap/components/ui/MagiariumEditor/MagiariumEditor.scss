@@ -224,4 +224,77 @@
     box-decoration-break: clone;
     padding: 0.1rem 0.3rem;
   }
+
+  // インラインコード
+  code {
+    background-color: #e0e0e0;
+    border-radius: 0.4rem;
+    color: var(--black);
+    font-size: 0.85rem;
+    padding: 0.25em 0.3em;
+  }
+
+  // インライン引用
+  q {
+    display: inline;
+    background-color: #f6f6f6;
+    border-radius: 0.4rem;
+    color: var(--black);
+    font-size: 0.85rem;
+    padding: 0.25em 0.4em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+
+    &::before,
+    &::after {
+      color: var(--main-color);
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    &::before {
+      content: '“';
+      margin-right: 0.25rem;
+    }
+    &::after {
+      content: '”';
+      margin-left: 0.2em;
+    }
+  }
+
+  // インラインリンク
+  a {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    margin-left: 0.25rem;
+
+    color: #9f626d;
+    font-weight: bold;
+
+    border-bottom: 1px solid #ebcdd2;
+    padding-bottom: 5px;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background-color: #f7e9eb;
+      border-radius: 0.25rem;
+      border-bottom-color: #c98792;
+      color: #b16f7b;
+    }
+
+    &::after {
+      font-family: 'bootstrap-icons';
+      content: '\F1C5';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0.3em;
+
+      position: relative;
+      top: 1px;
+
+      color: #c98792;
+    }
+  }
 }

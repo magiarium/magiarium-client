@@ -27,20 +27,26 @@ type IconComponent = ({ className, ...props }: IconProps) => React.ReactElement;
 export interface TextAlignButtonProps
   extends Omit<ButtonProps, 'type'>, UseTextAlignConfig {
   /**
-   * Optional text to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   text?: string;
+
   /**
-   * Optional show shortcut keys in the button.
+   * ボタン内にショートカットキーを表示するかどうか(任意)
    * @default false
    */
   showShortcut?: boolean;
+
   /**
-   * Optional custom icon component to render instead of the default.
+   * デフォルトのアイコンの代わりに表示する、任意のカスタムアイコンコンポーネント
    */
   icon?: React.MemoExoticComponent<IconComponent> | React.FC<IconProps>;
 }
-
+/**
+ * TextAlign切り替えショートカットバッジ
+ * @param params.align TextAlign種別
+ * @param params.shortcutKeys ショートカットキー
+ */
 export function TextAlignShortcutBadge({
   align,
   shortcutKeys = TEXT_ALIGN_SHORTCUT_KEYS[align],
@@ -52,9 +58,9 @@ export function TextAlignShortcutBadge({
 }
 
 /**
- * Button component for setting text alignment in a Tiptap editor.
+ * Tiptapエディター内のTextAlignを切り替えるためのボタンコンポーネント
  *
- * For custom button implementations, use the `useTextAlign` hook instead.
+ * カスタムボタンを実装する場合は、代わりに `useTextAlign` フックを使用してください。
  */
 export const TextAlignButton = forwardRef<
   HTMLButtonElement,

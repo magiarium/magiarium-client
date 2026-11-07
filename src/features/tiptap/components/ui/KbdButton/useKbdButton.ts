@@ -56,10 +56,10 @@ export const canToggleKbd = (editor: Editor | null): boolean => {
 };
 
 /**
- * キーボードボタンを表示するかどうかを判定する処理
+ * ボタンを表示するかどうかを判定する処理
  *
  * @param props.editor Tiptapエディターのインスタンス
- * @param props.hideWhenUnavailable キーボードボタンが使用できない場合に、ボタンを非表示にするかどうか。
+ * @param props.hideWhenUnavailable 対象機能が使用できない場合に、ボタンを非表示にするかどうか。
  * @returns false:表示する, true:非表示
  */
 export const shouldShowKbdButton = (props: {

@@ -9,7 +9,7 @@ import { parseShortcutKeys } from '@/features/tiptap/lib/tiptapUtils';
 import {
   PARAGRAPH_SHORTCUT_KEY,
   useParagraph,
-  UseParagraphConfig,
+  type UseParagraphConfig,
 } from '@/features/tiptap/components/ui/ParagrahButton';
 
 // --- UI Primitives ---

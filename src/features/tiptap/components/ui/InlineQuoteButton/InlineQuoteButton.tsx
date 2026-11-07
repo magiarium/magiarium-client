@@ -1,22 +1,40 @@
-import { Badge } from '@/features/tiptap/components/ui-primitive/Badge';
-import {
-  Button,
-  ButtonProps,
-} from '@/features/tiptap/components/ui-primitive/Button';
-import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
-import { parseShortcutKeys } from '@/features/tiptap/lib/tiptapUtils';
 import { forwardRef, useCallback } from 'react';
+
+// --- Hooks ---
+import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- Lib ---
+import { parseShortcutKeys } from '@/features/tiptap/lib/tiptapUtils';
+
+// --- Tiptap UI ---
 import {
   INLINE_QUOTE_SHORTCUT_KEY,
   useInlineQuote,
-  UseInlineQuoteConfig,
-} from './useInlineQuote';
+  type UseInlineQuoteConfig,
+} from '@/features/tiptap/components/ui/InlineQuoteButton';
+
+// --- UI Primitives ---
+import { Badge } from '@/features/tiptap/components/ui-primitive/Badge';
+import type { ButtonProps } from '@/features/tiptap/components/ui-primitive/Button';
+import { Button } from '@/features/tiptap/components/ui-primitive/Button';
 
 export interface InlineQuoteButtonProps
   extends Omit<ButtonProps, 'type'>, UseInlineQuoteConfig {
+  /**
+   * アイコンの横に表示する補足テキスト(任意)
+   */
   text?: string;
+
+  /**
+   * ボタン内にショートカットキーを表示するかどうか(任意)
+   * @default false
+   */
   showShortcut?: boolean;
 }
+/**
+ * インライン引用切り替えショートカットバッジ
+ * @param params.shortcutKeys ショートカットキー
+ */
 export const InlineQuoteShorcutBadge = ({
   shortcutKeys = INLINE_QUOTE_SHORTCUT_KEY,
 }: {
@@ -25,6 +43,11 @@ export const InlineQuoteShorcutBadge = ({
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
 };
 
+/**
+ * Tiptapエディター内のインライン引用を切り替えるためのボタンコンポーネント
+ *
+ * カスタムボタンを実装する場合は、代わりに `useInlineQuote` フックを使用してください。
+ */
 export const InlineQuoteButton = forwardRef<
   HTMLButtonElement,
   InlineQuoteButtonProps

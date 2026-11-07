@@ -188,11 +188,11 @@ export const isFontColorActive = (
 };
 
 /**
- * 指定されたモードに応じてハイライトをremoveする
+ * ボタンを表示するかどうかを判定する処理
  *
- * @param props.editor Tiptapエディター
- * @param props.hideWhenUnavailable フォントカラー機能が使用できない場合に、ボタンを非表示にするかどうか。
- * @return true: 成功、false: 失敗
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable 対象機能が使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
  */
 export const shouldShowButton = (props: {
   editor: Editor | null;
