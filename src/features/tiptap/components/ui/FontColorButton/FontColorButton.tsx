@@ -1,18 +1,38 @@
-import {
-  Button,
-  ButtonProps,
-} from '@/features/tiptap/components/ui-primitive/Button';
-import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 import { forwardRef, useCallback, useMemo } from 'react';
+
+// --- Hooks ---
+import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- Tiptap UI ---
+import type { UseFontColorConfig } from '@/features/tiptap/components/ui/FontColorButton';
+import { useFontColor } from '@/features/tiptap/components/ui/FontColorButton';
+
+// --- UI Primitives ---
+import type { ButtonProps } from '@/features/tiptap/components/ui-primitive/Button';
+import { Button } from '@/features/tiptap/components/ui-primitive/Button';
+
+// --- Styles ---
 import './FontColorButton.scss';
-import { useFontColor, UseFontColorConfig } from './useFontColor';
 
 export interface FontColorButtonProps
   extends Omit<ButtonProps, 'type'>, UseFontColorConfig {
+  /**
+   * アイコンの横に表示する補足テキスト(任意)
+   */
   text?: string;
+
+  /**
+   * ボタン内にショートカットキーを表示するかどうか(任意)
+   * @default false
+   */
   showShortcut?: boolean;
 }
 
+/**
+ * Tiptapエディターにフォントカラーを適用するためのボタンコンポーネント
+ *
+ * カスタムボタンを実装する場合は、代わりに `useFontColor` フックを使用してください。
+ */
 export const FontColorButton = forwardRef<
   HTMLButtonElement,
   FontColorButtonProps

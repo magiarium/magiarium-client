@@ -34,6 +34,7 @@ export interface HeadingButtonProps
    */
   showShortcut?: boolean;
 }
+
 /**
  * 見出し切り替えショートカットバッジ
  * @param params.shortcutKeys ショートカットキー

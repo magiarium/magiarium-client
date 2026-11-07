@@ -1,8 +1,14 @@
-import { BanIcon } from '@/features/tiptap/components/icons/BanIcon';
-import {
-  Button,
-  ButtonProps,
-} from '@/features/tiptap/components/ui-primitive/Button';
+import { type Editor } from '@tiptap/react';
+import { forwardRef, useMemo, useRef, useState } from 'react';
+
+// Hooks
+import { useIsBreakpoint } from '@/features/tiptap/hooks/useIsBreakpoint';
+import { useMenuNavigation } from '@/features/tiptap/hooks/useMenuNavigation';
+import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- UI Primitives ---
+import type { ButtonProps } from '@/features/tiptap/components/ui-primitive/Button';
+import { Button } from '@/features/tiptap/components/ui-primitive/Button';
 import { ButtonGroup } from '@/features/tiptap/components/ui-primitive/ButtonGroup';
 import {
   Card,
@@ -15,23 +21,38 @@ import {
   PopoverTrigger,
 } from '@/features/tiptap/components/ui-primitive/Popover';
 import { Separator } from '@/features/tiptap/components/ui-primitive/Separator';
-import {
+
+// --- Tiptap UI ---
+import type {
   FontColor,
+  UseFontColorConfig,
+} from '@/features/tiptap/components/ui/FontColorButton';
+import {
   FontColorButton,
   pickFontColorByValue,
   useFontColor,
-  UseFontColorConfig,
 } from '@/features/tiptap/components/ui/FontColorButton';
-import { useIsBreakpoint } from '@/features/tiptap/hooks/useIsBreakpoint';
-import { useMenuNavigation } from '@/features/tiptap/hooks/useMenuNavigation';
-import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
-import { Editor } from '@tiptap/react';
-import { forwardRef, useMemo, useRef, useState } from 'react';
+
+// Icons
+import { BanIcon } from '@/features/tiptap/components/icons/BanIcon';
 import { BsPalette } from 'react-icons/bs';
 
 export interface FontColorPopoverContentProps {
+  /**
+   * Tiptapエディターのインスタンス
+   */
   editor?: Editor | null;
+
+  /**
+   * フォントカラーポップオーバーで使用することのできるフォントカラーの一覧
+   * 指定しない場合はデフォルトのカラーセットが設定される。
+   */
   colors?: FontColor[];
+
+  /**
+   * true の場合、CSS変数（value）ではなく、実際の色の値（colorValue）を使用します。
+   * @default false
+   */
   useColorValue?: boolean;
 }
 
@@ -39,10 +60,22 @@ export interface FontColorPopoverProps
   extends
     Omit<ButtonProps, 'type'>,
     Pick<UseFontColorConfig, 'editor' | 'hideWhenUnavailable' | 'onApplied'> {
+  /**
+   * フォントカラーポップオーバーで使用することのできるフォントカラーの一覧
+   * 指定しない場合はデフォルトのカラーセットが設定される。
+   */
   colors?: FontColor[];
+
+  /**
+   * true の場合、CSS変数（value）ではなく、実際の色の値（colorValue）を使用します。
+   * @default false
+   */
   useColorValue?: boolean;
 }
 
+/**
+ * フォントカラーポップオーバーのボタン
+ */
 export const FontColorPopoverButton = forwardRef<
   HTMLButtonElement,
   ButtonProps
@@ -63,9 +96,18 @@ export const FontColorPopoverButton = forwardRef<
   </Button>
 ));
 
+/**
+ * フォントカラーポップオーバーコンテンツ
+ */
 export const FontColorPopoverContent = ({
   editor,
-  colors = pickFontColorByValue(['var(--tt-color-text-red)']),
+  colors = pickFontColorByValue([
+    'var(--tt-color-text-gray)',
+    'var(--tt-color-text-orange)',
+    'var(--tt-color-text-yellow)',
+    'var(--tt-color-text-green)',
+    'var(--tt-color-text-red)',
+  ]),
   useColorValue = false,
 }: FontColorPopoverContentProps) => {
   const { handleRemoveFontColor } = useFontColor({ editor });
@@ -137,9 +179,20 @@ export const FontColorPopoverContent = ({
   );
 };
 
+/**
+ * フォントカラーポップオーバー
+ *
+ * カスタムボタンを実装する場合は、代わりに `useFontColor` フックを使用してください。
+ */
 export const FontColorPopover = ({
   editor: providedEditor,
-  colors = pickFontColorByValue(['var(--tt-color-text-red)']),
+  colors = pickFontColorByValue([
+    'var(--tt-color-text-gray)',
+    'var(--tt-color-text-orange)',
+    'var(--tt-color-text-yellow)',
+    'var(--tt-color-text-green)',
+    'var(--tt-color-text-red)',
+  ]),
   hideWhenUnavailable = false,
   useColorValue = false,
   onApplied,

@@ -1,20 +1,37 @@
-import {
-  Button,
-  ButtonProps,
-} from '@/features/tiptap/components/ui-primitive/Button';
-import { useColorHighlight } from '@/features/tiptap/components/ui/ColorHighlightButton';
-import { useFontColor } from '@/features/tiptap/components/ui/FontColorButton';
-import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 import { forwardRef, useCallback, useMemo } from 'react';
-import './ColorButton.scss';
-import { UseColorConfig } from './useColorButton';
 
-export interface ColorButtonProps
-  extends Omit<ButtonProps, 'type'>, UseColorConfig {
+// --- Hooks ---
+import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- Tiptap UI ---
+import { useColorHighlight } from '@/features/tiptap/components/ui/ColorHighlightButton';
+import type { UseColorUnionConfig } from '@/features/tiptap/components/ui/ColorUnionButton';
+import { useFontColor } from '@/features/tiptap/components/ui/FontColorButton';
+
+// --- UI Primitives --
+import type { ButtonProps } from '@/features/tiptap/components/ui-primitive/Button';
+import { Button } from '@/features/tiptap/components/ui-primitive/Button';
+
+// --- Style
+import './ColorUnionButton.scss';
+
+export interface ColorUnionButtonProps
+  extends Omit<ButtonProps, 'type'>, UseColorUnionConfig {
+  /**
+   * アイコンの横に表示する補足テキスト(任意)
+   */
   text?: string;
 }
 
-export const ColorButton = forwardRef<HTMLButtonElement, ColorButtonProps>(
+/**
+ * HighlightColor+FontColorをまとめて適用するためのボタンコンポーネント
+ *
+ * カスタムボタンを実装する場合は、代わりに `useFontColor` と `useColorHighlight` フックを使用してください。
+ */
+export const ColorUnionButton = forwardRef<
+  HTMLButtonElement,
+  ColorUnionButtonProps
+>(
   (
     {
       editor: providedEditor,
@@ -105,7 +122,7 @@ export const ColorButton = forwardRef<HTMLButtonElement, ColorButtonProps>(
         {children ?? (
           <>
             <span
-              className="tiptap-button-color"
+              className="tiptap-button-color-union"
               style={
                 {
                   '--font-color': font.color,

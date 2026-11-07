@@ -26,16 +26,21 @@ import './ColorHighlightButton.scss';
 export interface ColorHighlightButtonProps
   extends Omit<ButtonProps, 'type'>, UseColorHighlightConfig {
   /**
-   * Optional text to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   text?: string;
+
   /**
-   * Optional show shortcut keys in the button.
+   * ボタン内にショートカットキーを表示するかどうか(任意)
    * @default false
    */
   showShortcut?: boolean;
 }
 
+/**
+ * カラーハイライト切り替えショートカットバッジ
+ * @param params.shortcutKeys ショートカットキー
+ */
 export function ColorHighlightShortcutBadge({
   shortcutKeys = COLOR_HIGHLIGHT_SHORTCUT_KEY,
 }: {
@@ -45,26 +50,26 @@ export function ColorHighlightShortcutBadge({
 }
 
 /**
- * Button component for applying color highlights in a Tiptap editor.
+ * Tiptapエディターにカラーハイライトを適用するためのボタンコンポーネント
  *
- * Supports two highlighting modes:
- * - "mark": Uses the highlight mark extension (default)
- * - "node": Uses the node background extension
+ * ２つのカラーハイライトモードをサポート
+ * - "mark": ハイライトアーク拡張機能を使用して、テキストの一部をインライン要素として装飾します。 (default)
+ * - "node": ノード背景拡張機能を使用して、対象ノードを背景を変更します。
  *
- * For custom button implementations, use the `useColorHighlight` hook instead.
+ * カスタムボタンを実装する場合は、代わりに `useColorHight` フックを使用してください。
  *
  * @example
  * ```tsx
- * // Mark-based highlighting (default)
+ * // マークベースハイライト (default)
  * <ColorHighlightButton highlightColor="yellow" />
  *
- * // Node-based background coloring
+ * // ノードベースの背景カラー
  * <ColorHighlightButton
  *   highlightColor="var(--tt-color-highlight-blue)"
  *   mode="node"
  * />
  *
- * // With custom callback
+ * // カスタムコールバック関数の追加
  * <ColorHighlightButton
  *   highlightColor="red"
  *   mode="mark"

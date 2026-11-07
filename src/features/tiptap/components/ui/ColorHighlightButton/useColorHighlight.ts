@@ -19,7 +19,10 @@ import { getNodeBackgroundAttributeName } from '@/features/tiptap/components/ext
 // --- Icons ---
 import { HighlighterIcon } from '@/features/tiptap/components/icons/HighlighterIcon';
 
+/**　ショートカットキー */
 export const COLOR_HIGHLIGHT_SHORTCUT_KEY = 'mod+shift+h';
+
+/** ハイライトカラー一覧 */
 export const HIGHLIGHT_COLORS = [
   {
     label: 'Default background',
@@ -82,45 +85,53 @@ export const HIGHLIGHT_COLORS = [
     border: 'var(--tt-color-highlight-red-contrast)',
   },
 ];
+/** ハイライトカラー型定義 */
 export type HighlightColor = (typeof HIGHLIGHT_COLORS)[number];
 
+/** ハイライトモード */
 export type HighlightMode = 'mark' | 'node';
 
 /**
- * Configuration for the color highlight functionality
+ * ハイライト機能の設定
  */
 export interface UseColorHighlightConfig {
   /**
-   * The Tiptap editor instance.
+   * Tiptapエディターのインスタンス(任意)
    */
   editor?: Editor | null;
+
   /**
-   * The color to apply when toggling the highlight.
+   * ハイライトの切り替え時に適用する色。
    */
   highlightColor?: string;
+
   /**
-   * Optional label to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   label?: string;
+
   /**
-   * Whether the button should hide when the mark is not available.
+   * 見出しが使用できない場合に、ボタンを非表示にするかどうか。
    * @default false
    */
   hideWhenUnavailable?: boolean;
+
   /**
-   * The highlighting mode to use.
-   * - "mark": Uses the highlight mark extension (default)
-   * - "node": Uses the node background extension
+   * 使用するハイライト機能
+   * - "mark": ハイライトマーク拡張機能を利用する (default)
+   * - "node": ノード背景拡張機能を利用する
    * @default "mark"
    */
   mode?: HighlightMode;
+
   /**
-   * When true, uses the actual color value (colorValue) instead of CSS variable (value).
+   * true の場合、CSS変数（value）ではなく、実際の色の値（colorValue）を使用する。
    * @default false
    */
   useColorValue?: boolean;
+
   /**
-   * Called when the highlight is applied.
+   * ハイライト適用が正常に完了した後に呼び出されるコールバック関数
    */
   onApplied?: ({
     color,
@@ -133,6 +144,17 @@ export interface UseColorHighlightConfig {
   }) => void;
 }
 
+/**
+ * 指定された色の値に対応するハイライトカラーを取得する。
+ *
+ *
+ * HIGHLIGHT_COLORS を基に色の値（value）とカラーオブジェクトの
+ * マッピングを作成し、指定された値に一致するカラーオブジェクトを返す。
+ * 一致するカラーが存在しない場合は除外する。
+ *
+ * @param values - 取得対象のハイライトカラーの値一覧
+ * @returns 指定された値に一致するハイライトカラーの一覧
+ */
 export function pickHighlightColorsByValue(values: string[]) {
   const colorMap = new Map(
     HIGHLIGHT_COLORS.map((color) => [color.value, color])
@@ -143,7 +165,11 @@ export function pickHighlightColorsByValue(values: string[]) {
 }
 
 /**
- * Gets the appropriate color value based on configuration
+ * 設定に応じて適切な払いとカラーの値を取得する
+ *
+ * @param color ハイライトカラーの値
+ * @param useColorValue 実際の色の値を使用するか否か
+ * @return 設定に応じたハイライトカラーの値
  */
 export function getHighlightColorValue(
   color: string,
@@ -158,7 +184,11 @@ export function getHighlightColorValue(
 }
 
 /**
- * Checks if highlight can be applied based on the mode and current editor state
+ * 現在のエディター状態で、ハイライトカラー切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param mode ハイライトモード
+ * @returns true:利用可、false:利用不可
  */
 export function canColorHighlight(
   editor: Editor | null,
@@ -186,7 +216,12 @@ export function canColorHighlight(
 }
 
 /**
- * Checks if highlight is currently active
+ * 対象のカラーハイライトが現在アクティブ状態かどうかチェックする
+ *
+ * @param editor Tiptapエディターインスタンス
+ * @param highlightColor ハイライトカラー
+ * @param mode ハイライトモード
+ * @returns true:アクティブ状態、false:非アクティブ状態
  */
 export function isColorHighlightActive(
   editor: Editor | null,
@@ -222,7 +257,11 @@ export function isColorHighlightActive(
 }
 
 /**
- * Removes highlight based on the mode
+ * 指定されたモードに応じてハイライトをremoveする
+ *
+ * @param editor Tiptapエディター
+ * @param mode ハイライトモード
+ * @return true: 成功、false: 失敗
  */
 export function removeHighlight(
   editor: Editor | null,
@@ -239,7 +278,12 @@ export function removeHighlight(
 }
 
 /**
- * Determines if the highlight button should be shown
+ * ハイライトボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable ハイライト機能が使用できない場合に、ボタンを非表示にするかどうか。
+ * @param props.mode ハイライトモード
+ * @returns false:表示する, true:非表示
  */
 export function shouldShowButton(props: {
   editor: Editor | null;
@@ -270,6 +314,10 @@ export function shouldShowButton(props: {
   return true;
 }
 
+/**
+ * Tiptapエディター向けのカラーハイライト機能を提供するカスタムフック
+ * @param config カラーハイライト設定
+ */
 export function useColorHighlight(config: UseColorHighlightConfig) {
   const {
     editor: providedEditor,

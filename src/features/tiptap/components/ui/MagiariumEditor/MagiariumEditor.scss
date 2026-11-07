@@ -48,13 +48,6 @@
 }
 
 .tiptap {
-  // 本文
-  p {
-    font-size: 1rem;
-    line-height: 1.5rem;
-    letter-spacing: 0.03em;
-  }
-
   // 見出し
   h3 {
     font-size: 1.5rem;
@@ -223,5 +216,12 @@
   ol li::marker {
     color: var(--main-color);
     font-weight: 900;
+  }
+
+  // ハイライト
+  mark {
+    border-radius: 0.4rem;
+    box-decoration-break: clone;
+    padding: 0.1rem 0.3rem;
   }
 }

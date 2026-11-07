@@ -39,16 +39,18 @@ import {
 
 export interface ColorHighlightPopoverContentProps {
   /**
-   * The Tiptap editor instance.
+   * Tiptapエディターのインスタンス
    */
   editor?: Editor | null;
+
   /**
-   * Optional colors to use in the highlight popover.
-   * If not provided, defaults to a predefined set of colors.
+   * ハイライトポップオーバーで使用することのできるハイライトカラー一覧
+   * 指定しない場合はデフォルトのカラーセットが設定される。
    */
   colors?: HighlightColor[];
+
   /**
-   * When true, uses the actual color value (colorValue) instead of CSS variable (value).
+   * true の場合、CSS変数（value）ではなく、実際の色の値（colorValue）を使用します。
    * @default false
    */
   useColorValue?: boolean;
@@ -62,17 +64,21 @@ export interface ColorHighlightPopoverProps
       'editor' | 'hideWhenUnavailable' | 'onApplied'
     > {
   /**
-   * Optional colors to use in the highlight popover.
-   * If not provided, defaults to a predefined set of colors.
+   * ハイライトポップオーバーで使用することのできるハイライトカラー一覧
+   * 指定しない場合はデフォルトのカラーセットが設定される。
    */
   colors?: HighlightColor[];
+
   /**
-   * When true, uses the actual color value (colorValue) instead of CSS variable (value).
+   * true の場合、CSS変数（value）ではなく、実際の色の値（colorValue）を使用します。
    * @default false
    */
   useColorValue?: boolean;
 }
 
+/**
+ * カラーハイライトポップオーバーのボタン
+ */
 export const ColorHighlightPopoverButton = forwardRef<
   HTMLButtonElement,
   ButtonProps
@@ -95,6 +101,9 @@ export const ColorHighlightPopoverButton = forwardRef<
 
 ColorHighlightPopoverButton.displayName = 'ColorHighlightPopoverButton';
 
+/**
+ * カラーハイライトポップオーバーコンテンツ
+ */
 export function ColorHighlightPopoverContent({
   editor,
   colors = pickHighlightColorsByValue([
@@ -177,6 +186,11 @@ export function ColorHighlightPopoverContent({
   );
 }
 
+/**
+ * カラーハイライトポップオーバー
+ *
+ * カスタムボタンを実装する場合は、代わりに `useColorHight` フックを使用してください。
+ */
 export function ColorHighlightPopover({
   editor: providedEditor,
   colors = pickHighlightColorsByValue([

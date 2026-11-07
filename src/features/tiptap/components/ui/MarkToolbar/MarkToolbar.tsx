@@ -2,7 +2,7 @@ import { AlignCenterIcon } from '@/features/tiptap/components/icons/AlignCenterI
 import { AlignJustifyIcon } from '@/features/tiptap/components/icons/AlignJustifyIcon';
 import { AlignLeftIcon } from '@/features/tiptap/components/icons/AlignLeftIcon';
 import { AlignRightIcon } from '@/features/tiptap/components/icons/AlignRightIcon';
-import { ColorPopover } from '@/features/tiptap/components/ui/ColorPopover';
+import { ColorUnionPopover } from '@/features/tiptap/components/ui/ColorUnionPopover';
 import { FontSizeDropdownMenu } from '@/features/tiptap/components/ui/FontSizeDropdownMenu';
 import { InlineQuoteButton } from '@/features/tiptap/components/ui/InlineQuoteButton';
 import { LinkPopover } from '@/features/tiptap/components/ui/LinkPopover';
@@ -29,7 +29,7 @@ export const MarkToolbar = ({ editor }: { editor: Editor }) => {
       <MarkButton editor={editor} type="strike" />
       <MarkButton editor={editor} type="underline" />
       <Separator />
-      <ColorPopover editor={editor} />
+      <ColorUnionPopover editor={editor} />
       <FontSizeDropdownMenu editor={editor} />
       <TextAlignDropdownMenu editor={editor} />
       <Separator />

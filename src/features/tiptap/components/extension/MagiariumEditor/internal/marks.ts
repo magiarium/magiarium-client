@@ -16,7 +16,9 @@ import { Kbd } from '../../Kbd';
 export const MARKS_EXTENSIONS: Extensions = [
   Bold,
   Code,
-  Highlight,
+  Highlight.configure({
+    multicolor: true,
+  }),
   Italic,
   InlineLink,
   RubyText,
