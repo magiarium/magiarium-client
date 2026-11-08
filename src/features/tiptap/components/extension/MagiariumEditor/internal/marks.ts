@@ -20,7 +20,6 @@ export const MARKS_EXTENSIONS: Extensions = [
     multicolor: true,
   }),
   Italic,
-  InlineLink,
   RubyText,
   Strike,
   Underline,
@@ -30,8 +29,7 @@ export const MARKS_EXTENSIONS: Extensions = [
   InlineQuote,
   TextStyle,
   Color,
-  Link.configure({
-    openOnClick: false,
-  }),
   Kbd,
+  Link,
+  InlineLink,
 ];

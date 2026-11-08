@@ -283,6 +283,25 @@
       color: #b16f7b;
     }
 
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      position: relative;
+      top: 0.2rem;
+      margin-right: 0.1rem;
+      flex-shrink: 0;
+      background-image: var(--inline-link-icon);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    &:not([style*='--inline-link-icon'])::before {
+      display: none;
+    }
+
     &::after {
       font-family: 'bootstrap-icons';
       content: '\F1C5';

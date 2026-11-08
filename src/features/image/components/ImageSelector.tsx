@@ -1,26 +1,35 @@
 import { ImageMetadata } from '@magiarium/structure';
+import classNames from 'classnames';
 import Image from 'next/image';
 import { ChangeEvent } from 'react';
 import { BsPlus } from 'react-icons/bs';
 import './ImageSelector.scss';
 
 export const ImageSelector = ({
+  className,
   templates,
+  isActive,
   onSelect,
   onInput,
 }: {
+  className?: string;
   templates: ImageMetadata[];
+  isActive?: (current: ImageMetadata) => boolean;
   onSelect: (next: ImageMetadata) => void;
   onInput?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onRemove?: () => void;
 }) => {
   return (
-    <div className="image-selector">
+    <div className={classNames('image-selector', className)}>
       {templates.map((targetImage, index) => {
         return (
           <button
             type="button"
             key={`template-image-${index}`}
-            className="image-selector__swatch"
+            className={classNames(
+              'image-selector__swatch',
+              isActive?.(targetImage) && 'image-selector__swatch--active'
+            )}
             onClick={() => {
               onSelect(targetImage);
             }}

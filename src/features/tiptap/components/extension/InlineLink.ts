@@ -1,6 +1,22 @@
 import { mergeAttributes } from '@tiptap/core';
 import Link from '@tiptap/extension-link';
 
+export interface InlineLinkAttributes {
+  href: string;
+  icon?: string | null;
+  target?: string | null;
+  rel?: string | null;
+}
+
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    inlineLink: {
+      setInlineLink: (attributes: InlineLinkAttributes) => ReturnType;
+      unsetInlineLink: () => ReturnType;
+    };
+  }
+}
+
 export const InlineLink = Link.extend({
   addAttributes() {
     return {
@@ -12,7 +28,12 @@ export const InlineLink = Link.extend({
         parseHTML: (element) => element.getAttribute('data-icon'),
 
         renderHTML: (attributes) =>
-          attributes.icon ? { 'data-icon': attributes.icon } : {},
+          attributes.icon
+            ? {
+                'data-icon': attributes.icon,
+                style: `--inline-link-icon: url("${attributes.icon}")`,
+              }
+            : {},
       },
     };
   },
@@ -25,19 +46,25 @@ export const InlineLink = Link.extend({
       mergeAttributes(attributes, {
         class: 'inline-link',
       }),
-      ...(icon
-        ? [
-            [
-              'span',
-              {
-                class: 'inline-link__icon',
-                'aria-hidden': 'true',
-              },
-              icon,
-            ],
-          ]
-        : []),
       ['span', { class: 'inline-link__text' }, 0],
     ];
+  },
+
+  addCommands() {
+    return {
+      setInlineLink:
+        (attributes) =>
+        ({ chain }) => {
+          return chain()
+            .setLink(attributes)
+            .setMeta('preventAutolink', true)
+            .run();
+        },
+      unsetInlineLink:
+        () =>
+        ({ chain }) => {
+          return chain().unsetLink().run();
+        },
+    };
   },
 });

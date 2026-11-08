@@ -5,12 +5,12 @@ import { AlignRightIcon } from '@/features/tiptap/components/icons/AlignRightIco
 import { ColorUnionPopover } from '@/features/tiptap/components/ui/ColorUnionPopover';
 import { FontSizeDropdownMenu } from '@/features/tiptap/components/ui/FontSizeDropdownMenu';
 import { InlineQuoteButton } from '@/features/tiptap/components/ui/InlineQuoteButton';
-import { LinkPopover } from '@/features/tiptap/components/ui/LinkPopover';
 import { MarkButton } from '@/features/tiptap/components/ui/MarkButton';
 import { RubyTextPopover } from '@/features/tiptap/components/ui/RubyTextButton';
 import { TextAlignDropdownMenu } from '@/features/tiptap/components/ui/TextAlignDropdownMenu';
 import { Editor } from '@tiptap/react';
 import { Separator } from '../../ui-primitive/Separator';
+import { InlineLinkPopover } from '../InlineLinkPopover';
 import { KbdButton } from '../KbdButton/KbdButton';
 import './MarkToolbar.scss';
 
@@ -33,7 +33,7 @@ export const MarkToolbar = ({ editor }: { editor: Editor }) => {
       <FontSizeDropdownMenu editor={editor} />
       <TextAlignDropdownMenu editor={editor} />
       <Separator />
-      <LinkPopover editor={editor} autoOpenOnLinkActive={false} />
+      <InlineLinkPopover editor={editor} autoOpenOnLinkActive={false} />
       <MarkButton editor={editor} type="code" />
       <InlineQuoteButton editor={editor} />
       <RubyTextPopover editor={editor} />
