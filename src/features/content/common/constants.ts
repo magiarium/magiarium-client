@@ -198,3 +198,5 @@ export const OGP_TEMPLATES: ImageMetadata[] = [
     uploadedAt: '20261018155000',
   },
 ];
+
+export const LINK_CARD_THUMBNAIL_TEMPLATES: ImageMetadata[] = [];

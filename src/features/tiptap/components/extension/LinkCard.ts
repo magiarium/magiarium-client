@@ -1,6 +1,6 @@
-import { Node, mergeAttributes } from '@tiptap/core';
-
-export type NodeLinkTarget = '_self' | '_blank' | '_parent' | '_top';
+import { Node } from '@tiptap/core';
+import { ReactNodeViewRenderer } from '@tiptap/react';
+import { LinkCardNode } from '../node/LinkCardNode/LinkCardNode';
 
 // コマンドの型定義
 declare module '@tiptap/core' {
@@ -17,10 +17,11 @@ export interface LinkCardOptions {
 }
 
 export interface LinkCardAttributes {
-  thumbnailUrl: string | null;
-  title: string;
-  linkUrl: string;
-  target: NodeLinkTarget;
+  href: string | null;
+  thumbnailUrl?: string | null;
+  title?: string | null;
+  description?: string | null;
+  target?: string | null;
 }
 
 export const LinkCard = Node.create<LinkCardOptions>({
@@ -42,14 +43,24 @@ export const LinkCard = Node.create<LinkCardOptions>({
 
   addAttributes() {
     return {
-      thumbnail: {
-        default: null,
+      href: {
+        default: '',
 
-        parseHTML: (element) => element.getAttribute('data-thumbnail'),
+        parseHTML: (element) => element.getAttribute('data-href') ?? '',
+
+        renderHTML: (attributes) => ({
+          'data-href': attributes.href,
+        }),
+      },
+
+      thumbnailUrl: {
+        default: '',
+
+        parseHTML: (element) => element.getAttribute('data-thumbnail') ?? '',
 
         renderHTML: (attributes) =>
-          attributes.thumbnail
-            ? { 'data-thumbnail': attributes.thumbnail }
+          attributes.thumbnailUrl
+            ? { 'data-thumbnail': attributes.thumbnailUrl }
             : {},
       },
 
@@ -63,13 +74,13 @@ export const LinkCard = Node.create<LinkCardOptions>({
         }),
       },
 
-      url: {
+      description: {
         default: '',
 
-        parseHTML: (element) => element.getAttribute('data-url') ?? '',
+        parseHTML: (element) => element.getAttribute('data-description') ?? '',
 
         renderHTML: (attributes) => ({
-          'data-url': attributes.url,
+          'data-description': attributes.description,
         }),
       },
 
@@ -94,45 +105,13 @@ export const LinkCard = Node.create<LinkCardOptions>({
   parseHTML() {
     return [
       {
-        tag: 'a[data-type="node-link"]',
+        tag: 'a[data-type="link-card"]',
       },
     ];
   },
 
-  renderHTML({ node, HTMLAttributes }) {
-    const { thumbnail, title, url, target } = node.attrs;
-
-    return [
-      'a',
-      mergeAttributes(
-        this.options.HTMLAttributes,
-        HTMLAttributes,
-        {
-          'data-type': 'link-card',
-          class: 'link-card',
-          href: url,
-          target,
-          rel: target === '_blank' ? 'noopener noreferrer' : null,
-          'aria-label': title,
-        },
-        thumbnail ? { 'data-thumbnail': thumbnail } : {},
-        { 'data-title': title, 'data-url': url }
-      ),
-      ...(thumbnail
-        ? [
-            [
-              'img',
-              {
-                class: 'link-card__thumbnail',
-                src: thumbnail,
-                alt: '',
-                loading: 'lazy',
-              },
-            ],
-          ]
-        : []),
-      ['span', { class: 'link-card__title' }, title],
-    ];
+  addNodeView() {
+    return ReactNodeViewRenderer(LinkCardNode);
   },
 
   addCommands() {

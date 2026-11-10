@@ -9,16 +9,38 @@ import { useCallback, useEffect, useState } from 'react';
 import { BsCardText } from 'react-icons/bs';
 import { LinkCardAttributes } from '../../extension/LinkCard';
 
+/**
+ * リンクカードショートカットキー
+ */
 export const LINKCARD_SHORTCUT_KEY = 'mod+shift+l+c';
 
+/**
+ * リンクカード機能の設定
+ */
 export interface UseLinkCardConfig {
+  /**
+   * Tiptapエディターのインスタンス(任意)
+   */
   editor?: Editor | null;
 
+  /**
+   * InlineLink引用機能が使用できない場合に、ボタンを非表示にするかどうか。
+   * @default false
+   */
   hideWhenUnavailable?: boolean;
 
+  /**
+   * Linkの設定が正常に完了した後に呼び出されるコールバック関数
+   */
   onSetLinkCard?: () => void;
 }
 
+/**
+ * 現在のエディター状態で、Linkの設定が可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @returns true:利用可、false:利用不可
+ */
 export const canSetLinkCard = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
 
@@ -30,13 +52,16 @@ export const canSetLinkCard = (editor: Editor | null): boolean => {
   }
 
   return editor.can().setLinkCard({
-    title: 'test',
-    thumbnailUrl: '/hogehoge.jpg',
-    linkUrl: 'https://magiarium.info',
-    target: '_blank',
+    href: 'https://magiarium.info',
   });
 };
-
+/**
+ * ボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable 対象機能が使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
+ */
 export const shouldShowButton = (props: {
   editor: Editor | null;
   hideWhenUnavailable: boolean;
@@ -62,11 +87,13 @@ export const shouldShowButton = (props: {
   return true;
 };
 
-export interface LinkCardHandlerProps {
+/**
+ * Tiptapエディター向けのLinkCard機能を提供するカスタムフック。
+ */
+export const useLinkCardHandlers = (props: {
   editor: Editor | null;
   onSetLinkCard?: () => void;
-}
-export const useLinkCardHandlers = (props: LinkCardHandlerProps) => {
+}) => {
   const { editor, onSetLinkCard } = props;
   const [linkCardState, setLinkCardState] = useState<LinkCardAttributes | null>(
     null
@@ -75,10 +102,10 @@ export const useLinkCardHandlers = (props: LinkCardHandlerProps) => {
   useEffect(() => {
     if (!editor) return;
 
-    const { thumbnailUrl, title, linkUrl, target } =
+    const { thumbnailUrl, title, href, target, description } =
       editor.getAttributes('linkCard');
     if (editor.isActive('linkCard') && linkCardState === null) {
-      setLinkCardState({ thumbnailUrl, title, linkUrl, target });
+      setLinkCardState({ thumbnailUrl, title, href, target, description });
     }
   }, [editor, linkCardState]);
 
@@ -86,9 +113,9 @@ export const useLinkCardHandlers = (props: LinkCardHandlerProps) => {
     if (!editor) return;
 
     const updateLinkCardState = () => {
-      const { thumbnailUrl, title, linkUrl, target } =
+      const { thumbnailUrl, title, href, target, description } =
         editor.getAttributes('linkCard');
-      setLinkCardState({ thumbnailUrl, title, linkUrl, target });
+      setLinkCardState({ thumbnailUrl, title, href, target, description });
     };
     editor.on('selectionUpdate', updateLinkCardState);
     return () => {
@@ -96,30 +123,23 @@ export const useLinkCardHandlers = (props: LinkCardHandlerProps) => {
     };
   }, [editor]);
 
-  const insertLinkCard = useCallback(() => {
-    if (!editor || !editor.isEditable) return false;
-    if (!canSetLinkCard(editor)) return false;
-
-    return editor.chain().focus().insertContent({
-      type: 'linkCard',
-    });
-  }, [editor]);
-
   const setLinkCard = useCallback(() => {
     if (!editor || !editor.isEditable) return false;
     if (!canSetLinkCard(editor)) return false;
-
-    if (!linkCardState) return false;
 
     const { selection } = editor.state;
     const isEmpty = selection.empty;
 
     let chain = editor.chain().focus();
-    chain = chain.extendMarkRange('linkCard').setLinkCard(linkCardState);
+    chain = chain.setLinkCard(
+      linkCardState ?? {
+        href: '',
+      }
+    );
 
     if (isEmpty) {
       chain = chain.insertContent({
-        type: 'text',
+        type: 'linkCard',
         attributes: linkCardState,
       });
     }
@@ -134,21 +154,17 @@ export const useLinkCardHandlers = (props: LinkCardHandlerProps) => {
     editor
       .chain()
       .focus()
-      .extendMarkRange('linkCard')
       .unsetLinkCard()
       .setMeta('preventAutolink', true)
       .run();
     setLinkCardState({
-      thumbnailUrl: '',
-      target: '_blank',
-      title: '',
-      linkUrl: '',
+      href: '',
     });
   }, [editor]);
 
   const openLink = useCallback(
     (target: string = '_blank', features: string = 'noopener,noreferrer') => {
-      const url = linkCardState?.linkUrl;
+      const url = linkCardState?.href;
       if (!url) return;
 
       const safeUrl = sanitizeUrl(url, window.location.href);
@@ -156,24 +172,23 @@ export const useLinkCardHandlers = (props: LinkCardHandlerProps) => {
         window.open(safeUrl, target, features);
       }
     },
-    [linkCardState?.linkUrl]
+    [linkCardState?.href]
   );
 
   return {
     linkCardState: linkCardState || {
-      thumbnailUrl: '',
-      target: '_blank',
-      title: '',
-      linkUrl: '',
+      href: '',
     },
     setLinkCardState,
     setLinkCard,
-    insertLinkCard,
     removeLinkCard,
     openLink,
   };
 };
-
+/**
+ * Tiptapエディター向けのLinkCardを提供するカスタムフック。
+ * @param config 引用ブロック機能の設定
+ */
 export const useLinkCard = (config?: UseLinkCardConfig) => {
   const {
     editor: providedEditor,

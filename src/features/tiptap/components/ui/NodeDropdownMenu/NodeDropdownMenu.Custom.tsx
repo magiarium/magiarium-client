@@ -10,7 +10,7 @@ import {
   BsYoutube,
 } from 'react-icons/bs';
 import { ImagePlusIcon } from '../../icons/ImagePlusIcon';
-import { LinkCardPopover } from '../LinkCardButton/LinkCardButton';
+import { LinkCardButton } from '../LinkCardButton';
 import { TablePopover } from '../TablePopover';
 import { TipsButton } from '../TipsButton/TipsButton';
 import { YoutubePopover } from '../YoutubePopover';
@@ -61,19 +61,8 @@ const CUSTOM_NODE_SELECTOR_ITEMS = [
     renderIcon: ({ className }: { className: string }) => {
       return <BsCardText className={className} />;
     },
-    renderItem: (
-      editor: Editor,
-      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
-    ) => (
-      <LinkCardPopover
-        editor={editor}
-        text="リンクカード"
-        onOpenChange={(isOpen) => {
-          if (setIsOpen) {
-            setIsOpen(isOpen);
-          }
-        }}
-      />
+    renderItem: (editor: Editor) => (
+      <LinkCardButton editor={editor} text="リンクカード" />
     ),
     asChild: true,
   },
