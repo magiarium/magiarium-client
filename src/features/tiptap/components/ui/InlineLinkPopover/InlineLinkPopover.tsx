@@ -11,9 +11,11 @@ import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 import { ExternalLinkIcon } from '@/features/tiptap/components/icons/ExternalLinkIcon';
 import { LinkIcon } from '@/features/tiptap/components/icons/LinkIcon';
 import { TrashIcon } from '@/features/tiptap/components/icons/TrashIcon';
+import { BsTrash } from 'react-icons/bs';
+
 // --- Tiptap UI ---
-import type { UseLinkPopoverConfig } from '@/features/tiptap/components/ui/InlineLinkPopover';
-import { useInlineLinkPopover } from '@/features/tiptap/components/ui/InlineLinkPopover';
+import type { UseInlineLinkConfig } from '@/features/tiptap/components/ui/InlineLinkPopover';
+import { useInlineLink } from '@/features/tiptap/components/ui/InlineLinkPopover';
 
 // --- UI Primitives ---
 import { Button as MagiariumButton } from '@/common/components/Button';
@@ -32,17 +34,16 @@ import {
   PopoverTrigger,
 } from '@/features/tiptap/components/ui-primitive/Popover';
 
-import { BsTrash } from 'react-icons/bs';
 import './InlineLinkPopover.scss';
 
 export interface InlineLinkMainProps {
   /**
-   * linkに設定するURL
+   * InlineLinkの設定
    */
   inlineLinkState: InlineLinkAttributes;
 
   /**
-   * URLの状態を更新するための関数
+   * InlineLinkの設定を更新するための関数
    */
   setInlineLinkState: React.Dispatch<
     React.SetStateAction<InlineLinkAttributes | null>
@@ -54,7 +55,7 @@ export interface InlineLinkMainProps {
   setInlineLink: () => void;
 
   /**
-   * エディターからインラインリンクを取り除く太目の関数
+   * エディターからインラインリンクを取り除くための関数
    */
   removeInlineLink: () => void;
 
@@ -71,7 +72,7 @@ export interface InlineLinkMainProps {
 }
 
 export interface InlineLinkPopoverProps
-  extends Omit<ButtonProps, 'type'>, UseLinkPopoverConfig {
+  extends Omit<ButtonProps, 'type'>, UseInlineLinkConfig {
   /**
    * ポップオーバー開閉時のコールバック関数
    */
@@ -141,17 +142,17 @@ const InlineLinkMain = ({
         }}
         className="tiptap-inline-link__content-container"
       >
-        {inlineLinkState.href && isActive && (
-          <Button
-            type="button"
-            onClick={removeInlineLink}
-            title="Remove link"
-            variant="ghost"
-          >
-            <TrashIcon className="tiptap-button-icon" />
-          </Button>
-        )}
         <CardItemGroup orientation="vertical">
+          {inlineLinkState.href && isActive && (
+            <Button
+              type="button"
+              onClick={removeInlineLink}
+              title="Remove link"
+              variant="ghost"
+            >
+              <TrashIcon className="tiptap-button-icon" />
+            </Button>
+          )}
           <CardItemGroup orientation="horizontal">
             <Input
               type="url"
@@ -297,7 +298,7 @@ const InlineLinkMain = ({
  * @param editor Tiptapエディターのインスタンス
  */
 export const InlineLinkContent = ({ editor }: { editor?: Editor | null }) => {
-  const linkPopover = useInlineLinkPopover({
+  const linkPopover = useInlineLink({
     editor,
   });
 
@@ -305,9 +306,9 @@ export const InlineLinkContent = ({ editor }: { editor?: Editor | null }) => {
 };
 
 /**
- * TiptapエディターのLinkポップオーバーコンポーネント
+ * TiptapエディターのInlineLinkポップオーバーコンポーネント
  *
- * カスタムボタンを実装する場合は、代わりに `useInlineLinkPopover` フックを使用してください。
+ * カスタムボタンを実装する場合は、代わりに `useInlineLink` フックを使用してください。
  */
 export const InlineLinkPopover = forwardRef<
   HTMLButtonElement,
@@ -340,7 +341,7 @@ export const InlineLinkPopover = forwardRef<
       openLink,
       label,
       Icon,
-    } = useInlineLinkPopover({
+    } = useInlineLink({
       editor,
       hideWhenUnavailable,
       onSetInlineLink,

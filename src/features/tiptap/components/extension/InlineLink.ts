@@ -1,5 +1,6 @@
-import { mergeAttributes } from '@tiptap/core';
 import Link from '@tiptap/extension-link';
+import { ReactMarkViewRenderer } from '@tiptap/react';
+import { InlineLinkMark } from '../node/InlineLinkMark';
 
 export interface InlineLinkAttributes {
   href: string;
@@ -38,18 +39,6 @@ export const InlineLink = Link.extend({
     };
   },
 
-  renderHTML({ HTMLAttributes }) {
-    const { icon, ...attributes } = HTMLAttributes;
-
-    return [
-      'a',
-      mergeAttributes(attributes, {
-        class: 'inline-link',
-      }),
-      ['span', { class: 'inline-link__text' }, 0],
-    ];
-  },
-
   addCommands() {
     return {
       setInlineLink:
@@ -66,5 +55,9 @@ export const InlineLink = Link.extend({
           return chain().unsetLink().run();
         },
     };
+  },
+
+  addMarkView() {
+    return ReactMarkViewRenderer(InlineLinkMark);
   },
 });

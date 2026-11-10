@@ -18,16 +18,16 @@ import {
 } from '@/features/tiptap/lib/tiptapUtils';
 
 /**
- * LinkPopover機能の設定
+ * InlineLink機能の設定
  */
-export interface UseLinkPopoverConfig {
+export interface UseInlineLinkConfig {
   /**
    * Tiptapエディターのインスタンス(任意)
    */
   editor?: Editor | null;
 
   /**
-   * LinkPopover引用機能が使用できない場合に、ボタンを非表示にするかどうか。
+   * InlineLink引用機能が使用できない場合に、ボタンを非表示にするかどうか。
    * @default false
    */
   hideWhenUnavailable?: boolean;
@@ -39,24 +39,10 @@ export interface UseLinkPopoverConfig {
 }
 
 /**
- * Link機能の設定
- */
-export interface LinkHandlerProps {
-  /**
-   * Tiptapエディターのインスタンス(任意)
-   */
-  editor: Editor | null;
-
-  /**
-   * Linkの設定が正常に完了した後に呼び出されるコールバック関数
-   */
-  onSetInlineLink?: () => void;
-}
-
-/**
  * 現在のエディター状態で、Linkの設定が可能かどうかをチェックする処理
  *
  * @param editor Tiptapエディターのインスタンス
+ * @returns true:利用可、false:利用不可
  */
 export const canSetInlineLink = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
@@ -117,9 +103,12 @@ export const shouldShowInlineLinkButton = (props: {
 };
 
 /**
- * Tiptapエディター向けのLink機能を提供するカスタムフック。
+ * Tiptapエディター向けのInlineLink機能を提供するカスタムフック。
  */
-export const useInlineLinkHandler = (props: LinkHandlerProps) => {
+export const useInlineLinkHandler = (props: {
+  editor: Editor | null;
+  onSetInlineLink?: () => void;
+}) => {
   const { editor, onSetInlineLink } = props;
   const [inlineLinkState, setInlineLinkState] =
     useState<InlineLinkAttributes | null>(null);
@@ -214,7 +203,7 @@ export const useInlineLinkHandler = (props: LinkHandlerProps) => {
 };
 
 /**
- * Linkポップオーバーの状態を管理するためのカスタムフック
+ * InlineLinkの状態を管理するためのカスタムフック
  *
  * @param editor tiptapエディターのインスタンス
  * @param hideWhenUnavailable 対象機能が使用できない場合に、ボタンを非表示にするかどうか。
@@ -259,7 +248,7 @@ export const useLinkState = (props: {
 };
 
 /**
- * Tiptapエディター向けのLinkPopoverを提供するカスタムフック。
+ * Tiptapエディター向けのInlineLinkを提供するカスタムフック。
  * @param config 引用ブロック機能の設定
  *
  * @example
@@ -296,7 +285,7 @@ export const useLinkState = (props: {
  * }
  * ```
  */
-export const useInlineLinkPopover = (config?: UseLinkPopoverConfig) => {
+export const useInlineLink = (config?: UseInlineLinkConfig) => {
   const {
     editor: providedEditor,
     hideWhenUnavailable = false,
