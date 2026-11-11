@@ -11,16 +11,29 @@ export const ImageSelector = ({
   isActive,
   onSelect,
   onInput,
+  iconSize,
 }: {
   className?: string;
   templates: ImageMetadata[];
+  iconSize?: string;
   isActive?: (current: ImageMetadata) => boolean;
   onSelect: (next: ImageMetadata) => void;
   onInput?: (event: ChangeEvent<HTMLInputElement>) => void;
   onRemove?: () => void;
 }) => {
   return (
-    <div className={classNames('image-selector', className)}>
+    <div
+      className={classNames('image-selector', className)}
+      style={
+        iconSize
+          ? ({
+              '--image-selector-icon-size': iconSize,
+            } as React.CSSProperties)
+          : ({
+              '--image-selector-icon-size': '100px',
+            } as React.CSSProperties)
+      }
+    >
       {templates.map((targetImage, index) => {
         return (
           <button

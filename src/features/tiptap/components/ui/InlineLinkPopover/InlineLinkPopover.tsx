@@ -1,4 +1,3 @@
-import { ImageSelector } from '@/features/image/components/ImageSelector';
 import type { InlineLinkAttributes } from '@/features/tiptap/components/extension/InlineLink';
 import type { Editor } from '@tiptap/react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
@@ -10,8 +9,6 @@ import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 // --- Icons ---
 import { ExternalLinkIcon } from '@/features/tiptap/components/icons/ExternalLinkIcon';
 import { LinkIcon } from '@/features/tiptap/components/icons/LinkIcon';
-import { TrashIcon } from '@/features/tiptap/components/icons/TrashIcon';
-import { BsTrash } from 'react-icons/bs';
 
 // --- Tiptap UI ---
 import type { UseInlineLinkConfig } from '@/features/tiptap/components/ui/InlineLinkPopover';
@@ -34,6 +31,7 @@ import {
   PopoverTrigger,
 } from '@/features/tiptap/components/ui-primitive/Popover';
 
+import { FaUnlink } from 'react-icons/fa';
 import './InlineLinkPopover.scss';
 
 export interface InlineLinkMainProps {
@@ -143,21 +141,11 @@ const InlineLinkMain = ({
         className="tiptap-inline-link__content-container"
       >
         <CardItemGroup orientation="vertical">
-          {inlineLinkState.href && isActive && (
-            <Button
-              type="button"
-              onClick={removeInlineLink}
-              title="Remove link"
-              variant="ghost"
-            >
-              <TrashIcon className="tiptap-button-icon" />
-            </Button>
-          )}
           <CardItemGroup orientation="horizontal">
             <Input
               type="url"
-              placeholder="Paste a link..."
-              value={inlineLinkState.href}
+              placeholder="リンクURLを貼り付けてください。"
+              value={inlineLinkState.href ?? ''}
               onChange={(e) =>
                 setInlineLinkState((prev) => {
                   return {
@@ -184,82 +172,6 @@ const InlineLinkMain = ({
               </Button>
             </ButtonGroup>
           </CardItemGroup>
-          <CardItemGroup className="tiptap-inline-link__group">
-            <ImageSelector
-              className="tiptap-inline-link__icon-selector"
-              templates={[
-                {
-                  path: '/assets/images/preset/x_icon.png',
-                  mimeType: 'image/png',
-                  alt: 'Xアイコン',
-                  fileName: 'x_icon.png',
-                  size: { width: 32, height: 32 },
-                  uploadedAt: '20261108122000',
-                },
-                {
-                  path: '/assets/images/preset/youtube_icon.png',
-                  mimeType: 'image/png',
-                  alt: 'Youtubeアイコン',
-                  fileName: 'youtube_icon.png',
-                  size: { width: 32, height: 32 },
-                  uploadedAt: '20261108122000',
-                },
-                {
-                  path: '/assets/images/preset/pixiv_icon.png',
-                  mimeType: 'image/png',
-                  alt: 'Xアイコン',
-                  fileName: 'pixiv_icon.png',
-                  size: { width: 32, height: 32 },
-                  uploadedAt: '20261108122000',
-                },
-                {
-                  path: '/assets/images/preset/magiarium_icon.png',
-                  mimeType: 'image/png',
-                  alt: 'まぎありうむブログアイコン',
-                  fileName: 'magiarium_icon.png',
-                  size: { width: 32, height: 32 },
-                  uploadedAt: '20261108122000',
-                },
-                {
-                  path: '/assets/images/preset/magiarium_blog_icon.png',
-                  mimeType: 'image/png',
-                  alt: 'まぎありうむアイコン',
-                  fileName: 'magiarium_blog_icon.png',
-                  size: { width: 32, height: 32 },
-                  uploadedAt: '20261108122000',
-                },
-              ]}
-              isActive={(current) => {
-                if (inlineLinkState.href === '') return false;
-                return current.path === inlineLinkState.icon;
-              }}
-              onSelect={(imageInfo) => {
-                setInlineLinkState((prev) => {
-                  return {
-                    ...prev,
-                    href: prev?.href || '',
-                    icon: imageInfo.path,
-                  };
-                });
-              }}
-            />
-            {inlineLinkState.icon && inlineLinkState.icon !== '' && (
-              <Button
-                onClick={() => {
-                  setInlineLinkState((prev) => {
-                    return {
-                      ...prev,
-                      href: prev?.href || '',
-                      icon: null,
-                    };
-                  });
-                }}
-              >
-                <BsTrash />
-              </Button>
-            )}
-          </CardItemGroup>
-
           <label className="tiptap-inline-link__target-selector">
             target:
             <select
@@ -278,14 +190,32 @@ const InlineLinkMain = ({
               <option value="_self">同タブ</option>
             </select>
           </label>
-
-          <MagiariumButton
-            onClick={setInlineLink}
-            isDisabled={!inlineLinkState.href && !isActive}
-            priority={'PRIMARY'}
+          <ButtonGroup
+            orientation={'horizontal'}
+            style={{
+              gap: '10px',
+              alignItems: 'stretch',
+              width: '100%',
+            }}
           >
-            決定
-          </MagiariumButton>
+            {inlineLinkState.href && isActive && (
+              <MagiariumButton
+                type="button"
+                onClick={removeInlineLink}
+                priority="SECONDARY"
+              >
+                <FaUnlink className="tiptap-button-icon" />
+                リンク解除
+              </MagiariumButton>
+            )}
+            <MagiariumButton
+              onClick={setInlineLink}
+              isDisabled={!inlineLinkState.href && !isActive}
+              priority={'PRIMARY'}
+            >
+              決定
+            </MagiariumButton>
+          </ButtonGroup>
         </CardItemGroup>
       </CardBody>
     </Card>
@@ -405,7 +335,9 @@ export const InlineLinkPopover = forwardRef<
             setInlineLinkState={setInlineLinkState}
             setInlineLink={handleSetInlineLink}
             removeInlineLink={removeInlineLink}
-            openLink={openLink}
+            openLink={() => {
+              openLink('_blank');
+            }}
             isActive={isActive}
           />
         </PopoverContent>

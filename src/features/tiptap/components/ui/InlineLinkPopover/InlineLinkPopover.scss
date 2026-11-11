@@ -23,29 +23,6 @@
       overflow: visible;
     }
   }
-  &__icon-selector {
-    height: 25px;
-    width: 25px;
-
-    label,
-    button {
-      width: 25px;
-      height: 25px;
-    }
-    img {
-      height: 25px;
-      width: 25px;
-      object-fit: contain;
-    }
-    svg {
-      height: 25px;
-      width: 25px;
-    }
-    input[type='file'] {
-      height: 25px;
-      width: 25px;
-    }
-  }
   &__icon-button {
     position: relative;
     display: inline-flex;

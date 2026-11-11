@@ -1,9 +1,11 @@
 .image-selector {
   display: flex;
+  flex-wrap: nowrap;
   gap: 10px;
   padding: 3px;
-  width: 100px;
-  height: 100px;
+
+  width: fit-content;
+  height: fit-content;
 
   label,
   button {
@@ -14,8 +16,8 @@
     justify-content: center;
 
     box-sizing: border-box;
-    width: 100px;
-    height: 100px;
+    width: var(--image-selector-icon-size);
+    height: var(--image-selector-icon-size);
 
     border: 1px solid var(--shadow-color);
     border-radius: 8px;
@@ -39,8 +41,8 @@
 
   &__swatch {
     img {
-      height: 100px;
-      width: 100px;
+      height: var(--image-selector-icon-size);
+      width: var(--image-selector-icon-size);
       object-fit: contain;
     }
 
@@ -57,8 +59,8 @@
     border-style: dashed;
 
     svg {
-      height: 100px;
-      width: 90px;
+      height: var(--image-selector-icon-size);
+      width: var(--image-selector-icon-size);
 
       color: var(--text-color);
       pointer-events: none;
@@ -68,8 +70,8 @@
       position: absolute;
       inset: 0;
 
-      height: 100px;
-      width: 100px;
+      height: var(--image-selector-icon-size);
+      width: var(--image-selector-icon-size);
       padding: 0;
       border: 0;
       border-radius: inherit;

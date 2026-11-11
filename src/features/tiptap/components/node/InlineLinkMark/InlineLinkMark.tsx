@@ -1,5 +1,7 @@
 'use client';
 
+import { ImageSelector } from '@/features/image/components/ImageSelector';
+import { useImageUploader } from '@/features/image/hooks/useImageUploader';
 import { MarkViewProps } from '@tiptap/core';
 import { MarkViewContent, useEditorState } from '@tiptap/react';
 import Link from 'next/link';
@@ -57,12 +59,24 @@ const EditableInlineLinkMark = (props: MarkViewProps) => {
   });
 
   const icon = selected ? inlineLinkState.icon : props.mark.attrs.icon;
+  const { handleImageInput } = useImageUploader({
+    onChange: (next) => {
+      setInlineLinkState((prev) => {
+        return {
+          ...prev,
+          href: prev?.href || '',
+          icon: next.path,
+        };
+      });
+    },
+    clipSize: { width: 32, height: 32 },
+  });
 
   return (
     <Popover modal={true}>
       <PopoverTrigger>
         <span
-          className="inline-link"
+          className="tiptap-inline-link"
           style={
             icon
               ? ({
@@ -71,7 +85,7 @@ const EditableInlineLinkMark = (props: MarkViewProps) => {
               : undefined
           }
         >
-          <span className="inline-link__text">
+          <span className="tiptap-inline-link__text">
             <MarkViewContent />
           </span>
         </span>
@@ -82,7 +96,7 @@ const EditableInlineLinkMark = (props: MarkViewProps) => {
             <Button
               variant="ghost"
               onClick={() => {
-                openLink();
+                openLink('_blank');
               }}
               disabled={
                 selected ? !inlineLinkState.href : props.mark.attrs.href
@@ -100,6 +114,92 @@ const EditableInlineLinkMark = (props: MarkViewProps) => {
               </PopoverTrigger>
               <PopoverContent>
                 <InlineLinkContent editor={editor} />
+              </PopoverContent>
+            </Popover>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button>アイコン変更</Button>
+              </PopoverTrigger>
+              <PopoverContent side="bottom" align="start">
+                <Card>
+                  <CardBody>
+                    <ImageSelector
+                      iconSize="30px"
+                      className="tiptap-inline-link__icon-selector"
+                      templates={[
+                        {
+                          path: '/assets/images/preset/x_icon.png',
+                          mimeType: 'image/png',
+                          alt: 'Xアイコン',
+                          fileName: 'x_icon.png',
+                          size: { width: 32, height: 32 },
+                          uploadedAt: '20261108122000',
+                        },
+                        {
+                          path: '/assets/images/preset/youtube_icon.png',
+                          mimeType: 'image/png',
+                          alt: 'Youtubeアイコン',
+                          fileName: 'youtube_icon.png',
+                          size: { width: 32, height: 32 },
+                          uploadedAt: '20261108122000',
+                        },
+                        {
+                          path: '/assets/images/preset/pixiv_icon.png',
+                          mimeType: 'image/png',
+                          alt: 'Xアイコン',
+                          fileName: 'pixiv_icon.png',
+                          size: { width: 32, height: 32 },
+                          uploadedAt: '20261108122000',
+                        },
+                        {
+                          path: '/assets/images/preset/magiarium_icon.png',
+                          mimeType: 'image/png',
+                          alt: 'まぎありうむブログアイコン',
+                          fileName: 'magiarium_icon.png',
+                          size: { width: 32, height: 32 },
+                          uploadedAt: '20261108122000',
+                        },
+                        {
+                          path: '/assets/images/preset/magiarium_blog_icon.png',
+                          mimeType: 'image/png',
+                          alt: 'まぎありうむアイコン',
+                          fileName: 'magiarium_blog_icon.png',
+                          size: { width: 32, height: 32 },
+                          uploadedAt: '20261108122000',
+                        },
+                      ]}
+                      isActive={(current) => {
+                        if (inlineLinkState.href === '') return false;
+                        return current.path === inlineLinkState.icon;
+                      }}
+                      onSelect={(imageInfo) => {
+                        setInlineLinkState((prev) => {
+                          return {
+                            ...prev,
+                            href: prev?.href || '',
+                            icon: imageInfo.path,
+                          };
+                        });
+                      }}
+                      onInput={handleImageInput}
+                    />
+                    {inlineLinkState.icon && inlineLinkState.icon !== '' && (
+                      <Button
+                        onClick={() => {
+                          setInlineLinkState((prev) => {
+                            return {
+                              ...prev,
+                              href: prev?.href || '',
+                              icon: null,
+                            };
+                          });
+                        }}
+                      >
+                        <BsTrash />
+                      </Button>
+                    )}
+                  </CardBody>
+                </Card>
               </PopoverContent>
             </Popover>
             <Button

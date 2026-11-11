@@ -120,6 +120,7 @@ export const EditableLinkCardNode = (props: NodeViewProps) => {
           </div>
         ) : (
           <ImageSelector
+            iconSize="30px"
             templates={LINK_CARD_THUMBNAIL_TEMPLATES}
             onSelect={(next) => {
               setLinkCardState((prev) => {
@@ -237,7 +238,7 @@ export const EditableLinkCardNode = (props: NodeViewProps) => {
               <Button
                 variant="ghost"
                 onClick={() => {
-                  openLink();
+                  openLink('_blank');
                 }}
                 disabled={!linkCardState.href}
               >
