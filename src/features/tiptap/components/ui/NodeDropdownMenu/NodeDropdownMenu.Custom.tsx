@@ -1,4 +1,4 @@
-import { CharacterSpeechPopover } from '@/features/tiptap/components/ui/CharacterSpeechPopover';
+import { CharacterSpeechButton } from '@/features/tiptap/components/ui/CharacterSpeechButton';
 import { ImageUploadButton } from '@/features/tiptap/components/ui/ImageUploadButton';
 import { Editor } from '@tiptap/react';
 import {
@@ -30,19 +30,8 @@ const CUSTOM_NODE_SELECTOR_ITEMS = [
     renderIcon: ({ className }: { className: string }) => {
       return <BsChatFill className={className} />;
     },
-    renderItem: (
-      editor: Editor,
-      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
-    ) => (
-      <CharacterSpeechPopover
-        editor={editor}
-        text="キャラクタースピーチ"
-        onOpenChange={(isOpen) => {
-          if (setIsOpen) {
-            setIsOpen(isOpen);
-          }
-        }}
-      />
+    renderItem: (editor: Editor) => (
+      <CharacterSpeechButton editor={editor} text="キャラクタースピーチ" />
     ),
     asChild: true,
   },

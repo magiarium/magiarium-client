@@ -200,3 +200,61 @@ export const OGP_TEMPLATES: ImageMetadata[] = [
 ];
 
 export const LINK_CARD_THUMBNAIL_TEMPLATES: ImageMetadata[] = [];
+
+export const CHARACTER_SPEECH_ICONS: ImageMetadata[] = [
+  {
+    path: '/assets/images/character/unknown.webp',
+    mimeType: 'image/png',
+    alt: 'キャラクターアイコン',
+    fileName: 'character-icon_unknown.webp',
+    size: {
+      height: 515,
+      width: 515,
+    },
+    uploadedAt: '20261018155000',
+  },
+  {
+    path: '/assets/images/character/neko.webp',
+    mimeType: 'image/webp',
+    alt: 'キャラクターアイコン',
+    fileName: 'character-icon_neko.webp',
+    size: {
+      height: 515,
+      width: 515,
+    },
+    uploadedAt: '20261018155000',
+  },
+  {
+    path: '/assets/images/character/9dryavka.jpg',
+    mimeType: 'image/jpg',
+    alt: 'キャラクターアイコン',
+    fileName: 'character-icon_neko.jpg',
+    size: {
+      height: 515,
+      width: 515,
+    },
+    uploadedAt: '20261018155000',
+  },
+  {
+    path: '/assets/images/character/koutele.png',
+    mimeType: 'image/png',
+    alt: 'キャラクターアイコン',
+    fileName: 'character-icon_koutele.png',
+    size: {
+      height: 515,
+      width: 515,
+    },
+    uploadedAt: '20261018155000',
+  },
+  {
+    path: '/assets/images/character/starfishknight.png',
+    mimeType: 'image/png',
+    alt: 'キャラクターアイコン',
+    fileName: 'character-icon_starfishknight.png',
+    size: {
+      height: 515,
+      width: 515,
+    },
+    uploadedAt: '20261018155000',
+  },
+];

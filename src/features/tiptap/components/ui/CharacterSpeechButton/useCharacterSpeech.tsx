@@ -8,14 +8,33 @@ import { Editor } from '@tiptap/react';
 import { useCallback, useEffect, useState } from 'react';
 import { BsChatFill } from 'react-icons/bs';
 
+/**
+ * キャラクタースピーチ機能の設定
+ */
 export interface UseCharacterSpeechConfig {
+  /**
+   * Tiptapエディターのインスタンス(任意)
+   */
   editor?: Editor | null;
 
+  /**
+   * キャラクタースピーチ機能が使用できない場合に、ボタンを非表示にするかどうか。
+   * @default false
+   */
   hideWhenUnavailable?: boolean;
 
+  /**
+   * キャラクタースピーチの設定が正常に完了した後に呼び出されるコールバック関数
+   */
   onSetCharacterSpeech?: () => void;
 }
 
+/**
+ * 現在のエディター状態で、キャラクタースピーチへの切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param turnInfo キャラクタースピーチへの変換時に追加の判定を行うかどうか
+ */
 export const canSetCharacterSpeech = (editor: Editor | null) => {
   if (!editor || !editor.isEditable) return false;
 
@@ -26,20 +45,29 @@ export const canSetCharacterSpeech = (editor: Editor | null) => {
     return false;
   }
 
-  return editor.can().setCharacterSpeech({
-    image: 'hogehoge',
-    text: 'hogehoge',
-    position: 'left',
-  });
+  return editor.can().insertCharacterSpeech();
 };
 
+/**
+ * Tiptapエディター内で現在キャラクタースピーチがアクティブかチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @returns true:アクティブ、false:非アクティブ
+ */
 export const isCharacterSpeechActive = (editor: Editor | null) => {
   if (!editor || !editor.isEditable) return false;
 
   return editor.isActive('characterSpeech');
 };
 
-export const shouldShowLinkButton = (props: {
+/**
+ * ボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable 対象機能が使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
+ */
+export const shouldShowButton = (props: {
   editor: Editor | null;
   hideWhenUnavailable: boolean;
 }): boolean => {
@@ -64,14 +92,13 @@ export const shouldShowLinkButton = (props: {
   return true;
 };
 
-export interface CharacterSpeechHandlerProps {
+/**
+ * キャラクタースピーチの各種ハンドラーを提供するためのカスタムフック
+ */
+export const useCharacterSpeechHandler = (props: {
   editor: Editor | null;
   onSetCharacterSpeech?: () => void;
-}
-
-export const useCharacterSpeechHandler = (
-  props: CharacterSpeechHandlerProps
-) => {
+}) => {
   const { editor, onSetCharacterSpeech } = props;
   const [characterSpeechState, setCharacterSpeechState] =
     useState<CharacterSpeechAttributes | null>(null);
@@ -79,9 +106,15 @@ export const useCharacterSpeechHandler = (
   useEffect(() => {
     if (!editor) return;
 
-    const { image, text, position } = editor.getAttributes('characterSpeech');
+    const { characterIcon, characterName, characterPosition, frameColor } =
+      editor.getAttributes('characterSpeech');
     if (isCharacterSpeechActive(editor) && characterSpeechState === null) {
-      setCharacterSpeechState({ image, text, position });
+      setCharacterSpeechState({
+        characterIcon,
+        characterName,
+        characterPosition,
+        frameColor,
+      });
     }
   }, [editor, characterSpeechState]);
 
@@ -89,8 +122,14 @@ export const useCharacterSpeechHandler = (
     if (!editor) return;
 
     const updateCharacterSpeechState = () => {
-      const { image, text, position } = editor.getAttributes('characterSpeech');
-      setCharacterSpeechState({ image, text, position });
+      const { characterIcon, characterName, characterPosition, frameColor } =
+        editor.getAttributes('characterSpeech');
+      setCharacterSpeechState({
+        characterIcon,
+        characterName,
+        characterPosition,
+        frameColor,
+      });
     };
 
     editor.on('selectionUpdate', updateCharacterSpeechState);
@@ -102,63 +141,55 @@ export const useCharacterSpeechHandler = (
   const insertCharacterSpeech = useCallback(() => {
     if (!editor || !editor.isEditable) return false;
     if (!canSetCharacterSpeech(editor)) return false;
-
-    return editor.chain().focus().insertContent({
-      type: 'characterSpeech',
-    });
+    const success = editor.chain().focus().insertCharacterSpeech().run();
+    if (!success) {
+      return;
+    }
+    onSetCharacterSpeech?.();
+    return true;
   }, [editor]);
 
   const setCharacterSpeech = useCallback(() => {
     if (!editor || !editor.isEditable) return false;
     if (!canSetCharacterSpeech(editor)) return false;
 
-    if (!characterSpeechState) return false;
-
-    const { selection } = editor.state;
-    const isEmpty = selection.empty;
-
     let chain = editor.chain().focus();
 
-    chain = chain
-      .extendMarkRange('characterSpeech')
-      .setCharacterSpeech(characterSpeechState);
+    chain = chain.setCharacterSpeech(characterSpeechState ?? {});
 
-    if (isEmpty) {
-      chain = chain.insertContent({
-        type: 'text',
-        attributes: characterSpeechState,
-      });
-    }
     chain.run();
 
     setCharacterSpeechState(null);
     onSetCharacterSpeech?.();
+    return true;
   }, [editor, onSetCharacterSpeech, characterSpeechState]);
 
   const removeCharacterSpeech = useCallback(() => {
-    if (!editor) return;
+    if (!editor) return false;
     editor
       .chain()
       .focus()
-      .extendMarkRange('characterSpeech')
       .removeCharacterSpeech()
+      .setMeta('preventAutolink', true)
       .run();
-    setCharacterSpeechState(null);
+    setCharacterSpeechState({});
+    return true;
   }, [editor]);
 
   return {
-    characterSpeechState: characterSpeechState ?? {
-      image: '',
-      text: '',
-      position: 'left',
-    },
-    setCharacterSpeechState,
+    characterSpeechState,
     insertCharacterSpeech,
+    setCharacterSpeechState,
     setCharacterSpeech,
     removeCharacterSpeech,
   };
 };
 
+/**
+ * Tiptapエディター向けのキャラクタースピーチ機能を提供するカスタムフック。
+ *
+ * @param config キャラクタースピーチ機能の設定
+ */
 export const useCharacterSpeech = (config?: UseCharacterSpeechConfig) => {
   const {
     editor: providedEditor,
@@ -176,7 +207,7 @@ export const useCharacterSpeech = (config?: UseCharacterSpeechConfig) => {
     if (!editor) return;
     const handleSelectionUpdate = () => {
       setIsVisible(
-        shouldShowLinkButton({
+        shouldShowButton({
           editor,
           hideWhenUnavailable,
         })

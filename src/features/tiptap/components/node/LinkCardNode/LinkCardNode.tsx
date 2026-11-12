@@ -8,7 +8,7 @@ import { NodeViewWrapper } from '@tiptap/react';
 import classNames from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 
 // --- Hooks ---
 import { useImageUploader } from '@/features/image/hooks/useImageUploader';
@@ -36,7 +36,7 @@ import './LinkCardNode.scss';
 /**
  * リンクカードノード
  */
-export const LinkCardNode = (props: NodeViewProps) => {
+export const LinkCardNode = (props: NodeViewProps): ReactNode => {
   const { editor } = props;
   if (editor.isEditable) {
     return EditableLinkCardNode(props);

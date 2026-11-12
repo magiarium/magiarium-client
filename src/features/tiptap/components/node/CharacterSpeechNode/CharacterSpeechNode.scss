@@ -1,0 +1,95 @@
+.tiptap-character-speech {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+
+  // キャラクターコンテナ
+  &__character-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 80px;
+
+    // 左配置
+    &--left {
+      order: 0;
+    }
+    // 右配置
+    &--right {
+      order: 1;
+    }
+  }
+
+  // キャラクターアイコン
+  &__character-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 3px solid var(--select-color, #ddd);
+    background-color: #fff;
+  }
+
+  // キャラクター名
+  &__character-name {
+    display: block;
+    margin-top: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    word-break: break-word;
+    text-wrap: nowrap;
+  }
+
+  // キャラクタ――名入力エリア
+  &__input-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #4b5563;
+    font-size: 0.9rem;
+    input {
+      width: 150px;
+    }
+  }
+
+  // キャラクター配置選択用
+  &__select-character-side {
+    appearance: none;
+    font-size: 0.9rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    min-width: 100px;
+    padding: 7px 32px 7px 12px;
+
+    font-family: inherit;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+
+    cursor: pointer;
+    outline: none;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+
+    &:focus {
+      border-color: var(--main-color);
+    }
+  }
+
+  // ポップオーバーのグループ
+  &__card-item-group {
+    margin: 5px;
+  }
+
+  // 台詞コンテンツ
+  &__content {
+    padding: 25px 15px;
+    line-height: 2rem;
+  }
+}

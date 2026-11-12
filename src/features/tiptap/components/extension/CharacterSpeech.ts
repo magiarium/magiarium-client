@@ -1,11 +1,12 @@
 import { CharacterSpeechNode } from '@/features/tiptap/components/node/CharacterSpeechNode';
-import { Node, mergeAttributes } from '@tiptap/core';
+import { Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 
 // コマンドの型定義
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     characterSpeech: {
+      insertCharacterSpeech: () => ReturnType;
       setCharacterSpeech: (attributes: CharacterSpeechAttributes) => ReturnType;
       removeCharacterSpeech: () => ReturnType;
     };
@@ -19,9 +20,10 @@ export interface CharacterSpeechOptions {
 }
 
 export interface CharacterSpeechAttributes {
-  image: string | null;
-  text: string;
-  position: CharacterSpeechPosition;
+  characterIcon?: string | null;
+  frameColor?: string | null;
+  characterName?: string | null;
+  characterPosition?: string | null;
 }
 
 export const CharacterSpeech = Node.create<CharacterSpeechOptions>({
@@ -29,7 +31,7 @@ export const CharacterSpeech = Node.create<CharacterSpeechOptions>({
 
   group: 'block',
 
-  atom: true,
+  content: 'paragraph+',
 
   draggable: true,
 
@@ -41,62 +43,59 @@ export const CharacterSpeech = Node.create<CharacterSpeechOptions>({
 
   addAttributes() {
     return {
-      image: {
+      characterIcon: {
         default: null,
-        parseHTML: (element) => element.getAttribute('data-image'),
+        parseHTML: (element) => element.getAttribute('data-character-icon'),
         renderHTML: (attributes) =>
-          attributes.image ? { 'data-image': attributes.image } : {},
+          attributes.characterIcon
+            ? { 'data-character-icon': attributes.characterIcon }
+            : {},
       },
-
-      text: {
-        default: '',
-        parseHTML: (element) => element.getAttribute('data-text') ?? '',
-        renderHTML: (attributes) => ({
-          'data-text': attributes.text,
-        }),
+      characterName: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-character-name'),
+        renderHTML: (attributes) =>
+          attributes.characterName
+            ? { 'data-character-name': attributes.characterName }
+            : {},
       },
-
-      position: {
+      frameColor: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-frame-color'),
+        renderHTML: (attributes) =>
+          attributes.frameColor
+            ? { 'data-frame-color': attributes.frameColor }
+            : {},
+      },
+      characterPosition: {
         default: 'left',
         parseHTML: (element) => {
-          const position = element.getAttribute('data-position');
+          const position = element.getAttribute('data-character-position');
 
           return position === 'right' ? 'right' : 'left';
         },
         renderHTML: (attributes) => ({
-          'data-position': attributes.position,
+          'data-character-position': attributes.characterPosition,
         }),
       },
     };
   },
 
-  parseHTML() {
-    return [
-      {
-        tag: 'div[data-type="character-speech"]',
-      },
-    ];
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    return [
-      'div',
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-        'data-type': 'character-speech',
-        class: 'character-speech',
-      }),
-    ];
-  },
-
   addCommands() {
     return {
-      setCharacterSpeech:
-        (attributes) =>
+      insertCharacterSpeech:
+        () =>
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: attributes,
+            attributes: {},
+            content: [{ type: 'paragraph' }],
           });
+        },
+      setCharacterSpeech:
+        (attributes) =>
+        ({ commands }) => {
+          return commands.updateAttributes(this.name, attributes);
         },
       removeCharacterSpeech:
         () =>
