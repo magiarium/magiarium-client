@@ -1,0 +1,94 @@
+.tiptap-inline-link {
+  &__content-container {
+    padding: 10px;
+    cursor: default;
+  }
+  &__group {
+    border: 1px solid #b0b0b0;
+    border-radius: 0.5rem;
+    padding: 5px;
+    margin: 5px 0;
+  }
+  &__input {
+    font-size: 0.875rem;
+
+    min-width: 12rem;
+    padding-right: 0;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:focus {
+      text-overflow: clip;
+      overflow: visible;
+    }
+  }
+  &__icon-button {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+    width: 100px;
+    height: 100px;
+
+    border: 1px solid var(--shadow-color);
+    border-radius: 8px;
+    cursor: pointer;
+
+    height: 25px;
+    width: 25px;
+  }
+
+  &__target-selector {
+    margin: 10px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+
+      min-width: 100px;
+      padding: 7px 32px 7px 12px;
+
+      font-family: inherit;
+
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+
+      cursor: pointer;
+      outline: none;
+
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+
+      &:hover {
+        border-color: var(--main-color);
+        background-color: #f8fafc;
+      }
+
+      &:focus {
+        border-color: var(--main-color);
+        box-shadow: 0 0 0 3px var(--shadow-color);
+      }
+
+      option {
+        padding: 8px;
+        color: #334155;
+        background-color: #ffffff;
+      }
+    }
+  }
+}

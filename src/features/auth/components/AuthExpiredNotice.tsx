@@ -1,8 +1,8 @@
 'use client';
 import { ClassicButton } from '@/common/components/ClassicButton';
 import { NoticeDialog } from '@/common/components/NoticeDialog';
-import { Warning } from '@react95/icons';
 import { ReactNode, useRef } from 'react';
+import { IoWarning } from 'react-icons/io5';
 import './AuthExpiredNotice.scss';
 
 export const AuthExpiredNotice = ({
@@ -19,7 +19,7 @@ export const AuthExpiredNotice = ({
     <NoticeDialog type="ALERT" ref={noticeRef} title="認証切れ">
       <div className="auth-expired-notice__content">
         <div className="auth-expired-notice__icon">
-          <Warning />
+          <IoWarning />
         </div>
         <div>
           <p>

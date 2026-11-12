@@ -1,8 +1,8 @@
-import { BlogList } from '@/features/category/blog/list/BlogList';
+import { BlogList } from '@/features/content/blog/components/BlogList';
 import { useWindowManager } from '@/features/desktop/hooks/useWindowManager';
 import { WindowControllerId } from '@/features/desktop/type';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { BsEnvelope } from 'react-icons/bs';
 import './GlobalNavigation.scss';
 
 /**
@@ -52,6 +52,14 @@ const GLOBAL_NAVIGATION_LINKS = [
     href: '/blog',
     label: 'ブログ',
     content: <BlogList />,
-    icon: <BsEnvelope className="global-navigation__icon" />,
+    icon: (
+      <Image
+        className="global-navigation__icon"
+        src={'/assets/images/blog-icon.svg'}
+        alt={'ブログアイコン'}
+        width={515}
+        height={515}
+      />
+    ),
   },
 ];

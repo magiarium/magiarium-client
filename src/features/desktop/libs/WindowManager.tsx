@@ -1,7 +1,7 @@
 import { BaseStore } from '@/common/libs/BaseStore';
+import { Size } from '@/common/type';
 import { WindowConfig, WindowControllerId } from '../type';
 import { WindowController } from './WindowController';
-
 export class WindowControllerManager extends BaseStore {
   private _windowControllerMap: Map<WindowControllerId, WindowController> =
     new Map();
@@ -14,7 +14,10 @@ export class WindowControllerManager extends BaseStore {
    * @param argsConfig Window設定
    * @returns WindowController
    */
-  createWindowController = (argsConfig: WindowConfig): WindowController => {
+  createWindowController = (
+    argsConfig: WindowConfig,
+    initialWindowSize?: Size
+  ): WindowController => {
     if (this.hasWindowController(argsConfig.id)) {
       throw new Error(
         `対象コントローラーは既に登録済みです。windowControllerId=[${argsConfig.id}]`
@@ -27,8 +30,8 @@ export class WindowControllerManager extends BaseStore {
         y: 20 + this._windowOrder.length * 20,
       },
       size: {
-        width: 666,
-        height: 400,
+        width: initialWindowSize?.width ?? 900,
+        height: initialWindowSize?.height ?? 600,
       },
       notify: () => this._notify(),
       deleteAction: () => this._deleteWindowController(argsConfig.id),

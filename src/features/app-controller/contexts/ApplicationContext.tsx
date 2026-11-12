@@ -1,5 +1,6 @@
 'use client';
 import { createContext, ReactNode, useState } from 'react';
+import { Notice } from '../components/Notice';
 import { Application } from '../libs/Application';
 
 const ApplicationContext = createContext<Application | null>(null);
@@ -15,6 +16,7 @@ const ApplicationContextProvider = ({
   return (
     <ApplicationContext.Provider value={application}>
       {children}
+      <Notice />
     </ApplicationContext.Provider>
   );
 };

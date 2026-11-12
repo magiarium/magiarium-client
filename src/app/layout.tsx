@@ -7,6 +7,10 @@ import { getUserDataFromCookies } from '@/features/auth/libs/getUserDataFromCook
 import { WindowContextProvider } from '@/features/desktop/contexts/WindowContext';
 import { SideAssistantContextProvider } from '@/features/side-assistant/contexts/SideAssistantContext';
 import { ReactNode } from 'react';
+
+// CSS
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import './global.scss';
 import './layout.scss';
 

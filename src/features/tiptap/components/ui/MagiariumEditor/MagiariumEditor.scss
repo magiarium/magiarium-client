@@ -1,0 +1,264 @@
+@use '@/features/tiptap/styles/_keyframe-animations.scss';
+@use '@/features/tiptap/styles/_variables.scss';
+
+.magiarium-editor {
+  &__bubble-menu,
+  &__floating-menu {
+    background-color: var(--surface-color);
+    border: 1px solid var(--main-color);
+    border-radius: 0.7rem;
+    box-shadow: var(--shadow-color);
+    display: flex;
+    padding: 0.2rem;
+  }
+
+  &__drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    height: 2rem;
+  }
+}
+
+.config-content {
+  display: flex;
+  border: 2.5px solid var(--main-color);
+  border-radius: 5px;
+  background-color: var(--surface-color);
+}
+
+.ProseMirror {
+  // プレースホルダー表示用
+  .is-empty::before {
+    content: attr(data-placeholder);
+    pointer-events: none;
+    float: left;
+    height: 0;
+    color: #aaa;
+  }
+}
+
+// エディターフォーカス時の演出を無効化
+.ProseMirror:focus,
+.ProseMirror-focused {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.tiptap {
+  // 見出し
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #594459;
+    margin: 2.5rem 0 1rem;
+    padding: 0.6rem 0 0.6rem 1rem;
+    border-left: 5px solid var(--main-color);
+    border-bottom: 2px solid #ead6e9;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #594459;
+    margin: 2rem 0 0.8rem;
+    padding: 0.5rem 0.8rem;
+    border-left: 4px solid var(--main-color);
+    background: #faf4fa;
+    border-radius: 0 4px 4px 0;
+  }
+
+  h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #705b70;
+    margin: 1.5rem 0 0.6rem;
+    padding: 0 0 0.4rem 0.7rem;
+    border-bottom: 1px dashed #d9a9d8;
+  }
+
+  // コードブロック
+  pre {
+    background: var(--black);
+    border-radius: 0.5rem;
+    color: var(--white);
+    font-family: 'JetBrainsMono', monospace;
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem;
+
+    code {
+      background: none;
+      color: inherit;
+      font-size: 0.8rem;
+      padding: 0;
+    }
+
+    .hljs-comment,
+    .hljs-quote {
+      color: #616161;
+    }
+
+    .hljs-variable,
+    .hljs-template-variable,
+    .hljs-attribute,
+    .hljs-tag,
+    .hljs-regexp,
+    .hljs-link,
+    .hljs-name,
+    .hljs-selector-id,
+    .hljs-selector-class {
+      color: #f98181;
+    }
+
+    .hljs-number,
+    .hljs-meta,
+    .hljs-built_in,
+    .hljs-builtin-name,
+    .hljs-literal,
+    .hljs-type,
+    .hljs-params {
+      color: #fbbc88;
+    }
+
+    .hljs-string,
+    .hljs-symbol,
+    .hljs-bullet {
+      color: #b9f18d;
+    }
+
+    .hljs-title,
+    .hljs-section {
+      color: #faf594;
+    }
+
+    .hljs-keyword,
+    .hljs-selector-tag {
+      color: #70cff8;
+    }
+
+    .hljs-emphasis {
+      font-style: italic;
+    }
+
+    .hljs-strong {
+      font-weight: 700;
+    }
+  }
+
+  // 引用ブロック
+  blockquote {
+    background-color: #f6f6f6;
+    border-left: 3px solid var(--main-color);
+    margin: 0;
+    padding: 0rem 0rem 0.5rem 1rem;
+
+    &::before {
+      content: '“';
+      font-size: 2.5rem;
+      color: var(--main-color);
+    }
+  }
+
+  // キーボード
+  kbd {
+    background-color: #eeeeee;
+    border-radius: 3px;
+    border: 1px solid #b4b4b4;
+    box-shadow:
+      0 1px 1px rgb(0 0 0 / 0.2),
+      0 2px 0 0 rgb(255 255 255 / 0.7) inset;
+    color: #333333;
+    display: inline-block;
+    font-size: 0.85em;
+    font-weight: bold;
+    line-height: 1;
+    padding: 2px 4px;
+    white-space: nowrap;
+  }
+
+  // list
+  ul,
+  ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
+
+    li p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+  }
+
+  /* ul：肉球アイコン */
+  ul {
+    list-style: none;
+  }
+  ul li::before {
+    font-family: 'Font Awesome 7 Free';
+    font-weight: 900;
+    font-style: normal;
+    content: '\f1b0';
+    position: absolute;
+    left: 0.1rem;
+    top: 0.15em;
+    color: var(--main-color);
+  }
+
+  /* ol：数字 */
+  ol {
+    list-style-type: decimal;
+  }
+
+  ol li::marker {
+    color: var(--main-color);
+    font-weight: 900;
+  }
+
+  // ハイライト
+  mark {
+    border-radius: 0.4rem;
+    box-decoration-break: clone;
+    padding: 0.1rem 0.3rem;
+  }
+
+  // インラインコード
+  code {
+    background-color: #e0e0e0;
+    border-radius: 0.4rem;
+    color: var(--black);
+    font-size: 0.85rem;
+    padding: 0.25em 0.3em;
+  }
+
+  // インライン引用
+  q {
+    display: inline;
+    background-color: #f6f6f6;
+    border-radius: 0.4rem;
+    color: var(--black);
+    font-size: 0.85rem;
+    padding: 0.25em 0.4em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+
+    &::before,
+    &::after {
+      color: var(--main-color);
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    &::before {
+      content: '“';
+      margin-right: 0.25rem;
+    }
+    &::after {
+      content: '”';
+      margin-left: 0.2em;
+    }
+  }
+}
