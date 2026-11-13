@@ -48,6 +48,10 @@
 }
 
 .tiptap {
+  p {
+    line-height: 2;
+  }
+
   // 見出し
   h3 {
     font-size: 1.5rem;
@@ -259,6 +263,26 @@
     &::after {
       content: '”';
       margin-left: 0.2em;
+    }
+  }
+
+  // ルビ
+  ruby {
+    ruby-position: over;
+  }
+
+  rt {
+    cursor: text;
+    pointer-events: auto;
+    font-size: 0.5rem;
+
+    input {
+      margin: 0;
+      font-size: 1rem;
+      field-sizing: content;
+      min-width: 2rem;
+      min-height: 2rem;
+      box-sizing: border-box;
     }
   }
 }

@@ -6,7 +6,7 @@ import { ColorUnionPopover } from '@/features/tiptap/components/ui/ColorUnionPop
 import { FontSizeDropdownMenu } from '@/features/tiptap/components/ui/FontSizeDropdownMenu';
 import { InlineQuoteButton } from '@/features/tiptap/components/ui/InlineQuoteButton';
 import { MarkButton } from '@/features/tiptap/components/ui/MarkButton';
-import { RubyTextPopover } from '@/features/tiptap/components/ui/RubyTextButton';
+import { RubyTextPopover } from '@/features/tiptap/components/ui/RubyTextPopover';
 import { TextAlignDropdownMenu } from '@/features/tiptap/components/ui/TextAlignDropdownMenu';
 import { Editor } from '@tiptap/react';
 import { Separator } from '../../ui-primitive/Separator';
