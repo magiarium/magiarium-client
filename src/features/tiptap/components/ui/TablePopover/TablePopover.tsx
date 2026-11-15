@@ -1,32 +1,67 @@
+import { Button as MagiariumButton } from '@/common/components/Button';
+import { forwardRef, useCallback, useState } from 'react';
+
+// --- Hooks ---
 import { useIsBreakpoint } from '@/features/tiptap/hooks/useIsBreakpoint';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
-import { forwardRef, useCallback, useEffect, useState } from 'react';
+
+// --- Icons ---
+import { ChevronDownIcon } from '@/features/tiptap/components/icons/ChevronDownIcon';
 import { BsTable } from 'react-icons/bs';
-import { ChevronDownIcon } from '../../icons/ChevronDownIcon';
-import { CornerDownLeftIcon } from '../../icons/CornerDownLeftIcon';
-import { Button, ButtonProps } from '../../ui-primitive/Button';
-import { ButtonGroup } from '../../ui-primitive/ButtonGroup';
-import { Card, CardBody, CardItemGroup } from '../../ui-primitive/Card';
-import { Input } from '../../ui-primitive/Input';
+
+// --- Tiptap UI ---
+import {
+  TableOptions,
+  useTable,
+  UseTableConfig,
+} from '@/features/tiptap/components/ui/TablePopover';
+
+// --- UI Primitives ---
+import {
+  Button,
+  ButtonProps,
+} from '@/features/tiptap/components/ui-primitive/Button';
+import { ButtonGroup } from '@/features/tiptap/components/ui-primitive/ButtonGroup';
+import {
+  Card,
+  CardBody,
+  CardItemGroup,
+} from '@/features/tiptap/components/ui-primitive/Card';
+import { Input } from '@/features/tiptap/components/ui-primitive/Input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '../../ui-primitive/Popover';
-import {
-  DEFAULT_TABLE_OPTIONS,
-  TableOptions,
-  useTable,
-  UseTableConfig,
-} from './useTable';
+} from '@/features/tiptap/components/ui-primitive/Popover';
+
+// --- Style
+import './TablePopover.scss';
 
 export interface TablePopoverProps
   extends Omit<ButtonProps, 'type'>, UseTableConfig {
-  text?: string;
+  /**
+   * 追加時アイコンの横に表示する補足テキスト(任意)
+   */
+  insertText?: string;
+  /**
+   * 削除時アイコンの横に表示する補足テキスト(任意)
+   */
+  deleteText?: string;
+  /**
+   * ポップオーバー開閉時のコールバック関数
+   * @param isOpen 開閉状態
+   */
   onOpenChange?: (isOpen: boolean) => void;
-  autoOpenOnTableActive?: boolean;
+  /**
+   * ポップオーバーをモーダルにするか
+   * @default false
+   */
   modal?: boolean;
 }
+
+/**
+ * テーブルボタン
+ */
 export const TableButton = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, children, ...props }, ref) => {
     return (
@@ -46,17 +81,42 @@ export const TableButton = forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
+
 export interface TableMainProps {
+  /**
+   * テーブルオプション
+   */
   tableOptions: TableOptions;
-  setTableOptions: React.Dispatch<React.SetStateAction<TableOptions | null>>;
-  setTable: () => void;
+
+  /**
+   * テーブルオプション更新用関数
+   */
+  setTableOptions: React.Dispatch<React.SetStateAction<TableOptions>>;
+
+  /**
+   * エディター内にテーブルを設定するための関数
+   */
+  insertTable: () => void;
+
+  /**
+   * エディター内のテーブルを削除するための関数
+   */
+  deleteTable: () => void;
+
+  /**
+   * エディターに対して、現在テーブルがアクティブ状態か否か
+   * @default false
+   */
   isActive: boolean;
 }
 
+/**
+ * テーブルポップオーバーのメインコンテンツ
+ */
 export const TableMain = ({
   tableOptions,
   setTableOptions,
-  setTable,
+  insertTable,
   isActive,
 }: TableMainProps) => {
   const isMobile = useIsBreakpoint();
@@ -64,9 +124,10 @@ export const TableMain = ({
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      setTable();
+      insertTable();
     }
   };
+
   return (
     <Card
       style={{
@@ -74,118 +135,108 @@ export const TableMain = ({
       }}
     >
       <CardBody
+        className="tiptap-table-popover__content-container"
         style={{
           ...(isMobile ? { padding: 0 } : {}),
         }}
       >
-        <CardItemGroup orientation="horizontal">
-          <Input
-            type="number"
-            placeholder="列数"
-            value={tableOptions.cols}
-            onChange={(e) =>
-              setTableOptions((prev) => {
-                return {
-                  cols: Number(e.target.value),
-                  rows: prev?.rows ?? DEFAULT_TABLE_OPTIONS.rows,
-                  withHeaderRow:
-                    prev?.withHeaderRow ?? DEFAULT_TABLE_OPTIONS.withHeaderRow,
-                };
-              })
-            }
-            onKeyDown={handleKeyDown}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            className="tiptap-table-cols-input"
-          />
+        <CardItemGroup
+          className="tiptap-table-popover__group"
+          orientation="horizontal"
+        >
+          <label>
+            行：
+            <Input
+              type="number"
+              placeholder="行数"
+              disabled={isActive}
+              value={tableOptions.rows}
+              onChange={(e) =>
+                setTableOptions((prev) => {
+                  return {
+                    ...prev,
+                    rows: Number(e.target.value),
+                  };
+                })
+              }
+              onKeyDown={handleKeyDown}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              className="tiptap-table-popover__input"
+            />
+          </label>
           ×
-          <Input
-            type="number"
-            placeholder="行数"
-            value={tableOptions.rows}
-            onChange={(e) =>
-              setTableOptions((prev) => {
-                return {
-                  cols: prev?.cols ?? DEFAULT_TABLE_OPTIONS.cols,
-                  rows: Number(e.target.value),
-                  withHeaderRow:
-                    prev?.withHeaderRow ?? DEFAULT_TABLE_OPTIONS.withHeaderRow,
-                };
-              })
-            }
-            onKeyDown={handleKeyDown}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            className="tiptap-table-rows-input"
-          />
-          <fieldset>
-            ヘッダー
-            <label>
-              あり
-              <Input
-                type="radio"
-                name="table-with-header-row"
-                id="table-with-header-row-true"
-                checked={tableOptions.withHeaderRow}
-                onChange={() =>
-                  setTableOptions((prev) => {
-                    return {
-                      cols: prev?.cols ?? DEFAULT_TABLE_OPTIONS.cols,
-                      rows: prev?.rows ?? DEFAULT_TABLE_OPTIONS.rows,
-                      withHeaderRow: true,
-                    };
-                  })
-                }
-              />
-            </label>
-            <label>
-              なし
-              <input
-                type="radio"
-                name="table-with-header-row"
-                id="table-with-header-row-false"
-                checked={!tableOptions.withHeaderRow}
-                onChange={() =>
-                  setTableOptions((prev) => {
-                    return {
-                      cols: prev?.cols ?? DEFAULT_TABLE_OPTIONS.cols,
-                      rows: prev?.rows ?? DEFAULT_TABLE_OPTIONS.rows,
-                      withHeaderRow: false,
-                    };
-                  })
-                }
-              />
-            </label>
-          </fieldset>
+          <label>
+            列：
+            <Input
+              type="number"
+              placeholder="列数"
+              disabled={isActive}
+              value={tableOptions.cols}
+              onChange={(e) =>
+                setTableOptions((prev) => {
+                  return {
+                    ...prev,
+                    cols: Number(e.target.value),
+                  };
+                })
+              }
+              onKeyDown={handleKeyDown}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              className="tiptap-table-popover__input"
+            />
+          </label>
         </CardItemGroup>
-        <ButtonGroup>
-          <Button
-            type="button"
-            onClick={setTable}
-            title="Apply link"
-            disabled={!tableOptions && !isActive}
-            variant="ghost"
-          >
-            <CornerDownLeftIcon className="tiptap-button-icon" />
-          </Button>
+        <CardItemGroup
+          className="tiptap-table-popover__group"
+          orientation="horizontal"
+        >
+          <label className="tiptap-table-popover__with-header-selector">
+            ヘッダー:
+            <select
+              value={String(tableOptions.withHeaderRow)}
+              onChange={(event) => {
+                setTableOptions((prev) => {
+                  return {
+                    ...prev,
+                    withHeaderRow: JSON.parse(event.target.value),
+                  };
+                });
+              }}
+            >
+              <option value="true">あり</option>
+              <option value="false">なし</option>
+            </select>
+          </label>
+        </CardItemGroup>
+        <ButtonGroup className="tiptap-table-popover__group">
+          <MagiariumButton type="button" onClick={insertTable}>
+            テーブル追加
+          </MagiariumButton>
         </ButtonGroup>
       </CardBody>
     </Card>
   );
 };
 
+/**
+ * Tiptapエディターのテーブルポップオーバーコンポーネント
+ *
+ * カスタムボタンを実装する場合は、代わりに `useTable` フックを使用してください。
+ */
 export const TablePopover = forwardRef<HTMLButtonElement, TablePopoverProps>(
   (
     {
       editor: providedEditor,
       modal = true,
-      text,
+      insertText,
+      deleteText,
       hideWhenUnavailable = false,
       onSetTable,
       onOpenChange,
-      autoOpenOnTableActive = true,
       onClick,
       children,
       ...buttonProps
@@ -201,7 +252,8 @@ export const TablePopover = forwardRef<HTMLButtonElement, TablePopoverProps>(
       isActive,
       tableOptions,
       setTableOptions,
-      setTable,
+      insertTable,
+      deleteTable,
       label,
       Icon,
     } = useTable({
@@ -209,9 +261,6 @@ export const TablePopover = forwardRef<HTMLButtonElement, TablePopoverProps>(
       hideWhenUnavailable,
       onSetTable,
     });
-
-    const shouldAutoOpen =
-      autoOpenOnTableActive && !!editor?.isFocused && isActive;
 
     const handleOnOpenChange = useCallback(
       (nextIsOpen: boolean) => {
@@ -222,9 +271,9 @@ export const TablePopover = forwardRef<HTMLButtonElement, TablePopoverProps>(
     );
 
     const handleSetTable = useCallback(() => {
-      setTable();
+      insertTable();
       setIsOpen(false);
-    }, [setTable]);
+    }, [insertTable]);
 
     const handleClick = useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -235,15 +284,34 @@ export const TablePopover = forwardRef<HTMLButtonElement, TablePopoverProps>(
       [onClick, isOpen]
     );
 
-    useEffect(() => {
-      if (shouldAutoOpen) {
-        setIsOpen(true);
-      }
-    }, [shouldAutoOpen]);
-
     if (!isVisible) {
       return null;
     }
+
+    if (isActive) {
+      return (
+        <TableButton
+          disabled={!canSet}
+          data-active-state={isActive ? 'on' : 'off'}
+          data-disabled={!canSet}
+          aria-label={label}
+          aria-pressed={isActive}
+          onClick={deleteTable}
+          {...buttonProps}
+          ref={ref}
+        >
+          {children ?? (
+            <>
+              <Icon className="tiptap-button-icon" />
+              {deleteText && (
+                <span className="tiptap-button-text">{deleteText}</span>
+              )}
+            </>
+          )}
+        </TableButton>
+      );
+    }
+
     return (
       <Popover open={isOpen} onOpenChange={handleOnOpenChange} modal={modal}>
         <PopoverTrigger asChild>
@@ -260,7 +328,9 @@ export const TablePopover = forwardRef<HTMLButtonElement, TablePopoverProps>(
             {children ?? (
               <>
                 <Icon className="tiptap-button-icon" />
-                {text && <span className="tiptap-button-text">{text}</span>}
+                {insertText && (
+                  <span className="tiptap-button-text">{insertText}</span>
+                )}
                 <ChevronDownIcon className="tiptap-button-dropdown-small" />
               </>
             )}
@@ -271,7 +341,8 @@ export const TablePopover = forwardRef<HTMLButtonElement, TablePopoverProps>(
           <TableMain
             tableOptions={tableOptions}
             setTableOptions={setTableOptions}
-            setTable={handleSetTable}
+            insertTable={handleSetTable}
+            deleteTable={deleteTable}
             isActive={isActive}
           />
         </PopoverContent>

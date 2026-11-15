@@ -147,6 +147,7 @@ export const useLinkCardHandlers = (props: {
     setLinkCardState(null);
 
     onSetLinkCard?.();
+    return true;
   }, [editor, onSetLinkCard, linkCardState]);
 
   const removeLinkCard = useCallback(() => {

@@ -29,9 +29,8 @@ export const NodeDropdownMenu = ({
   selectorItems: SelectorItems[];
 }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const currentNode = useCurrentNode(editor);
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={true}>
       <DropdownMenuTrigger asChild>
         <TriggerButton editor={editor} selectorItems={selectorItems} />
       </DropdownMenuTrigger>

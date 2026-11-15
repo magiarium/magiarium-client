@@ -1,0 +1,75 @@
+.tiptap-table-popover {
+  &__content-container {
+    position: relative;
+
+    padding: 10px;
+    cursor: default;
+  }
+
+  &__group {
+    padding: 5px;
+    margin: 5px 0;
+  }
+
+  &__input {
+    &[type='number'] {
+      width: 5rem;
+    }
+    height: 2rem;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  &__with-header-selector {
+    margin: 10px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+
+      min-width: 100px;
+      padding: 7px 32px 7px 12px;
+
+      font-family: inherit;
+
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+
+      cursor: pointer;
+      outline: none;
+
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+
+      &:hover {
+        border-color: var(--main-color);
+        background-color: #f8fafc;
+      }
+
+      &:focus {
+        border-color: var(--main-color);
+        box-shadow: 0 0 0 3px var(--shadow-color);
+      }
+
+      option {
+        padding: 8px;
+        color: #334155;
+        background-color: #ffffff;
+      }
+    }
+  }
+}

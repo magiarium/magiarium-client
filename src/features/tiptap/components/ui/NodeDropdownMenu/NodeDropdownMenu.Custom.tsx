@@ -78,7 +78,8 @@ const CUSTOM_NODE_SELECTOR_ITEMS = [
     ) => (
       <TablePopover
         editor={editor}
-        text="テーブル"
+        insertText="テーブル追加"
+        deleteText="テーブル削除"
         onOpenChange={(isOpen) => {
           if (setIsOpen) {
             setIsOpen(isOpen);
