@@ -1,3 +1,4 @@
+import { ImageInfo, loadImageInfo } from '@/features/image/libs/loadImageInfo';
 import type { Node as PMNode } from '@tiptap/pm/model';
 import type { Transaction } from '@tiptap/pm/state';
 import {
@@ -628,39 +629,14 @@ export const selectionWithinConvertibleTypes = (
  * アップロード中は進捗状況をコールバック関数で通知し、
  * AbortSignalによるキャンセル要求があった場合は処理を中断する。
  *
- * 現在の実装では、デモ・テスト用としてアップロードの進捗を
- * 0%から100%まで10%刻みでシミュレートする。
- * 本番環境で使用する場合は、実際のアップロード処理に置き換える必要がある。
- *
  * @param file - アップロード対象の画像ファイル
- * @param onProgress - アップロードの進捗状況を通知するコールバック関数。
- *   進捗率を0〜100の数値で受け取る。
- * @param abortSignal - アップロードのキャンセルを制御するAbortSignal（省略可能）
  * @returns アップロードされた画像のURLを解決するPromise
  * @throws {Error} ファイルが指定されていない場合
  * @throws {Error} ファイルサイズが最大許容サイズを超えている場合
  * @throws {Error} アップロードがキャンセルされた場合
  *
- * @example
- * // 画像をアップロードし、進捗状況を取得する
- * await handleImageUpload(file, ({ progress }) => {
- *   console.log(`アップロード進捗: ${progress}%`);
- * });
- *
- * @example
- * // AbortControllerを使用してアップロードをキャンセルする
- * const controller = new AbortController();
- *
- * handleImageUpload(file, onProgress, controller.signal);
- *
- * // アップロードをキャンセル
- * controller.abort();
  */
-export const handleImageUpload = async (
-  file: File,
-  onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal
-): Promise<string> => {
+export const handleImageUpload = async (file: File): Promise<ImageInfo> => {
   // アップロード対象のファイルが指定されているか確認する
   if (!file) {
     throw new Error('No file provided');
@@ -673,18 +649,10 @@ export const handleImageUpload = async (
     );
   }
 
-  // デモ・テスト用としてアップロードの進捗状況をシミュレートする。
-  // 本番環境では、以下の処理を実際のファイルアップロード処理に置き換える。
-  for (let progress = 0; progress <= 100; progress += 10) {
-    if (abortSignal?.aborted) {
-      throw new Error('Upload cancelled');
-    }
-    // 500ミリ秒待機してから進捗状況を通知する
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    onProgress?.({ progress });
-  }
+  // 実際のアップロード処理は保存時にまとめて実施するため、BlobURLの作成まで実施する。
+  const imageInfo = await loadImageInfo(file);
 
-  return '/images/tiptap-ui-placeholder-image.jpg';
+  return imageInfo;
 };
 
 /**

@@ -1,2 +1,2 @@
-export * from './image-upload-button';
+export * from './imageUploadButton';
 export * from './useImageUpload';

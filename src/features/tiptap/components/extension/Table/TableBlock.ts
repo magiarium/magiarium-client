@@ -8,7 +8,7 @@ export const TableBlock = Node.create({
 
   group: 'block',
 
-  content: 'tableCaption table',
+  content: 'caption table',
 
   defining: true,
 

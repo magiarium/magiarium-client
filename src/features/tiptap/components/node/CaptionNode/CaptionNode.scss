@@ -1,0 +1,26 @@
+// キャプション
+:has(> .tiptap-caption) {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.tiptap-caption {
+  order: var(--caption-order, -1);
+  cursor: text;
+  text-align: center;
+  &--editable {
+    // 編集状態が分かりやすいように、少しだけ工夫
+    padding: 8px 12px;
+    border-bottom: 1px dashed #aaa;
+    border-radius: 4px 4px 0 0;
+    background: #f8f9fa;
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+
+    &:hover {
+      background: #f1f3f5;
+      border-bottom-color: #666;
+    }
+  }
+}

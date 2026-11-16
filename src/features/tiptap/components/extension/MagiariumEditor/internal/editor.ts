@@ -1,17 +1,20 @@
 import { detectNodeTypeFromEditor } from '@/features/tiptap/lib/detectNodeTypeFromEditor';
+import {
+  handleImageUpload,
+  MAX_FILE_SIZE,
+} from '@/features/tiptap/lib/tiptapUtils';
 import FileHandler from '@tiptap/extension-file-handler';
 import Placeholder from '@tiptap/extension-placeholder';
 import {
   BackgroundColor,
   FontSize,
   LineHeight,
-  TextStyle,
 } from '@tiptap/extension-text-style';
 import { Dropcursor, Focus, Gapcursor, UndoRedo } from '@tiptap/extensions';
 import type { Extensions } from '@tiptap/react';
+import { ImageUploadNode } from '../../../node/ImageUploadNode';
 
 export const EDITOR_EXTENSIONS: Extensions = [
-  TextStyle,
   BackgroundColor,
   Dropcursor,
   FileHandler.configure({
@@ -25,10 +28,16 @@ export const EDITOR_EXTENSIONS: Extensions = [
           currentEditor
             .chain()
             .insertContentAt(pos, {
-              type: 'image',
-              attrs: {
-                src: fileReader.result,
-              },
+              type: 'imageBlock',
+              content: [
+                { type: 'caption' },
+                {
+                  type: 'image',
+                  attrs: {
+                    src: fileReader.result,
+                  },
+                },
+              ],
             })
             .focus()
             .run();
@@ -51,10 +60,16 @@ export const EDITOR_EXTENSIONS: Extensions = [
           currentEditor
             .chain()
             .insertContentAt(currentEditor.state.selection.anchor, {
-              type: 'image',
-              attrs: {
-                src: fileReader.result,
-              },
+              type: 'imageBlock',
+              content: [
+                { type: 'caption' },
+                {
+                  type: 'image',
+                  attrs: {
+                    src: fileReader.result,
+                  },
+                },
+              ],
             })
             .focus()
             .run();
@@ -90,6 +105,15 @@ export const EDITOR_EXTENSIONS: Extensions = [
       }
     },
   }),
+  ImageUploadNode.configure({
+    accept: 'image/*',
+    maxSize: MAX_FILE_SIZE,
+    limit: 3,
+    upload: async (file) => {
+      const imageInfo = await handleImageUpload(file);
+      return imageInfo.blobUrl;
+    },
+    onError: (error) => console.error('Upload failed:', error),
+  }),
   UndoRedo,
-  Gapcursor,
 ];

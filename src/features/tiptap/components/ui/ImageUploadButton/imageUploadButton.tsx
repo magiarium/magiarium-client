@@ -24,32 +24,37 @@ type IconComponent = ({ className, ...props }: IconProps) => React.ReactElement;
 export interface ImageUploadButtonProps
   extends Omit<ButtonProps, 'type'>, UseImageUploadConfig {
   /**
-   * Optional text to display alongside the icon.
+   * アイコンの横に表示する補足テキスト(任意)
    */
   text?: string;
+
   /**
-   * Optional show shortcut keys in the button.
+   * ボタン内にショートカットキーを表示するかどうか(任意)
    * @default false
    */
   showShortcut?: boolean;
   /**
-   * Optional custom icon component to render instead of the default.
+   * デフォルトアイコンの代わりに描画するカスタムアイコン(任意)
    */
   icon?: React.MemoExoticComponent<IconComponent> | React.FC<IconProps>;
 }
 
-export function ImageShortcutBadge({
+/**
+ * 画像アップロードショートカットバッジ
+ * @param params.shortcutKeys ショートカットキー
+ */
+export const ImageShortcutBadge = ({
   shortcutKeys = IMAGE_UPLOAD_SHORTCUT_KEY,
 }: {
   shortcutKeys?: string;
-}) {
+}) => {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
-}
+};
 
 /**
- * Button component for uploading/inserting images in a Tiptap editor.
+ * Tiptapエディター内に画像アップロードエリアを追加するボタンコンポーネント
  *
- * For custom button implementations, use the `useImage` hook instead.
+ * カスタムボタンを実装する場合は、代わりに `useImageUpload` フックを使用してください。
  */
 export const ImageUploadButton = forwardRef<
   HTMLButtonElement,

@@ -3,15 +3,16 @@ import { NodeViewProps } from '@tiptap/core';
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/react';
 import { ReactNode } from 'react';
 import { BsArrowDown, BsArrowUp } from 'react-icons/bs';
+import './CaptionNode.scss';
 
 /**
- * テーブルキャプションノード
+ * キャプションノード
  */
-export const TableCaptionNode = (props: NodeViewProps): ReactNode => {
+export const CaptionNode = (props: NodeViewProps): ReactNode => {
   const { editor } = props;
 
   if (editor.isEditable) {
-    return EditableTableCaptionNode(props);
+    return EditableCaptionNode(props);
   }
 
   return (
@@ -22,9 +23,9 @@ export const TableCaptionNode = (props: NodeViewProps): ReactNode => {
 };
 
 /**
- * テーブルキャプションノード(編集用)
+ * キャプションノード(編集用)
  */
-export const EditableTableCaptionNode = (props: NodeViewProps): ReactNode => {
+export const EditableCaptionNode = (props: NodeViewProps): ReactNode => {
   const { editor, node } = props;
 
   return (
@@ -34,7 +35,7 @@ export const EditableTableCaptionNode = (props: NodeViewProps): ReactNode => {
           {
             children: (
               <>
-                {node.attrs.tableCaptionSide === 'bottom' ? (
+                {node.attrs.captionSide === 'bottom' ? (
                   <BsArrowUp />
                 ) : (
                   <BsArrowDown />
@@ -43,12 +44,12 @@ export const EditableTableCaptionNode = (props: NodeViewProps): ReactNode => {
               </>
             ),
             onSelect: () => {
-              editor.chain().focus().toggleTableCaptionSide().run();
+              editor.chain().focus().toggleCaptionSide().run();
             },
           },
         ]}
       >
-        <NodeViewContent className="tiptap-table-caption--editable" />
+        <NodeViewContent className="tiptap-caption--editable" />
       </ContextMenu>
     </NodeViewWrapper>
   );

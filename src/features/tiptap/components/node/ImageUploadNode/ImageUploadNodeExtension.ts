@@ -10,39 +10,39 @@ export type UploadFunction = (
 
 export interface ImageUploadNodeOptions {
   /**
-   * The type of the node.
+   * Node種別
    * @default 'image'
    */
   type?: string | NodeType | undefined;
   /**
-   * Acceptable file types for upload.
+   * アップロード許可形式
    * @default 'image/*'
    */
   accept?: string;
   /**
-   * Maximum number of files that can be uploaded.
+   * 一度にアップロードできるファイルの上限数
    * @default 1
    */
   limit?: number;
   /**
-   * Maximum file size in bytes (0 for unlimited).
+   * アップロード可能な最大ファイルサイズ（0は制限なし）
    * @default 0
    */
   maxSize?: number;
   /**
-   * Function to handle the upload process.
+   * アップロード進捗関数
    */
   upload?: UploadFunction;
   /**
-   * Callback for upload errors.
+   * アップロードエラー時のコールバック関数
    */
   onError?: (error: Error) => void;
   /**
-   * Callback for successful uploads.
+   * アップロード成功時のコールバック関数
    */
   onSuccess?: (url: string) => void;
   /**
-   * HTML attributes to add to the image element.
+   * 画像エレメントに追加するAttributes
    * @default {}
    * @example { class: 'foo' }
    */
@@ -58,7 +58,7 @@ declare module '@tiptap/react' {
 }
 
 /**
- * A Tiptap node extension that creates an image upload component.
+ * 画像アップロードコンポーネントを作成するためのTiptapNodeExtension
  * @see registry/tiptap-node/image-upload-node/image-upload-node
  */
 export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
@@ -128,7 +128,7 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
   },
 
   /**
-   * Adds Enter key handler to trigger the upload component when it's selected.
+   * アップロードコンポーネントが選択された時、エンターキーでハンドラーが起動するように追加
    */
   addKeyboardShortcuts() {
     return {
@@ -143,7 +143,7 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
         ) {
           const nodeEl = editor.view.nodeDOM(selection.$from.pos);
           if (nodeEl && nodeEl instanceof HTMLElement) {
-            // Since NodeViewWrapper is wrapped with a div, we need to click the first child
+            // NodeViewWrapperはdiv要素でラップされているため、最初の子要素をクリックする必要がある
             const firstChild = nodeEl.firstChild;
             if (firstChild && firstChild instanceof HTMLElement) {
               firstChild.click();

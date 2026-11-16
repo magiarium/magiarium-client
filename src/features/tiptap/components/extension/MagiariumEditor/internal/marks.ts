@@ -2,7 +2,6 @@ import Bold from '@tiptap/extension-bold';
 import Code from '@tiptap/extension-code';
 import Highlight from '@tiptap/extension-highlight';
 import Italic from '@tiptap/extension-italic';
-import Link from '@tiptap/extension-link';
 import RubyText from '@tiptap/extension-ruby-text';
 import Strike from '@tiptap/extension-strike';
 import TextAlign from '@tiptap/extension-text-align';
@@ -30,6 +29,5 @@ export const MARKS_EXTENSIONS: Extensions = [
   TextStyle,
   Color,
   Kbd,
-  Link,
   InlineLink,
 ];

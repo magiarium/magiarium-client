@@ -13,30 +13,30 @@ import './ImageUploadNode.scss';
 
 export interface FileItem {
   /**
-   * Unique identifier for the file item
+   * ファイルごとのユニークID
    */
   id: string;
   /**
-   * The actual File object being uploaded
+   * アップロードされた実際のファイルオブジェクト
    */
   file: File;
   /**
-   * Current upload progress as a percentage (0-100)
+   * 現在のアップロード進捗パーセンテージ (0-100)
    */
   progress: number;
   /**
-   * Current status of the file upload process
+   * ファイルアップロードプロセスの現在ステータス
    * @default "uploading"
    */
   status: 'uploading' | 'success' | 'error';
 
   /**
-   * URL to the uploaded file, available after successful upload
+   * アップロード成功後の、アップロードファイルURL
    * @optional
    */
   url?: string;
   /**
-   * Controller that can be used to abort the upload process
+   * アップロードプロセスを中断するためのコントローラー
    * @optional
    */
   abortController?: AbortController;
@@ -44,24 +44,24 @@ export interface FileItem {
 
 export interface UploadOptions {
   /**
-   * Maximum allowed file size in bytes
+   * アップロード可能な最大ファイルサイズ(byte)
    */
   maxSize: number;
   /**
-   * Maximum number of files that can be uploaded
+   * アップロード可能な最大ファイル数
    */
   limit: number;
   /**
-   * String specifying acceptable file types (MIME types or extensions)
+   * アップロード可能なファイル種別 (MIME types or extensions)
    * @example ".jpg,.png,image/jpeg" or "image/*"
    */
   accept: string;
   /**
-   * Function that handles the actual file upload process
-   * @param {File} file - The file to be uploaded
-   * @param {Function} onProgress - Callback function to report upload progress
-   * @param {AbortSignal} signal - Signal that can be used to abort the upload
-   * @returns {Promise<string>} Promise resolving to the URL of the uploaded file
+   * 実際のファイルアップロードプロセスのハンドル関数
+   * @param {File} file - アップロード対象ファイル
+   * @param {Function} onProgress - アップロード進捗通知用のコールバック関数
+   * @param {AbortSignal} signal - アップロード中断用シグナル
+   * @returns {Promise<string>} アップロードされたファイルURL
    */
   upload: (
     file: File,
@@ -69,23 +69,23 @@ export interface UploadOptions {
     signal: AbortSignal
   ) => Promise<string>;
   /**
-   * Callback triggered when a file is uploaded successfully
-   * @param {string} url - URL of the successfully uploaded file
+   * ファイルアップロード成功時にトリガーされるコールバック関数
+   * @param {string} url - アップロードに成功したファイルのURL
    * @optional
    */
   onSuccess?: (url: string) => void;
   /**
-   * Callback triggered when an error occurs during upload
-   * @param {Error} error - The error that occurred
+   * アップロード中にエラーが発生した場合にトリガーされるコールバック関数
+   * @param {Error} error - エラー内容
    * @optional
    */
   onError?: (error: Error) => void;
 }
 
 /**
- * Custom hook for managing multiple file uploads with progress tracking and cancellation
+ * 複数ファイルアップロードの進捗をトラッキング＆キャンセルするためのカスタムフック
  */
-function useFileUpload(options: UploadOptions) {
+const useFileUpload = (options: UploadOptions) => {
   const [fileItems, setFileItems] = useState<FileItem[]>([]);
 
   const uploadFile = async (file: File): Promise<string | null> => {
@@ -174,11 +174,11 @@ function useFileUpload(options: UploadOptions) {
       return [];
     }
 
-    // Upload all files concurrently
+    // すべてのファイルを同時にアップロードする
     const uploadPromises = files.map((file) => uploadFile(file));
     const results = await Promise.all(uploadPromises);
 
-    // Filter out null results (failed uploads)
+    // 結果がnullの場合は除外(アップロード失敗)
     return results.filter((url): url is string => url !== null);
   };
 
@@ -213,7 +213,7 @@ function useFileUpload(options: UploadOptions) {
     removeFileItem,
     clearAllFiles,
   };
-}
+};
 
 const CloudUploadIcon: React.FC = () => (
   <svg
@@ -272,12 +272,12 @@ const FileCornerIcon: React.FC = () => (
 
 interface ImageUploadDragAreaProps {
   /**
-   * Callback function triggered when files are dropped or selected
-   * @param {File[]} files - Array of File objects that were dropped or selected
+   * ファイルがドロップまたは選択された場合にトリガーされるコールバック関数
+   * @param {File[]} files - ドロップまたは選択されたファイルオブジェクト配列
    */
   onFile: (files: File[]) => void;
   /**
-   * Optional child elements to render inside the drag area
+   * ドラッグエリア内に描画する子要素（任意）
    * @optional
    * @default undefined
    */
@@ -285,7 +285,7 @@ interface ImageUploadDragAreaProps {
 }
 
 /**
- * A component that creates a drag-and-drop area for image uploads
+ * 画像アップロード用のドラッグ＆ドロップエリアを作成するコンポーネント
  */
 const ImageUploadDragArea: React.FC<ImageUploadDragAreaProps> = ({
   onFile,
@@ -342,17 +342,17 @@ const ImageUploadDragArea: React.FC<ImageUploadDragAreaProps> = ({
 
 interface ImageUploadPreviewProps {
   /**
-   * The file item to preview
+   * プレビューするファイルアイテム
    */
   fileItem: FileItem;
   /**
-   * Callback to remove this file from upload queue
+   * アップロードキューからファイルを取り除くためのコールバック関数
    */
   onRemove: () => void;
 }
 
 /**
- * Component that displays a preview of an uploading file with progress
+ * アップロードファイルの進捗率プレビューを表示するコンポーネント
  */
 const ImageUploadPreview: React.FC<ImageUploadPreviewProps> = ({
   fileItem,
@@ -411,6 +411,9 @@ const ImageUploadPreview: React.FC<ImageUploadPreviewProps> = ({
   );
 };
 
+/**
+ * ドロップゾーン
+ */
 const DropZoneContent: React.FC<{ maxSize: number; limit: number }> = ({
   maxSize,
   limit,
@@ -436,6 +439,10 @@ const DropZoneContent: React.FC<{ maxSize: number; limit: number }> = ({
   </>
 );
 
+/**
+ * 画像アップロードノード本体
+ * ※画像アップロード用のため、実際にアップロードした後はImageNodeに置換される（プレビューはあくまでもアップロード中の進捗率表示用）
+ */
 export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
   const { accept, limit, maxSize } = props.node.attrs;
   const inputRef = useRef<HTMLInputElement>(null);
@@ -464,13 +471,21 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
           const filename =
             files[index]?.name.replace(/\.[^/.]+$/, '') || 'unknown';
           return {
-            type: extension.options.type,
-            attrs: {
-              ...extension.options,
-              src: url,
-              alt: filename,
-              title: filename,
-            },
+            type: 'imageBlock',
+            content: [
+              {
+                type: extension.options.type,
+                attrs: {
+                  ...extension.options,
+                  src: url,
+                  alt: filename,
+                  title: filename,
+                },
+              },
+              {
+                type: 'caption',
+              },
+            ],
           };
         });
 

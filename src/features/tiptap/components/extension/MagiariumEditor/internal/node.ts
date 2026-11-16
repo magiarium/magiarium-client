@@ -1,7 +1,3 @@
-import {
-  handleImageUpload,
-  MAX_FILE_SIZE,
-} from '@/features/tiptap/lib/tiptapUtils';
 import Blockquote from '@tiptap/extension-blockquote';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { DetailsContent, DetailsSummary } from '@tiptap/extension-details';
@@ -18,12 +14,12 @@ import js from 'highlight.js/lib/languages/javascript';
 import ts from 'highlight.js/lib/languages/typescript';
 import html from 'highlight.js/lib/languages/xml';
 import { all, createLowlight } from 'lowlight';
-import { ImageUploadNode } from '../../../node/ImageUploadNode';
+import { Caption } from '../../Caption';
 import { CharacterSpeech } from '../../CharacterSpeech';
+import { ImageBlock } from '../../ImageBlock';
 import { LinkCard } from '../../LinkCard';
 import { CustomTable } from '../../Table/Table';
 import { TableBlock } from '../../Table/TableBlock';
-import { TableCaption } from '../../Table/TableCaption';
 import { CustomTableCell } from '../../Table/TableCell';
 import { CustomTableHeader } from '../../Table/TableHeader';
 import { Tips } from '../../Tips';
@@ -42,14 +38,8 @@ export const NODE_EXTENSIONS: Extensions = [
   }),
   HardBreak,
   Heading.configure({ levels: [3, 4, 5] }), // `h1=サイトタイトル` & `h2=コンテンツタイトル` のため、h3以降のみ許可
+  ImageBlock,
   Image,
-  ImageUploadNode.configure({
-    accept: 'image/*',
-    maxSize: MAX_FILE_SIZE,
-    limit: 3,
-    upload: handleImageUpload,
-    onError: (error) => console.error('Upload failed:', error),
-  }),
   BulletList,
   ListItem,
   OrderedList,
@@ -60,7 +50,7 @@ export const NODE_EXTENSIONS: Extensions = [
     resizable: true,
   }),
   TableBlock,
-  TableCaption,
+  Caption,
   TableKit.configure({
     tableCell: false,
     tableHeader: false,

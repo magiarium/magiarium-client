@@ -17,7 +17,7 @@ export const CustomTable = Table.extend({
           const table = createTable(editor.schema, rows, cols, withHeaderRow);
 
           // tableBlock(テーブル+テーブルキャプションのラッパー)を生成
-          const caption = editor.schema.nodes.tableCaption.create();
+          const caption = editor.schema.nodes.caption.create();
 
           const tableBlock = editor.schema.nodes.tableBlock.create(null, [
             caption,
