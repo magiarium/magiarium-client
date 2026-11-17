@@ -10,10 +10,20 @@ import { TIPS_SHORTCUT_KEY, useTips, UseTipsConfig } from './useTips';
 
 export interface TipsButtonProps
   extends Omit<ButtonProps, 'type'>, UseTipsConfig {
+  /**
+   * アイコンの横に配置する補足テキスト(任意)
+   */
   text?: string;
+
+  /**
+   * ショートカットキーを表示するか
+   */
   showShortcut?: boolean;
 }
 
+/**
+ * Tipsのショートカットキーバッジ
+ */
 export const TipsShortcutBadge = ({
   shortcutKeys = TIPS_SHORTCUT_KEY,
 }: {
@@ -22,6 +32,11 @@ export const TipsShortcutBadge = ({
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
 };
 
+/**
+ * Tiptapエディター内にTipsを追加するためのボタンコンポーネント
+ *
+ * カスタムボタンを実装する場合は、代わりに `useTips` フックを使用してください。
+ */
 export const TipsButton = forwardRef<HTMLButtonElement, TipsButtonProps>(
   (
     {

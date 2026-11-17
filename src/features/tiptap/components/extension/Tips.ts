@@ -1,44 +1,65 @@
-import { mergeAttributes } from '@tiptap/core';
-import { Details } from '@tiptap/extension-details';
+import { mergeAttributes, Node } from '@tiptap/core';
 
-export const Tips = Details.extend({
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    tips: {
+      setTips: () => ReturnType;
+      toggleTips: () => ReturnType;
+      unsetTips: () => ReturnType;
+    };
+  }
+}
+
+export const Tips = Node.create({
   name: 'tips',
 
-  addAttributes() {
-    return {
-      ...this.parent?.(),
+  content: 'block+',
 
-      title: {
-        default: '詳細',
-      },
+  group: 'block',
 
-      content: {
-        default: '',
-      },
-    };
-  },
+  defining: true,
 
   parseHTML() {
     return [
       {
-        tag: 'aside[data-type="tips"]',
+        tag: 'aside[data-tips]',
       },
     ];
   },
 
-  renderHTML({ node, HTMLAttributes }) {
+  addAttributes() {
+    return {
+      class: {
+        default: 'tiptap-tips',
+      },
+    };
+  },
+
+  renderHTML({ HTMLAttributes }) {
     return [
       'aside',
-      mergeAttributes(HTMLAttributes, {
-        'data-type': 'tips',
-        class: 'tips',
-      }),
-      [
-        'details',
-        {},
-        ['summary', {}, node.attrs.title],
-        ['div', { 'data-tips-content': '' }, node.attrs.content],
-      ],
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+      0,
     ];
+  },
+
+  addCommands() {
+    return {
+      setTips:
+        () =>
+        ({ commands }) => {
+          return commands.wrapIn(this.name);
+        },
+      toggleTips:
+        () =>
+        ({ commands }) => {
+          return commands.toggleWrap(this.name);
+        },
+      unsetTips:
+        () =>
+        ({ commands }) => {
+          return commands.lift(this.name);
+        },
+    };
   },
 });

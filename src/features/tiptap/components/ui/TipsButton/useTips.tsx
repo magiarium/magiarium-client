@@ -10,18 +10,38 @@ import {
 import { NodeSelection, TextSelection } from '@tiptap/pm/state';
 import { Editor } from '@tiptap/react';
 import { useCallback, useEffect, useState } from 'react';
-import { BsInfoCircleFill } from 'react-icons/bs';
+import { BsLightbulb } from 'react-icons/bs';
 
+// Tipsショートカットキー
 export const TIPS_SHORTCUT_KEY = 'mod+shift+t';
 
+/**
+ * Tips機能の設定
+ */
 export interface UseTipsConfig {
+  /**
+   * Tiptapエディターのインスタンス(任意)
+   */
   editor?: Editor | null;
 
+  /**
+   * Tips機能が使用できない場合に、ボタンを非表示にするかどうか。
+   * @default false
+   */
   hideWhenUnavailable?: boolean;
 
+  /**
+   * Tipsの切り替えが正常に完了した後に呼び出されるコールバック関数
+   */
   onToggled?: () => void;
 }
 
+/**
+ * 現在のエディター状態で、Tipsへの切り替えが可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @param turnInfo Tipsへの変換時に追加の判定を行うかどうか
+ */
 export const canToggleTips = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (
@@ -45,9 +65,16 @@ export const canToggleTips = (editor: Editor | null): boolean => {
     return false;
   }
 
-  return editor.can().toggleWrap('tips') || editor.can().clearNodes();
+  return editor.can().setTips();
 };
 
+/**
+ * ボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable 対象機能が使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
+ */
 export const shouldShowButton = (props: {
   editor: Editor | null;
   hideWhenUnavailable: boolean;
@@ -71,6 +98,12 @@ export const shouldShowButton = (props: {
   return true;
 };
 
+/**
+ * Tipsへの切り替え処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @returns true:成功、false:失敗
+ */
 export const toggleTips = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (!canToggleTips(editor)) return false;
@@ -93,7 +126,6 @@ export const toggleTips = (editor: Editor | null): boolean => {
         'codeBlock',
       ]) && blocks.length === 1;
 
-    // No selection, find the the cursor position
     if (
       (state.selection.empty || state.selection instanceof TextSelection) &&
       isPossibleToTurnInto
@@ -113,7 +145,6 @@ export const toggleTips = (editor: Editor | null): boolean => {
 
     let chain = editor.chain().focus();
 
-    // Handle NodeSelection
     if (selection instanceof NodeSelection) {
       const firstChild = selection.node.firstChild?.firstChild;
       const lastChild = selection.node.lastChild?.lastChild;
@@ -135,8 +166,8 @@ export const toggleTips = (editor: Editor | null): boolean => {
     }
 
     const toggle = editor.isActive('tips')
-      ? chain.lift('tips')
-      : chain.wrapIn('tips');
+      ? chain.unsetTips()
+      : chain.setTips();
 
     toggle.run();
 
@@ -148,6 +179,11 @@ export const toggleTips = (editor: Editor | null): boolean => {
   }
 };
 
+/**
+ * Tiptapエディター向けのTips機能を提供するカスタムフック。
+ *
+ * @param config Tips機能の設定
+ */
 export const useTips = (config?: UseTipsConfig) => {
   const {
     editor: providedEditor,
@@ -195,6 +231,6 @@ export const useTips = (config?: UseTipsConfig) => {
     canToggle,
     label: 'tips',
     shortcutKeys: TIPS_SHORTCUT_KEY,
-    Icon: BsInfoCircleFill,
+    Icon: BsLightbulb,
   };
 };

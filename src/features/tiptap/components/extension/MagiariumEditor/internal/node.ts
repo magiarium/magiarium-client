@@ -1,6 +1,5 @@
 import Blockquote from '@tiptap/extension-blockquote';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-import { DetailsContent, DetailsSummary } from '@tiptap/extension-details';
 import HardBreak from '@tiptap/extension-hard-break';
 import Heading from '@tiptap/extension-heading';
 import Image from '@tiptap/extension-image';
@@ -61,8 +60,6 @@ export const NODE_EXTENSIONS: Extensions = [
     nocookie: true,
   }),
   CharacterSpeech,
-  DetailsSummary,
-  DetailsContent,
   Tips,
   LinkCard,
 ];

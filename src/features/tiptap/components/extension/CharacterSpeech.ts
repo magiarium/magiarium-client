@@ -13,12 +13,6 @@ declare module '@tiptap/core' {
   }
 }
 
-export type CharacterSpeechPosition = 'left' | 'right';
-
-export interface CharacterSpeechOptions {
-  HTMLAttributes: Record<string, unknown>;
-}
-
 export interface CharacterSpeechAttributes {
   characterIcon?: string | null;
   frameColor?: string | null;
@@ -26,7 +20,7 @@ export interface CharacterSpeechAttributes {
   characterPosition?: string | null;
 }
 
-export const CharacterSpeech = Node.create<CharacterSpeechOptions>({
+export const CharacterSpeech = Node.create({
   name: 'characterSpeech',
 
   group: 'block',
