@@ -16,7 +16,6 @@ export const AnimationSkipOverlay = ({
     <div
       className="animation-skip-overlay"
       onClick={() => {
-        console.log('CLICK!!');
         animationController?.finish();
       }}
     />

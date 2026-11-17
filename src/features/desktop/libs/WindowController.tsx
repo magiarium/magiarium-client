@@ -116,7 +116,7 @@ export class WindowController {
   };
 
   /**
-   * ウィンドウサイズ行員処理
+   * ウィンドウサイズ更新処理
    *
    * @param nextSize.width 横幅
    * @oaram nextSize.height 高さ

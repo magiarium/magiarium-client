@@ -33,7 +33,7 @@ export const LockPage = () => {
     // マウント時にアプリケーションをロック状態に更新
     setAppState('LOCKED');
     return () => {
-      setAppState('READY'); // アンマウント時にREADYに更新
+      setAppState('DEFAULT'); // アンマウント時にDEFAULTに更新
     };
   }, []);
 
