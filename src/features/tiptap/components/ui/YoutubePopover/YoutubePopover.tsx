@@ -6,8 +6,7 @@ import { useIsBreakpoint } from '@/features/tiptap/hooks/useIsBreakpoint';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 // --- Icons ---
 import { ChevronDownIcon } from '@/features/tiptap/components/icons/ChevronDownIcon';
-import { ExternalLinkIcon } from '@/features/tiptap/components/icons/ExternalLinkIcon';
-import { BsYoutube } from 'react-icons/bs';
+import { BsArrowUpRight, BsYoutube } from 'react-icons/bs';
 
 // --- Tiptap UI ---
 import {
@@ -165,7 +164,7 @@ export const YoutubeMain = ({
               disabled={!youtubeState.src && !isActive}
               variant="ghost"
             >
-              <ExternalLinkIcon className="tiptap-button-icon" />
+              <BsArrowUpRight className="tiptap-button-icon" />
             </Button>
           </ButtonGroup>
         </CardItemGroup>

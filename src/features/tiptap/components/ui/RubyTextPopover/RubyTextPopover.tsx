@@ -37,8 +37,7 @@ import { Separator } from '@/features/tiptap/components/ui-primitive/Separator';
 
 // --- Icons ---
 import { CornerDownLeftIcon } from '@/features/tiptap/components/icons/CornerDownLeftIcon';
-import { TrashIcon } from '@/features/tiptap/components/icons/TrashIcon';
-import { BsTranslate } from 'react-icons/bs';
+import { BsTranslate, BsTrash } from 'react-icons/bs';
 
 export interface RubyButtonPros
   extends Omit<ButtonProps, 'type'>, UseRubyConfig {
@@ -200,7 +199,7 @@ const RubyTextMain = ({
                 disabled={!rubyText && !isActive}
                 variant="ghost"
               >
-                <TrashIcon className="tiptap-button-icon" />
+                <BsTrash className="tiptap-button-icon" />
               </Button>
             </ButtonGroup>
           )}

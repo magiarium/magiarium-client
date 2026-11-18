@@ -7,8 +7,6 @@ import { useIsBreakpoint } from '@/features/tiptap/hooks/useIsBreakpoint';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 
 // --- Icons ---
-import { ExternalLinkIcon } from '@/features/tiptap/components/icons/ExternalLinkIcon';
-import { LinkIcon } from '@/features/tiptap/components/icons/LinkIcon';
 
 // --- Tiptap UI ---
 import type { UseInlineLinkConfig } from '@/features/tiptap/components/ui/InlineLinkPopover';
@@ -31,6 +29,7 @@ import {
   PopoverTrigger,
 } from '@/features/tiptap/components/ui-primitive/Popover';
 
+import { BsArrowUpRight, BsLink } from 'react-icons/bs';
 import { FaUnlink } from 'react-icons/fa';
 import './InlineLinkPopover.scss';
 
@@ -100,7 +99,7 @@ export const InlineLinkButton = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {children || <LinkIcon className="tiptap-button-icon" />}
+        {children || <BsLink className="tiptap-button-icon" />}
       </Button>
     );
   }
@@ -168,7 +167,7 @@ const InlineLinkMain = ({
                 disabled={!inlineLinkState.href && !isActive}
                 variant="ghost"
               >
-                <ExternalLinkIcon className="tiptap-button-icon" />
+                <BsArrowUpRight className="tiptap-button-icon" />
               </Button>
             </ButtonGroup>
           </CardItemGroup>

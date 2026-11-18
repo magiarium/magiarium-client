@@ -5,9 +5,8 @@ import { useImageUploader } from '@/features/image/hooks/useImageUploader';
 import { MarkViewProps } from '@tiptap/core';
 import { MarkViewContent, useEditorState } from '@tiptap/react';
 import Link from 'next/link';
-import { BsGearFill, BsTrash } from 'react-icons/bs';
+import { BsArrowUpRight, BsGearFill, BsTrash } from 'react-icons/bs';
 import { FaUnlink } from 'react-icons/fa';
-import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
 import { Button } from '../../ui-primitive/Button';
 import { Card, CardBody } from '../../ui-primitive/Card';
 import {
@@ -102,7 +101,7 @@ const EditableInlineLinkMark = (props: MarkViewProps) => {
                 selected ? !inlineLinkState.href : props.mark.attrs.href
               }
             >
-              <ExternalLinkIcon className="tiptap-button-icon" />
+              <BsArrowUpRight className="tiptap-button-icon" />
               リンクを開く
             </Button>
             <Popover>

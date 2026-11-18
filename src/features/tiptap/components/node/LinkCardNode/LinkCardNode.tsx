@@ -14,8 +14,13 @@ import { ReactNode, useRef, useState } from 'react';
 import { useImageUploader } from '@/features/image/hooks/useImageUploader';
 
 // --- Icons ---
-import { ExternalLinkIcon } from '@/features/tiptap/components/icons/ExternalLinkIcon';
-import { BsEraser, BsGearFill, BsTrash, BsXLg } from 'react-icons/bs';
+import {
+  BsArrowUpRight,
+  BsEraser,
+  BsGearFill,
+  BsTrash,
+  BsXLg,
+} from 'react-icons/bs';
 
 // --- UI Primitives ---
 import { Button } from '@/features/tiptap/components/ui-primitive/Button';
@@ -242,7 +247,7 @@ export const EditableLinkCardNode = (props: NodeViewProps) => {
                 }}
                 disabled={!linkCardState.href}
               >
-                <ExternalLinkIcon className="tiptap-button-icon" />
+                <BsArrowUpRight className="tiptap-button-icon" />
                 リンクを開く
               </Button>
               <Button

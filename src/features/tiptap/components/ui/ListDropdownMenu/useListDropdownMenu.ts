@@ -7,9 +7,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 
 // --- Icons ---
-import { ListIcon } from '@/features/tiptap/components/icons/ListIcon';
-import { ListOrderedIcon } from '@/features/tiptap/components/icons/ListOrderedIcon';
-import { ListTodoIcon } from '@/features/tiptap/components/icons/ListTodoIcon';
 
 // --- Lib ---
 import { isNodeInSchema } from '@/features/tiptap/lib/tiptapUtils';
@@ -21,6 +18,7 @@ import {
   listIcons,
   type ListType,
 } from '@/features/tiptap/components/ui/ListButton';
+import { BsListCheck, BsListOl, BsListUl } from 'react-icons/bs';
 
 /**
  * リストドロップダウン機能の設定
@@ -69,17 +67,17 @@ export const listOptions: ListOption[] = [
   {
     label: '箇条書きリスト',
     type: 'bulletList',
-    icon: ListIcon,
+    icon: BsListUl,
   },
   {
     label: '順序付きリスト',
     type: 'orderedList',
-    icon: ListOrderedIcon,
+    icon: BsListOl,
   },
   {
     label: 'Task List',
     type: 'taskList',
-    icon: ListTodoIcon,
+    icon: BsListCheck,
   },
 ];
 
@@ -266,6 +264,6 @@ export const useListDropdownMenu = (config?: UseListDropdownMenuConfig) => {
     types,
     filteredLists,
     label: 'List',
-    Icon: activeList ? listIcons[activeList.type] : ListIcon,
+    Icon: activeList ? listIcons[activeList.type] : BsListUl,
   };
 };

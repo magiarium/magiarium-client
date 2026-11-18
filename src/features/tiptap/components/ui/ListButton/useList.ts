@@ -6,9 +6,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 
 // --- Icons ---
-import { ListIcon } from '@/features/tiptap/components/icons/ListIcon';
-import { ListOrderedIcon } from '@/features/tiptap/components/icons/ListOrderedIcon';
-import { ListTodoIcon } from '@/features/tiptap/components/icons/ListTodoIcon';
 
 // --- Lib ---
 import {
@@ -19,6 +16,7 @@ import {
   isValidPosition,
   selectionWithinConvertibleTypes,
 } from '@/features/tiptap/lib/tiptapUtils';
+import { BsListCheck, BsListOl, BsListUl } from 'react-icons/bs';
 
 // リスト切り替え用ショートカットキー
 export type ListType = 'bulletList' | 'orderedList' | 'taskList';
@@ -53,9 +51,9 @@ export interface UseListConfig {
  * リストアイコン一覧
  */
 export const listIcons = {
-  bulletList: ListIcon,
-  orderedList: ListOrderedIcon,
-  taskList: ListTodoIcon,
+  bulletList: BsListUl,
+  orderedList: BsListOl,
+  taskList: BsListCheck,
 };
 
 /**
