@@ -1,18 +1,18 @@
 import { findParentNode, mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
-import { ImageBlockNode } from '../node/ImageBlockNode/ImageBlockNode';
+import { ImageFigureNode } from '../node/ImageFigureNode/ImageFigureNode';
 
 // コマンドの型定義
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    imageBlock: {
-      deleteImageBlock: () => ReturnType;
+    imageFigure: {
+      deleteImageFigure: () => ReturnType;
     };
   }
 }
 
-export const ImageBlock = Node.create({
-  name: 'imageBlock',
+export const ImageFigure = Node.create({
+  name: 'imageFigure',
 
   group: 'block',
 
@@ -24,51 +24,56 @@ export const ImageBlock = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'figure[data-image-block]',
+        tag: 'figure[data-image-figure]',
       },
     ];
+  },
+
+  addAttributes() {
+    return {
+      'data-image-figure': {
+        default: '',
+      },
+      class: {
+        default: 'tiptap-image-figure',
+      },
+    };
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
       'figure',
-      {
-        ...HTMLAttributes,
-        'data-image-block': '',
-        class: 'tiptap-image-block',
-      },
+      { ...mergeAttributes(this.options.HTMLAttributes, HTMLAttributes) },
     ];
   },
 
   addNodeView() {
     const options = this.options.HTMLAttributes;
-    return ReactNodeViewRenderer(ImageBlockNode, {
+    return ReactNodeViewRenderer(ImageFigureNode, {
       as: 'figure',
       attrs: ({ HTMLAttributes }) => ({
         ...mergeAttributes(options, HTMLAttributes),
-        'data-image-block': '',
-        class: 'tiptap-image-block',
       }),
     });
   },
 
   addCommands() {
     return {
-      deleteImageBlock:
+      deleteImageFigure:
         () =>
         ({ tr, dispatch, editor }) => {
           const { selection } = tr;
 
-          const imageBlock = findParentNode(
-            (node) => node.type === editor.schema.nodes.imageBlock
+          const imageFigure = findParentNode(
+            (node) => node.type === editor.schema.nodes.imageFigure
           )(selection);
 
-          if (!imageBlock) {
+          if (!imageFigure) {
             return false;
           }
 
           if (dispatch) {
-            const { pos, node } = imageBlock;
+            const { pos, node } = imageFigure;
 
             tr.delete(pos, pos + node.nodeSize).scrollIntoView();
           }

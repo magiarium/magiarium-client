@@ -471,7 +471,7 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
           const filename =
             files[index]?.name.replace(/\.[^/.]+$/, '') || 'unknown';
           return {
-            type: 'imageBlock',
+            type: 'imageFigure',
             content: [
               {
                 type: extension.options.type,

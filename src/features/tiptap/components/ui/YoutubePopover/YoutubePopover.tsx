@@ -1,35 +1,66 @@
+import { Button as MagiariumButton } from '@/common/components/Button';
+import { forwardRef, useCallback, useState } from 'react';
+
+// --- Hooks ---
 import { useIsBreakpoint } from '@/features/tiptap/hooks/useIsBreakpoint';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
-import { forwardRef, useCallback, useEffect, useState } from 'react';
+// --- Icons ---
+import { ChevronDownIcon } from '@/features/tiptap/components/icons/ChevronDownIcon';
+import { ExternalLinkIcon } from '@/features/tiptap/components/icons/ExternalLinkIcon';
 import { BsYoutube } from 'react-icons/bs';
-import { ChevronDownIcon } from '../../icons/ChevronDownIcon';
-import { CornerDownLeftIcon } from '../../icons/CornerDownLeftIcon';
-import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
-import { Button, ButtonProps } from '../../ui-primitive/Button';
-import { ButtonGroup } from '../../ui-primitive/ButtonGroup';
-import { Card, CardBody, CardItemGroup } from '../../ui-primitive/Card';
-import { Input } from '../../ui-primitive/Input';
+
+// --- Tiptap UI ---
+import {
+  SetYoutubeVideoOptions,
+  useYoutube,
+  UseYoutubeConfig,
+  YOUTUBE_DEFAULT_SIZE,
+} from '@/features/tiptap/components/ui/YoutubePopover';
+
+// --- UI Primitives ---
+import {
+  Button,
+  ButtonProps,
+} from '@/features/tiptap/components/ui-primitive/Button';
+import { ButtonGroup } from '@/features/tiptap/components/ui-primitive/ButtonGroup';
+import {
+  Card,
+  CardBody,
+  CardItemGroup,
+} from '@/features/tiptap/components/ui-primitive/Card';
+import { Input } from '@/features/tiptap/components/ui-primitive/Input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '../../ui-primitive/Popover';
-import { Separator } from '../../ui-primitive/Separator';
-import {
-  useYoutube,
-  UseYoutubeConfig,
-  YOUTUBE_DEFAULT_SIZE,
-  YoutubeAttributes,
-} from './useYoutube';
+} from '@/features/tiptap/components/ui-primitive/Popover';
+
+// --- Style
+import './YoutubePopover.scss';
 
 export interface YoutubePopoverProps
   extends Omit<ButtonProps, 'type'>, UseYoutubeConfig {
+  /**
+   * アイコンの横に表示する補足テキスト(任意)
+   */
   text?: string;
+
+  /**
+   * ポップオーバー開閉時に呼び出されるコールバック関数
+   * @param isOpen 開閉状態
+   */
   onOpenChange?: (isOpen: boolean) => void;
-  autoOpenOnYoutubeActive?: boolean;
+
+  /**
+   * ポップオーバーをモーダルにするか
+   * @default false
+   */
   modal?: boolean;
 }
 
+/**
+ * Youtubeボタン
+ */
 export const YoutubeButton = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, children, ...props }, ref) => {
     return (
@@ -51,15 +82,34 @@ export const YoutubeButton = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 export interface YoutubeMainProps {
-  youtubeState: YoutubeAttributes;
+  /**
+   * youtubeNode設定
+   */
+  youtubeState: SetYoutubeVideoOptions;
+
+  /**
+   * youtubeNode設定更新用
+   */
   setYoutubeState: React.Dispatch<
-    React.SetStateAction<YoutubeAttributes | null>
+    React.SetStateAction<SetYoutubeVideoOptions | null>
   >;
+  /**
+   * エディター内にYoutubeを設定するための関数
+   */
   setYoutube: () => void;
+  /**
+   * 設定したYoutubeリンクURLを実際に開く処理
+   */
   openYoutube: () => void;
+  /**
+   * エディターのYoutubeが現在アクティブ状態か否か
+   * @default false
+   */
   isActive: boolean;
 }
-
+/**
+ * Youtubeポップオーバーメインコンテンツ
+ */
 export const YoutubeMain = ({
   youtubeState,
   setYoutubeState,
@@ -83,22 +133,59 @@ export const YoutubeMain = ({
       }}
     >
       <CardBody
+        className="tiptap-youtube-popover__content-container"
         style={{
           ...(isMobile ? { padding: 0 } : {}),
         }}
       >
         <CardItemGroup orientation="horizontal">
+          <Input
+            type="url"
+            className="tiptap-youtube-popover__input"
+            placeholder="URLリンクを貼ってください。"
+            value={youtubeState.src ?? ''}
+            onChange={(e) =>
+              setYoutubeState((prev) => {
+                return {
+                  ...prev,
+                  src: e.target.value,
+                };
+              })
+            }
+            onKeyDown={handleKeyDown}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+          />
+          <ButtonGroup>
+            <Button
+              type="button"
+              onClick={openYoutube}
+              title="別ウィンドウで動画を開く"
+              disabled={!youtubeState.src && !isActive}
+              variant="ghost"
+            >
+              <ExternalLinkIcon className="tiptap-button-icon" />
+            </Button>
+          </ButtonGroup>
+        </CardItemGroup>
+
+        <CardItemGroup
+          orientation="horizontal"
+          className="tiptap-youtube-popover__group"
+        >
           <label>
             縦：
             <Input
               type="number"
+              className="tiptap-youtube-popover__input"
               placeholder="動画縦幅"
-              value={youtubeState.src}
+              value={youtubeState.height ?? YOUTUBE_DEFAULT_SIZE.height}
               onChange={(e) =>
                 setYoutubeState((prev) => {
                   return {
+                    ...prev,
                     src: prev?.src ?? '',
-                    width: prev?.width ?? YOUTUBE_DEFAULT_SIZE.width,
                     height: Number(e.target.value),
                   };
                 })
@@ -107,22 +194,22 @@ export const YoutubeMain = ({
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="off"
-              className="tiptap-youtube-height-input"
             />
           </label>
 
           <label>
             横：
             <Input
-              type="url"
+              type="number"
+              className="tiptap-youtube-popover__input"
               placeholder="動画横幅"
-              value={youtubeState.src}
+              value={youtubeState.width ?? YOUTUBE_DEFAULT_SIZE.width}
               onChange={(e) =>
                 setYoutubeState((prev) => {
                   return {
+                    ...prev,
                     src: prev?.src ?? '',
                     width: Number(e.target.value),
-                    height: prev?.height ?? YOUTUBE_DEFAULT_SIZE.height,
                   };
                 })
               }
@@ -130,62 +217,24 @@ export const YoutubeMain = ({
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="off"
-              className="tiptap-youtube-width-input"
             />
           </label>
-
-          <Input
-            type="url"
-            placeholder="URLリンクを貼ってください。"
-            value={youtubeState.src}
-            onChange={(e) =>
-              setYoutubeState((prev) => {
-                return {
-                  src: e.target.value,
-                  width: prev?.width ?? YOUTUBE_DEFAULT_SIZE.width,
-                  height: prev?.height ?? YOUTUBE_DEFAULT_SIZE.height,
-                };
-              })
-            }
-            onKeyDown={handleKeyDown}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            className="tiptap-youtube-link-input"
-          />
         </CardItemGroup>
-        <ButtonGroup>
-          <Button
-            type="button"
-            onClick={setYoutube}
-            title="Apply link"
-            disabled={!youtubeState.src && !isActive}
-            variant="ghost"
-          >
-            <CornerDownLeftIcon className="tiptap-button-icon" />
-          </Button>
-        </ButtonGroup>
-
-        <Separator />
-
-        <ButtonGroup>
-          <ButtonGroup>
-            <Button
-              type="button"
-              onClick={openYoutube}
-              title="Open in new window"
-              disabled={!youtubeState.src && !isActive}
-              variant="ghost"
-            >
-              <ExternalLinkIcon className="tiptap-button-icon" />
-            </Button>
-          </ButtonGroup>
+        <ButtonGroup className="tiptap-youtube-popover__footer">
+          <MagiariumButton type="button" onClick={setYoutube}>
+            Youtube追加
+          </MagiariumButton>
         </ButtonGroup>
       </CardBody>
     </Card>
   );
 };
 
+/**
+ * TiptapエディターのYoutubeポップオーバーコンポーネント
+ *
+ * カスタムボタンを実装する場合は、代わりに `useYoutube` フックを使用してください。
+ */
 export const YoutubePopover = forwardRef<
   HTMLButtonElement,
   YoutubePopoverProps
@@ -198,7 +247,6 @@ export const YoutubePopover = forwardRef<
       hideWhenUnavailable = false,
       onSetYoutube,
       onOpenChange,
-      autoOpenOnYoutubeActive = true,
       onClick,
       children,
       ...buttonProps
@@ -224,9 +272,6 @@ export const YoutubePopover = forwardRef<
       onSetYoutube,
     });
 
-    const shouldAutoOpen =
-      autoOpenOnYoutubeActive && !!editor?.isFocused && isActive;
-
     const handleOnOpenChange = useCallback(
       (nextIsOpen: boolean) => {
         setIsOpen(nextIsOpen);
@@ -248,12 +293,6 @@ export const YoutubePopover = forwardRef<
       },
       [onClick, isOpen]
     );
-
-    useEffect(() => {
-      if (shouldAutoOpen) {
-        setIsOpen(true);
-      }
-    }, [shouldAutoOpen]);
 
     if (!isVisible) {
       return null;
@@ -297,5 +336,3 @@ export const YoutubePopover = forwardRef<
 );
 
 YoutubePopover.displayName = 'YoutubePopover';
-
-export default YoutubePopover;

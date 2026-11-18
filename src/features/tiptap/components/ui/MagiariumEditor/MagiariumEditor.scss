@@ -383,7 +383,7 @@
   }
 
   // テーブルブロック(キャプション用のラッパー)
-  .tiptap-table-block {
+  .tiptap-table-figure {
     margin: 1.5rem 0;
 
     .tableWrapper {
@@ -391,6 +391,7 @@
     }
   }
 
+  // Tips
   .tiptap-tips {
     background: color-mix(in srgb, var(--main-color) 9%, white);
     border: 1px solid color-mix(in srgb, var(--main-color) 35%, white);
@@ -405,5 +406,12 @@
       font-weight: 800;
       color: var(--main-color);
     }
+  }
+
+  // youtube
+  .tiptap-youtube-figure {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }

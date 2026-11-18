@@ -3,13 +3,13 @@ import { NodeViewContent, NodeViewProps, NodeViewWrapper } from '@tiptap/react';
 import { ReactNode } from 'react';
 import { BsArrowRepeat, BsTrash } from 'react-icons/bs';
 import { useImageUpload } from '../../ui/ImageUploadButton';
-import './ImageBlockNode.scss';
+import './ImageFigureNode.scss';
 
-export const ImageBlockNode = (props: NodeViewProps): ReactNode => {
+export const ImageFigureNode = (props: NodeViewProps): ReactNode => {
   const { editor } = props;
 
   if (editor.isEditable) {
-    return EditableImageBlockNode(props);
+    return EditableImageFigureNode(props);
   }
 
   return (
@@ -19,7 +19,7 @@ export const ImageBlockNode = (props: NodeViewProps): ReactNode => {
   );
 };
 
-export const EditableImageBlockNode = (props: NodeViewProps): ReactNode => {
+export const EditableImageFigureNode = (props: NodeViewProps): ReactNode => {
   const { editor } = props;
   const { handleImage } = useImageUpload({
     editor,
@@ -36,7 +36,7 @@ export const EditableImageBlockNode = (props: NodeViewProps): ReactNode => {
               </>
             ),
             onSelect: () => {
-              editor.chain().focus().deleteImageBlock().run();
+              editor.chain().focus().deleteImageFigure().run();
             },
           },
           {

@@ -28,7 +28,7 @@ export const EDITOR_EXTENSIONS: Extensions = [
           currentEditor
             .chain()
             .insertContentAt(pos, {
-              type: 'imageBlock',
+              type: 'imageFigure',
               content: [
                 { type: 'caption' },
                 {
@@ -60,7 +60,7 @@ export const EDITOR_EXTENSIONS: Extensions = [
           currentEditor
             .chain()
             .insertContentAt(currentEditor.state.selection.anchor, {
-              type: 'imageBlock',
+              type: 'imageFigure',
               content: [
                 { type: 'caption' },
                 {

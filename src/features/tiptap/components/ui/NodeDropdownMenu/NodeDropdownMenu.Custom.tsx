@@ -107,6 +107,7 @@ const CUSTOM_NODE_SELECTOR_ITEMS = [
             setIsOpen(isOpen);
           }
         }}
+        modal={true}
       />
     ),
     asChild: true,

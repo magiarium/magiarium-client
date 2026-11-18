@@ -1,31 +1,63 @@
+'use client';
+
 import { Size } from '@/common/type';
+import { Editor } from '@tiptap/react';
+import { useCallback, useEffect, useState } from 'react';
+
+// --- Hooks ---
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- Icons ---
+import { BsYoutube } from 'react-icons/bs';
+
+// --- Libs ---
 import {
   isNodeInSchema,
   isNodeTypeSelected,
   sanitizeUrl,
 } from '@/features/tiptap/lib/tiptapUtils';
-import { Editor } from '@tiptap/react';
-import { useCallback, useEffect, useState } from 'react';
-import { BsYoutube } from 'react-icons/bs';
 
+export type SetYoutubeVideoOptions = {
+  src: string;
+  width?: number | string;
+  height?: number | string;
+  start?: number;
+};
+/**
+ * Youtubeデフォルトサイズ設定
+ */
 export const YOUTUBE_DEFAULT_SIZE: Size = {
   width: 600,
   height: 400,
 };
 
-export interface YoutubeAttributes {
-  src: string;
-  height: number;
-  width: number;
-}
-
+/**
+ * Youtube機能の設定
+ */
 export interface UseYoutubeConfig {
+  /**
+   * Tiptapエディターのインスタンス(任意)
+   */
   editor?: Editor | null;
+
+  /**
+   * Youtube機能が使用できない場合に、ボタンを非表示にするかどうか。
+   * @default false
+   */
   hideWhenUnavailable?: boolean;
+
+  /**
+   * Youtubeの設定が正常に完了した後に呼び出されるコールバック関数
+   */
   onSetYoutube?: () => void;
 }
 
+/**
+ * 現在のエディター状態で、Youtubeの設定が可能かどうかをチェックする処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @returns true:利用可、false:利用不可
+ */
 export const canSetYoutube = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
 
@@ -42,6 +74,13 @@ export const canSetYoutube = (editor: Editor | null): boolean => {
   });
 };
 
+/**
+ * ボタンを表示するかどうかを判定する処理
+ *
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.hideWhenUnavailable 対象機能が使用できない場合に、ボタンを非表示にするかどうか。
+ * @returns false:表示する, true:非表示
+ */
 export const shouldShowButton = (props: {
   editor: Editor | null;
   hideWhenUnavailable: boolean;
@@ -61,21 +100,25 @@ export const shouldShowButton = (props: {
   return true;
 };
 
-export interface YoutubeHandlerProps {
+/**
+ * Youtube機能用ハンドラーのカスタムフック
+ * @param props.editor Tiptapエディターのインスタンス
+ * @param props.onSetYotuube Youtube設定完了時のコールバック関数
+ * @returns Youtube機能用ハンドラー各種
+ */
+export const useYoutubeHandler = (props: {
   editor: Editor | null;
   onSetYoutube?: () => void;
-}
-export const useYoutubeHandler = (props: YoutubeHandlerProps) => {
+}) => {
   const { editor, onSetYoutube } = props;
-  const [youtubeState, setYoutubeState] = useState<YoutubeAttributes | null>(
-    null
-  );
+  const [youtubeState, setYoutubeState] =
+    useState<SetYoutubeVideoOptions | null>(null);
 
   useEffect(() => {
     if (!editor) return;
 
     const { src, width, height } = editor.getAttributes('youtube');
-    if (editor?.isActive('youtube') && youtubeState === null) {
+    if (editor.isActive('youtube') && youtubeState === null) {
       setYoutubeState({
         src: src ?? '',
         width: width ?? YOUTUBE_DEFAULT_SIZE.width,
@@ -107,7 +150,15 @@ export const useYoutubeHandler = (props: YoutubeHandlerProps) => {
       return;
     }
 
-    editor.chain().focus().setYoutubeVideo(youtubeState).run();
+    editor
+      .chain()
+      .focus()
+      .setYoutubeVideo({
+        src: youtubeState.src ?? '',
+        width: youtubeState.width ?? YOUTUBE_DEFAULT_SIZE.width,
+        height: youtubeState.height ?? YOUTUBE_DEFAULT_SIZE.height,
+      })
+      .run();
 
     setYoutubeState(null);
 
@@ -122,13 +173,18 @@ export const useYoutubeHandler = (props: YoutubeHandlerProps) => {
   }, [youtubeState?.src]);
 
   return {
-    youtubeState: youtubeState || { src: '', ...YOUTUBE_DEFAULT_SIZE },
+    youtubeState: youtubeState || { ...YOUTUBE_DEFAULT_SIZE, src: '' },
     setYoutubeState,
     setYoutube,
     openYoutube,
   };
 };
 
+/**
+ * Tiptapエディター向けのYotuube機能を提供するカスタムフック。
+ *
+ * @param config Youtube機能の設定
+ */
 export const useYoutube = (config?: UseYoutubeConfig) => {
   const {
     editor: providedEditor,

@@ -2,7 +2,7 @@ import { ContextMenu as RadixContextMenu } from 'radix-ui';
 import { ReactNode } from 'react';
 import './ContextMenu.scss';
 
-type ContextItem = {
+export type ContextItem = {
   /** コンテキスト子要素 */
   children: ReactNode;
   /** 選択アクション */
