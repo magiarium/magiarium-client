@@ -48,6 +48,11 @@
 }
 
 .tiptap {
+  padding-bottom: 3rem;
+  > * {
+    margin-inline-start: 3rem;
+  }
+
   p {
     line-height: 2;
   }

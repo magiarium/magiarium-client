@@ -1,9 +1,7 @@
 .blog-content {
   // 個別記事コンテナ
   &__container {
-    min-width: 0;
-    padding: 24px;
-    width: 666px;
+    width: calc(666px + 3rem);
 
     margin: auto;
 
@@ -13,10 +11,7 @@
 
   // 記事タイトル・メタデータ編集
   &__header {
-    display: flex;
-    align-items: center;
-
-    margin-bottom: 24px;
+    margin: 1.5rem 3rem;
     padding: 0 0 16px;
 
     border-bottom: 2px solid var(--main-color);
@@ -45,17 +40,18 @@
 
   // 記事本文
   &__main {
+    width: calc(666px);
   }
 
   // 編集操作エリア
   &__edit-aside {
+    margin: 0 3rem;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
 
-    margin-top: 28px;
     padding: 16px 0 0;
 
     border-top: 1px solid var(--main-color);

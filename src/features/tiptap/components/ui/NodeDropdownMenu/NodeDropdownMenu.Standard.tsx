@@ -1,12 +1,11 @@
 import { HeadingIcon } from '@/features/tiptap/components/icons/HeadingIcon';
-import { ListIcon } from '@/features/tiptap/components/icons/ListIcon';
 import { BlockquoteButton } from '@/features/tiptap/components/ui/BlockquoteButton';
 import { CodeBlockButton } from '@/features/tiptap/components/ui/CodeBlockButton';
 import { HeadingDropdownMenu } from '@/features/tiptap/components/ui/HeadingDropdownMenu';
 import { ListDropdownMenu } from '@/features/tiptap/components/ui/ListDropdownMenu';
 import { ParagraphButton } from '@/features/tiptap/components/ui/ParagrahButton';
 import { Editor } from '@tiptap/react';
-import { BsCodeSquare, BsParagraph } from 'react-icons/bs';
+import { BsCodeSquare, BsListUl, BsParagraph } from 'react-icons/bs';
 import { BlockquoteIcon } from '../../icons/BlockquoteIcon';
 import { CodeBlockIcon } from '../../icons/CodeBlockIcon';
 import { NodeDropdownMenu } from './NodeDropdownMenu';
@@ -79,7 +78,7 @@ const STANDARD_NODE_SELECTOR_ITEMS = [
     key: 'list',
     label: 'リスト',
     renderIcon: ({ className }: { className: string }) => {
-      return <ListIcon className={className} />;
+      return <BsListUl className={className} />;
     },
     renderItem: (
       editor: Editor,

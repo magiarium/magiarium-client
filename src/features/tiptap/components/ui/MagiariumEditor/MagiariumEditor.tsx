@@ -8,7 +8,6 @@ import {
 import { PopoverTrigger } from '@radix-ui/react-popover';
 import DragHandle from '@tiptap/extension-drag-handle-react';
 import { Content, EditorContent, Extensions, useEditor } from '@tiptap/react';
-import { BubbleMenu } from '@tiptap/react/menus';
 import { BsGearFill, BsGripVertical } from 'react-icons/bs';
 import { Button } from '../../ui-primitive/Button';
 import { Popover, PopoverContent } from '../../ui-primitive/Popover';
@@ -66,45 +65,6 @@ export const MagiariumEditor = ({
               <BsGripVertical className="tiptap-button" data-style="ghost" />
             </div>
           </DragHandle>
-          <BubbleMenu
-            editor={editor}
-            className="magiarium-editor__bubble-menu"
-            options={{ strategy: 'absolute', placement: 'top-start' }}
-            shouldShow={(props) => {
-              const { editor } = props;
-              const { $from } = editor.state.selection;
-              const node = $from.parent;
-              // エディタにフォーカスがあり、対象ノードが空でない場合のみ表示
-              return node.textContent.trim() !== '' && editor.isFocused;
-            }}
-            getReferencedVirtualElement={() => {
-              // カーソル位置に関わらず、バブルメニューの表示位置を固定するための処理
-              const { view, state } = editor;
-              const { from } = state.selection;
-
-              const $pos = state.doc.resolve(from);
-              const lineStart = $pos.start();
-
-              const coords = view.coordsAtPos(lineStart);
-
-              return {
-                getBoundingClientRect: () => ({
-                  x: coords.left,
-                  y: coords.top,
-                  left: coords.left,
-                  right: coords.left,
-                  top: coords.top,
-                  bottom: coords.top,
-                  width: 0,
-                  height: 0,
-                }),
-              };
-            }}
-          >
-            <NodeDropdownMenuStandard editor={editor} />
-            <Separator />
-            <MarkToolbar editor={editor} />
-          </BubbleMenu>
         </>
       )}
       <EditorContent editor={editor} className="magiarium-editor__content" />
