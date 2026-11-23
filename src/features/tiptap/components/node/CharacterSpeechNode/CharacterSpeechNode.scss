@@ -10,6 +10,7 @@
     align-items: center;
     flex-shrink: 0;
     width: 80px;
+    z-index: 2;
 
     // 左配置
     &--left {
@@ -21,6 +22,11 @@
     }
   }
 
+  // Speech側
+  &__bubble {
+    z-index: 0;
+  }
+
   // キャラクターアイコン
   &__character-icon {
     width: 100px;
@@ -29,6 +35,10 @@
     border-radius: 50%;
     border: 3px solid var(--select-color, #ddd);
     background-color: #fff;
+
+    &--editable {
+      cursor: pointer;
+    }
   }
 
   // キャラクター名

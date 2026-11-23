@@ -5,25 +5,27 @@ import { HeadingDropdownMenu } from '@/features/tiptap/components/ui/HeadingDrop
 import { ListDropdownMenu } from '@/features/tiptap/components/ui/ListDropdownMenu';
 import { ParagraphButton } from '@/features/tiptap/components/ui/ParagrahButton';
 import { Editor } from '@tiptap/react';
-import { BsCodeSquare, BsListUl, BsParagraph } from 'react-icons/bs';
+import {
+  BsCodeSquare,
+  BsInfoCircleFill,
+  BsListUl,
+  BsParagraph,
+} from 'react-icons/bs';
 import { BlockquoteIcon } from '../../icons/BlockquoteIcon';
 import { CodeBlockIcon } from '../../icons/CodeBlockIcon';
+import { TipsButton } from '../TipsButton';
 import { NodeDropdownMenu } from './NodeDropdownMenu';
 
 const STANDARD_NODE_SELECTOR_ITEMS = [
   {
     key: 'undefined',
     label: '基本要素',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsCodeSquare className={className} />;
-    },
+    Icon: BsCodeSquare,
   },
   {
     key: 'paragraph',
     label: '段落',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsParagraph className={className} />;
-    },
+    Icon: BsParagraph,
     renderItem: (editor: Editor) => (
       <ParagraphButton editor={editor} text="段落" />
     ),
@@ -32,32 +34,16 @@ const STANDARD_NODE_SELECTOR_ITEMS = [
   {
     key: 'heading',
     label: '見出し',
-    renderIcon: ({ className }: { className: string }) => {
-      return <HeadingIcon className={className} />;
-    },
-    renderItem: (
-      editor: Editor,
-      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
-    ) => (
-      <HeadingDropdownMenu
-        editor={editor}
-        levels={[3, 4, 5]}
-        text="見出し"
-        onOpenChange={(isOpen) => {
-          if (setIsOpen) {
-            setIsOpen(isOpen);
-          }
-        }}
-      />
+    Icon: HeadingIcon,
+    renderItem: (editor: Editor) => (
+      <HeadingDropdownMenu editor={editor} levels={[3, 4, 5]} text="見出し" />
     ),
     asChild: false,
   },
   {
     key: 'codeBlock',
     label: 'コードブロック',
-    renderIcon: ({ className }: { className: string }) => {
-      return <CodeBlockIcon className={className} />;
-    },
+    Icon: CodeBlockIcon,
     renderItem: (editor: Editor) => (
       <CodeBlockButton editor={editor} text="コードブロック" />
     ),
@@ -66,9 +52,7 @@ const STANDARD_NODE_SELECTOR_ITEMS = [
   {
     key: 'blockquote',
     label: '引用ブロック',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BlockquoteIcon className={className} />;
-    },
+    Icon: BlockquoteIcon,
     renderItem: (editor: Editor) => (
       <BlockquoteButton editor={editor} text="引用ブロック" />
     ),
@@ -77,24 +61,21 @@ const STANDARD_NODE_SELECTOR_ITEMS = [
   {
     key: 'list',
     label: 'リスト',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsListUl className={className} />;
-    },
-    renderItem: (
-      editor: Editor,
-      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
-    ) => (
+    Icon: BsListUl,
+    renderItem: (editor: Editor) => (
       <ListDropdownMenu
         editor={editor}
         types={['bulletList', 'orderedList']}
         text="リスト"
-        onOpenChange={(isOpen) => {
-          if (setIsOpen) {
-            setIsOpen(isOpen);
-          }
-        }}
       />
     ),
+    asChild: true,
+  },
+  {
+    key: 'tips',
+    label: 'Tips',
+    Icon: BsInfoCircleFill,
+    renderItem: (editor: Editor) => <TipsButton editor={editor} text="Tips" />,
     asChild: true,
   },
 ];

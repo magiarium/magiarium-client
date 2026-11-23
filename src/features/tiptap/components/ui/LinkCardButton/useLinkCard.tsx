@@ -152,6 +152,15 @@ export const useLinkCardHandlers = (props: {
 
   const removeLinkCard = useCallback(() => {
     if (!editor) return;
+
+    editor.chain().focus().deleteSelection().run();
+    setLinkCardState({
+      href: '',
+    });
+  }, [editor]);
+
+  const resetLinkCard = useCallback(() => {
+    if (!editor) return;
     editor
       .chain()
       .focus()
@@ -183,6 +192,7 @@ export const useLinkCardHandlers = (props: {
     setLinkCardState,
     setLinkCard,
     removeLinkCard,
+    resetLinkCard,
     openLink,
   };
 };

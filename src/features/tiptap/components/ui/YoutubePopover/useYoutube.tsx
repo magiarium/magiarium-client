@@ -150,15 +150,27 @@ export const useYoutubeHandler = (props: {
       return;
     }
 
-    editor
-      .chain()
-      .focus()
-      .setYoutubeVideo({
-        src: youtubeState.src ?? '',
-        width: youtubeState.width ?? YOUTUBE_DEFAULT_SIZE.width,
-        height: youtubeState.height ?? YOUTUBE_DEFAULT_SIZE.height,
-      })
-      .run();
+    if (editor.isActive('youtube')) {
+      editor
+        .chain()
+        .focus()
+        .updateAttributes('youtube', {
+          src: youtubeState.src ?? '',
+          width: youtubeState.width ?? YOUTUBE_DEFAULT_SIZE.width,
+          height: youtubeState.height ?? YOUTUBE_DEFAULT_SIZE.height,
+        })
+        .run();
+    } else {
+      editor
+        .chain()
+        .focus()
+        .setYoutubeVideo({
+          src: youtubeState.src ?? '',
+          width: youtubeState.width ?? YOUTUBE_DEFAULT_SIZE.width,
+          height: youtubeState.height ?? YOUTUBE_DEFAULT_SIZE.height,
+        })
+        .run();
+    }
 
     setYoutubeState(null);
 

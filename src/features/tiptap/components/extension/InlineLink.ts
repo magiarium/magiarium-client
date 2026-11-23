@@ -19,6 +19,8 @@ declare module '@tiptap/core' {
 }
 
 export const InlineLink = Link.extend({
+  name: 'inlineLink',
+
   addAttributes() {
     return {
       ...this.parent?.(),

@@ -1,6 +1,4 @@
-import { CaptionNode } from '@/features/tiptap/components/node/CaptionNode/CaptionNode';
 import { Node } from '@tiptap/core';
-import { ReactNodeViewRenderer } from '@tiptap/react';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -41,16 +39,16 @@ export const Caption = Node.create({
     ];
   },
 
-  addNodeView() {
-    return ReactNodeViewRenderer(CaptionNode, {
-      as: 'figcaption',
-      attrs: ({ node }) => ({
+  renderHTML({ node }) {
+    return [
+      'figcaption',
+      {
         'data-caption': '',
-        'data-placeholder': 'キャプションを入力してください。',
         class: 'tiptap-caption',
         style: `--caption-order: ${node.attrs.captionSide === 'top' ? -1 : 1}`,
-      }),
-    });
+      },
+      0,
+    ];
   },
 
   addCommands() {

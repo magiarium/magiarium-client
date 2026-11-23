@@ -7,6 +7,8 @@ import { useIsBreakpoint } from '@/features/tiptap/hooks/useIsBreakpoint';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 
 // --- Icons ---
+import { BsArrowUpRight, BsLink } from 'react-icons/bs';
+import { FaUnlink } from 'react-icons/fa';
 
 // --- Tiptap UI ---
 import type { UseInlineLinkConfig } from '@/features/tiptap/components/ui/InlineLinkPopover';
@@ -29,8 +31,6 @@ import {
   PopoverTrigger,
 } from '@/features/tiptap/components/ui-primitive/Popover';
 
-import { BsArrowUpRight, BsLink } from 'react-icons/bs';
-import { FaUnlink } from 'react-icons/fa';
 import './InlineLinkPopover.scss';
 
 export interface InlineLinkMainProps {

@@ -1,5 +1,11 @@
 import type { NodeType } from '@tiptap/pm/model';
-import { mergeAttributes, Node, ReactNodeViewRenderer } from '@tiptap/react';
+import { NodeSelection } from '@tiptap/pm/state';
+import {
+  findParentNode,
+  mergeAttributes,
+  Node,
+  ReactNodeViewRenderer,
+} from '@tiptap/react';
 import { ImageUploadNode as ImageUploadNodeComponent } from './ImageUploadNode';
 
 export type UploadFunction = (
@@ -53,6 +59,7 @@ declare module '@tiptap/react' {
   interface Commands<ReturnType> {
     imageUpload: {
       setImageUploadNode: (options?: ImageUploadNodeOptions) => ReturnType;
+      deleteImageUploadNode: () => ReturnType;
     };
   }
 }
@@ -123,6 +130,45 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
             type: this.name,
             attrs: options,
           });
+        },
+
+      deleteImageUploadNode:
+        () =>
+        ({ tr, dispatch, editor }) => {
+          const { selection } = tr;
+          const imageUploadType = editor.schema.nodes.imageUpload;
+
+          let pos: number | undefined;
+          let node;
+
+          // ノードそのものが選択されているケース
+          if (
+            selection instanceof NodeSelection &&
+            selection.node.type === imageUploadType
+          ) {
+            pos = selection.from;
+            node = selection.node;
+          } else {
+            // selectionの親にimageUploadが存在するケース
+            const found = findParentNode((n) => n.type === imageUploadType)(
+              selection
+            );
+
+            if (found) {
+              pos = found.pos;
+              node = found.node;
+            }
+          }
+
+          if (pos === undefined || !node) {
+            return false;
+          }
+
+          if (dispatch) {
+            tr.delete(pos, pos + node.nodeSize).scrollIntoView();
+          }
+
+          return true;
         },
     };
   },

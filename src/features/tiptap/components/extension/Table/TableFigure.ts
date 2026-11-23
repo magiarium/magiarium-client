@@ -1,6 +1,8 @@
-import { findParentNode, Node } from '@tiptap/core';
+import { findParentNode, mergeAttributes, Node } from '@tiptap/core';
 import { createTable } from '@tiptap/extension-table';
 import { TextSelection } from '@tiptap/pm/state';
+import { ReactNodeViewRenderer } from '@tiptap/react';
+import { TableFigureNode } from '../../node/TableNode/TableFigureNode';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -48,6 +50,17 @@ export const TableFigure = Node.create({
       0,
     ];
   },
+
+  addNodeView() {
+    const options = this.options.HTMLAttributes;
+    return ReactNodeViewRenderer(TableFigureNode, {
+      as: 'figure',
+      attrs: ({ HTMLAttributes }) => ({
+        ...mergeAttributes(options, HTMLAttributes),
+      }),
+    });
+  },
+
   addCommands() {
     return {
       ...this.parent?.(),
@@ -96,6 +109,51 @@ export const TableFigure = Node.create({
 
           return true;
         },
+    };
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Backspace: () => {
+        const { selection } = this.editor.state;
+        const { $from } = selection;
+
+        // テキスト選択中は通常の削除処理に任せる
+        if (!selection.empty) {
+          return false;
+        }
+
+        // caption の先頭以外では通常動作
+        if ($from.parentOffset !== 0) {
+          return false;
+        }
+
+        // caption の親が tableFigure か確認
+        const captionDepth = $from.depth;
+        const figureDepth = captionDepth - 1;
+
+        if (figureDepth < 1) {
+          return false;
+        }
+
+        const figureNode = $from.node(figureDepth);
+
+        if (figureNode.type !== this.editor.schema.nodes.tableFigure) {
+          return false;
+        }
+
+        const pos = $from.before(figureDepth);
+
+        this.editor
+          .chain()
+          .deleteRange({
+            from: pos,
+            to: pos + figureNode.nodeSize,
+          })
+          .run();
+
+        return true;
+      },
     };
   },
 });

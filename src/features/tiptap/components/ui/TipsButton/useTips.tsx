@@ -1,4 +1,12 @@
+'use client';
+import { NodeSelection, TextSelection } from '@tiptap/pm/state';
+import { Editor } from '@tiptap/react';
+import { useCallback, useEffect, useState } from 'react';
+
+// --- Hooks ---
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- Lib ---
 import {
   findNodePosition,
   getSelectedBlockNodes,
@@ -7,10 +15,9 @@ import {
   isValidPosition,
   selectionWithinConvertibleTypes,
 } from '@/features/tiptap/lib/tiptapUtils';
-import { NodeSelection, TextSelection } from '@tiptap/pm/state';
-import { Editor } from '@tiptap/react';
-import { useCallback, useEffect, useState } from 'react';
-import { BsLightbulb } from 'react-icons/bs';
+
+// --- Icons ---
+import { BsLightbulbFill } from 'react-icons/bs';
 
 // Tipsショートカットキー
 export const TIPS_SHORTCUT_KEY = 'mod+shift+t';
@@ -65,7 +72,7 @@ export const canToggleTips = (editor: Editor | null): boolean => {
     return false;
   }
 
-  return editor.can().setTips();
+  return editor.can().toggleWrap('tips') || editor.can().clearNodes();
 };
 
 /**
@@ -231,6 +238,6 @@ export const useTips = (config?: UseTipsConfig) => {
     canToggle,
     label: 'tips',
     shortcutKeys: TIPS_SHORTCUT_KEY,
-    Icon: BsLightbulb,
+    Icon: BsLightbulbFill,
   };
 };

@@ -50,7 +50,7 @@ export const canSetInlineLink = (editor: Editor | null): boolean => {
   // テキスト選択範囲が画像キャプション内にあるかどうかを第3引数の true で判定し、画像キャプション内ではリンクの設定を禁止する
   if (isNodeTypeSelected(editor, ['image'], true)) return false;
   try {
-    return editor.can().setMark('link');
+    return editor.can().setMark('inlineLink');
   } catch {
     return false;
   }
@@ -64,7 +64,7 @@ export const canSetInlineLink = (editor: Editor | null): boolean => {
  */
 export const isInlineLinkActive = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
-  return editor.isActive('link');
+  return editor.isActive('inlineLink');
 };
 
 /**
@@ -82,7 +82,7 @@ export const shouldShowInlineLinkButton = (props: {
 
   if (!editor || !editor.isEditable) return false;
 
-  const linkInSchema = isMarkInSchema('link', editor);
+  const linkInSchema = isMarkInSchema('inlineLink', editor);
 
   // hideWhenUnavailable が false の場合、ボタンが利用できない状態であっても、ボタン自体は常に画面に表示する
   if (!hideWhenUnavailable) {
@@ -117,7 +117,7 @@ export const useInlineLinkHandler = (props: {
     if (!editor) return;
 
     // Get URL immediately on mount
-    const { href, icon, target } = editor.getAttributes('link');
+    const { href, icon, target } = editor.getAttributes('inlineLink');
 
     if (isInlineLinkActive(editor) && inlineLinkState === null) {
       setInlineLinkState({
@@ -132,7 +132,7 @@ export const useInlineLinkHandler = (props: {
     if (!editor) return;
 
     const updateLinkState = () => {
-      const { href, icon, target } = editor.getAttributes('link');
+      const { href, icon, target } = editor.getAttributes('inlineLink');
       setInlineLinkState({
         href: href,
         icon,
@@ -154,7 +154,7 @@ export const useInlineLinkHandler = (props: {
 
     let chain = editor.chain().focus();
 
-    chain = chain.extendMarkRange('link').setInlineLink(inlineLinkState);
+    chain = chain.extendMarkRange('inlineLink').setInlineLink(inlineLinkState);
 
     if (isEmpty) {
       chain = chain.insertContent({ type: 'text', text: inlineLinkState.href });
@@ -172,7 +172,7 @@ export const useInlineLinkHandler = (props: {
     editor
       .chain()
       .focus()
-      .extendMarkRange('link')
+      .extendMarkRange('inlineLink')
       .unsetInlineLink()
       .setMeta('preventAutolink', true)
       .run();

@@ -10,7 +10,6 @@ import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 import { BsTable } from 'react-icons/bs';
 
 // --- Lib ---
-import { useCurrentNode } from '@/features/tiptap/hooks/useCurrentNode';
 import {
   isNodeInSchema,
   isNodeTypeSelected,
@@ -134,6 +133,7 @@ export const useTableHandler = (props: {
           : tableOptions.rows,
       })
       .run();
+    editor.chain().focus().selectTextblockEnd().run();
 
     onSetTable?.();
     return true;
@@ -144,6 +144,7 @@ export const useTableHandler = (props: {
     if (!canSetTable(editor)) return false;
 
     editor.chain().focus().deleteTable().run();
+    editor.chain().focus().selectTextblockEnd().run();
   }, [editor]);
 
   return {
@@ -189,7 +190,7 @@ export const useTable = (config?: UseTableConfig) => {
       editor.off('selectionUpdate', handleSelectionUpdate);
     };
   }, [editor, hideWhenUnavailable]);
-  const isActive = useCurrentNode(editor) === 'table';
+  const isActive = editor?.isActive('table') ?? false;
   const canSet = canSetTable(editor);
 
   const tableHandler = useTableHandler({

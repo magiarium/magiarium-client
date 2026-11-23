@@ -31,7 +31,7 @@ export const TextAlignDropdownMenu = ({
   const Icon = textAlignIcons[acitveTextAlignInfo.activeTextAlign || 'left'];
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu modal={true} open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           type="button"

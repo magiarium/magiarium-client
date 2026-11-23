@@ -1,4 +1,4 @@
-import { detectNodeTypeFromEditor } from '@/features/tiptap/lib/detectNodeTypeFromEditor';
+import { detectNodeTypeFromNode } from '@/features/tiptap/lib/detectNodeTypeFromNode';
 import {
   handleImageUpload,
   MAX_FILE_SIZE,
@@ -30,13 +30,13 @@ export const EDITOR_EXTENSIONS: Extensions = [
             .insertContentAt(pos, {
               type: 'imageFigure',
               content: [
-                { type: 'caption' },
                 {
                   type: 'image',
                   attrs: {
                     src: fileReader.result,
                   },
                 },
+                { type: 'caption' },
               ],
             })
             .focus()
@@ -62,13 +62,13 @@ export const EDITOR_EXTENSIONS: Extensions = [
             .insertContentAt(currentEditor.state.selection.anchor, {
               type: 'imageFigure',
               content: [
-                { type: 'caption' },
                 {
                   type: 'image',
                   attrs: {
                     src: fileReader.result,
                   },
                 },
+                { type: 'caption' },
               ],
             })
             .focus()
@@ -85,24 +85,12 @@ export const EDITOR_EXTENSIONS: Extensions = [
   Gapcursor,
   LineHeight,
   Placeholder.configure({
-    showOnlyWhenEditable: false, // 編集可能な場合のみ表
+    showOnlyWhenEditable: true, // 編集可能な場合のみ表示
+    showOnlyCurrent: false, // 空ノードすべてに表示
     includeChildren: true,
-    placeholder: ({ editor }) => {
-      const currentNode = detectNodeTypeFromEditor(editor);
-      switch (currentNode) {
-        case 'codeBlock':
-          return 'コードブロックの内容を入力してください。';
-        case 'blockquote':
-          return '引用要素の本文を入力してください。';
-        case 'list':
-          return 'リストアイテムの内容を入力してください。';
-        case 'heading':
-          return '見出しを入力してください。';
-        case 'paragraph':
-          return '本文を入力してください。';
-        default:
-          return 'ノードブロックを選択してください';
-      }
+    placeholder: ({ node, pos, editor }) => {
+      const currentNode = detectNodeTypeFromNode(node, pos, editor);
+      return currentNode.placeholder;
     },
   }),
   ImageUploadNode.configure({

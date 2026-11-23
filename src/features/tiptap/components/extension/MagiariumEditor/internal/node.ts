@@ -12,18 +12,16 @@ import js from 'highlight.js/lib/languages/javascript';
 import ts from 'highlight.js/lib/languages/typescript';
 import html from 'highlight.js/lib/languages/xml';
 import { all, createLowlight } from 'lowlight';
+import { YOUTUBE_DEFAULT_SIZE } from '../../../ui/YoutubePopover';
 import { Caption } from '../../Caption';
 import { CharacterSpeech } from '../../CharacterSpeech';
 import { ImageFigure } from '../../ImageFigure';
 import { LinkCard } from '../../LinkCard';
 import { CustomTable } from '../../Table/Table';
-import { CustomTableCell } from '../../Table/TableCell';
 import { TableFigure } from '../../Table/TableFigure';
-import { CustomTableHeader } from '../../Table/TableHeader';
 import { Tips } from '../../Tips';
 import { CustomYoutube } from '../../Youtube/Youtube';
 import { YoutubeFigure } from '../../Youtube/YoutubeFigure';
-import { YoutubeParagraphGuard } from '../../Youtube/YoutubeParagraphGuard';
 
 // lowlight
 const lowlight = createLowlight(all);
@@ -45,24 +43,24 @@ export const NODE_EXTENSIONS: Extensions = [
   ListItem,
   OrderedList,
   Paragraph,
-  CustomTableCell,
-  CustomTableHeader,
   CustomTable.configure({
     resizable: true,
   }),
   TableFigure,
   Caption,
   TableKit.configure({
-    tableCell: false,
-    tableHeader: false,
     table: false,
   }),
+  YoutubeFigure,
   CustomYoutube.configure({
+    addPasteHandler: false,
     controls: false,
     nocookie: true,
+    HTMLAttributes: {
+      width: YOUTUBE_DEFAULT_SIZE.width,
+      height: YOUTUBE_DEFAULT_SIZE.height,
+    },
   }),
-  YoutubeFigure,
-  YoutubeParagraphGuard,
   CharacterSpeech,
   Tips,
   LinkCard,

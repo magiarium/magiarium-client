@@ -64,20 +64,24 @@ export const isImageActive = (editor: Editor | null): boolean => {
 };
 
 /**
- * エディターに画像を追加する処理
+ * エディターの画像機能を切り替える処理
  *
  * @param editor Tiptapエディターのインスタンス
  * @return true:成功、false:失敗
  */
-export const insertImage = (editor: Editor | null): boolean => {
+export const toggleImage = (editor: Editor | null): boolean => {
   if (!editor || !editor.isEditable) return false;
   if (!canInsertImage(editor)) return false;
 
   try {
     const chain = editor.chain().focus();
 
+    if (editor.isActive('imageUpload')) {
+      return chain.deleteImageUploadNode().run();
+    }
+
     if (editor.isActive('image')) {
-      chain.deleteImageBlock().run();
+      chain.deleteImageFigure().run();
     }
 
     return editor
@@ -87,6 +91,18 @@ export const insertImage = (editor: Editor | null): boolean => {
         type: 'imageUpload',
       })
       .run();
+  } catch {
+    return false;
+  }
+};
+
+export const deleteImage = (editor: Editor | null): boolean => {
+  if (!editor || !editor.isEditable) return false;
+  if (!canInsertImage(editor)) return false;
+  try {
+    const chain = editor.chain().focus();
+
+    return chain.deleteImageFigure().run();
   } catch {
     return false;
   }
@@ -192,7 +208,7 @@ export function useImageUpload(config?: UseImageUploadConfig) {
   const handleImage = useCallback(() => {
     if (!editor) return false;
 
-    const success = insertImage(editor);
+    const success = toggleImage(editor);
     if (success) {
       onInserted?.();
     }

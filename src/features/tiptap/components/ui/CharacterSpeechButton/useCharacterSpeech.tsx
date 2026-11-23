@@ -1,11 +1,24 @@
-import { CharacterSpeechAttributes } from '@/features/tiptap/components/extension/CharacterSpeech';
-import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
-import {
-  isNodeInSchema,
-  isNodeTypeSelected,
-} from '@/features/tiptap/lib/tiptapUtils';
+'use client';
+
+import type { CharacterSpeechAttributes } from '@/features/tiptap/components/extension/CharacterSpeech';
+import { NodeSelection, TextSelection } from '@tiptap/pm/state';
 import { Editor } from '@tiptap/react';
 import { useCallback, useEffect, useState } from 'react';
+
+// --- Hooks ---
+import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
+
+// --- Lib ---
+import {
+  findNodePosition,
+  getSelectedBlockNodes,
+  isNodeInSchema,
+  isNodeTypeSelected,
+  isValidPosition,
+  selectionWithinConvertibleTypes,
+} from '@/features/tiptap/lib/tiptapUtils';
+
+// --- Icons ---
 import { BsChatFill } from 'react-icons/bs';
 
 /**
@@ -93,6 +106,93 @@ export const shouldShowButton = (props: {
 };
 
 /**
+ * キャラクタースピーチ切り替え処理
+ *
+ * @param editor Tiptapエディターのインスタンス
+ * @returns true:切り替え成功、false:切り替え失敗
+ */
+export const toggleCharacterSpeechHandler = (
+  editor: Editor | null
+): boolean => {
+  if (!editor || !editor.isEditable) return false;
+  if (!canSetCharacterSpeech(editor)) return false;
+
+  try {
+    const view = editor.view;
+    let state = view.state;
+    let tr = state.tr;
+
+    const blocks = getSelectedBlockNodes(editor);
+
+    // 選択範囲に複数のブロックが含まれる場合、ノードへの切り替えを許可するのは、選択されているブロックが1つの場合のみとする。
+    // また後続のロジックにフォールバックするため、canToggle は制限しない。
+    const isPossibleToTurnInto =
+      selectionWithinConvertibleTypes(editor, [
+        'paragraph',
+        'heading',
+        'bulletList',
+        'orderedList',
+        'taskList',
+        'blockquote',
+        'codeBlock',
+      ]) && blocks.length === 1;
+
+    // 選択範囲がない場合は、カーソルの位置を取得する。
+    if (
+      (state.selection.empty || state.selection instanceof TextSelection) &&
+      isPossibleToTurnInto
+    ) {
+      const pos = findNodePosition({
+        editor,
+        node: state.selection.$anchor.node(1),
+      })?.pos;
+      if (!isValidPosition(pos)) return false;
+
+      tr = tr.setSelection(NodeSelection.create(state.doc, pos));
+      view.dispatch(tr);
+      state = view.state;
+    }
+
+    const selection = state.selection;
+
+    let chain = editor.chain().focus();
+
+    // NodeSelection（ノード選択）の場合を処理
+    if (selection instanceof NodeSelection) {
+      const firstChild = selection.node.firstChild?.firstChild;
+      const lastChild = selection.node.lastChild?.lastChild;
+
+      const from = firstChild
+        ? selection.from + firstChild.nodeSize
+        : selection.from + 1;
+
+      const to = lastChild
+        ? selection.to - lastChild.nodeSize
+        : selection.to - 1;
+
+      const resolvedFrom = state.doc.resolve(from);
+      const resolvedTo = state.doc.resolve(to);
+
+      chain = chain
+        .setTextSelection(TextSelection.between(resolvedFrom, resolvedTo))
+        .clearNodes();
+    }
+
+    const toggle = editor.isActive('characterSpeech')
+      ? chain.lift('characterSpeech')
+      : chain.wrapIn('characterSpeech', {});
+
+    toggle.run();
+
+    editor.chain().focus().selectTextblockEnd().run();
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+/**
  * キャラクタースピーチの各種ハンドラーを提供するためのカスタムフック
  */
 export const useCharacterSpeechHandler = (props: {
@@ -141,10 +241,7 @@ export const useCharacterSpeechHandler = (props: {
   const insertCharacterSpeech = useCallback(() => {
     if (!editor || !editor.isEditable) return false;
     if (!canSetCharacterSpeech(editor)) return false;
-    const success = editor.chain().focus().insertCharacterSpeech().run();
-    if (!success) {
-      return;
-    }
+    toggleCharacterSpeechHandler(editor);
     onSetCharacterSpeech?.();
     return true;
   }, [editor]);
@@ -159,7 +256,6 @@ export const useCharacterSpeechHandler = (props: {
 
     chain.run();
 
-    setCharacterSpeechState(null);
     onSetCharacterSpeech?.();
     return true;
   }, [editor, onSetCharacterSpeech, characterSpeechState]);

@@ -1,4 +1,6 @@
 import Youtube from '@tiptap/extension-youtube';
+import { ReactNodeViewRenderer } from '@tiptap/react';
+import { YoutubeNode } from '../../node/YoutubeNode/YoutubeNode';
 
 type SetYoutubeVideoOptions = {
   src: string;
@@ -19,5 +21,11 @@ export const CustomYoutube = Youtube.extend({
           return commands.setYoutubeFigure(options);
         },
     };
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer((props) => (
+      <YoutubeNode {...props} options={this.options} />
+    ));
   },
 });

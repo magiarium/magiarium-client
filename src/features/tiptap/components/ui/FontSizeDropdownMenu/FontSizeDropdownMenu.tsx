@@ -96,12 +96,13 @@ export const FontSizeDropdownMenu = ({
           {...props}
         >
           <Icon className="tiptap-button-icon" />
+          <ChevronDownIcon className="tiptap-button-dropdown-small" />
         </FontSizeDropdownMenuButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="bottom">
         {fontSizes.map((fontSize) => {
           return (
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild key={fontSize.label}>
               <FontSizeButton
                 editor={editor}
                 fontSize={fontSize.value}

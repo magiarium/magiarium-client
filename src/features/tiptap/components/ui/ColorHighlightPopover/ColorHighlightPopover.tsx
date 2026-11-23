@@ -104,7 +104,7 @@ ColorHighlightPopoverButton.displayName = 'ColorHighlightPopoverButton';
 /**
  * カラーハイライトポップオーバーコンテンツ
  */
-export function ColorHighlightPopoverContent({
+export const ColorHighlightPopoverContent = ({
   editor,
   colors = pickHighlightColorsByValue([
     'var(--tt-color-highlight-green)',
@@ -114,7 +114,7 @@ export function ColorHighlightPopoverContent({
     'var(--tt-color-highlight-yellow)',
   ]),
   useColorValue = false,
-}: ColorHighlightPopoverContentProps) {
+}: ColorHighlightPopoverContentProps) => {
   const { handleRemoveHighlight } = useColorHighlight({ editor });
   const isMobile = useIsBreakpoint();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -184,14 +184,14 @@ export function ColorHighlightPopoverContent({
       </CardBody>
     </Card>
   );
-}
+};
 
 /**
  * カラーハイライトポップオーバー
  *
  * カスタムボタンを実装する場合は、代わりに `useColorHight` フックを使用してください。
  */
-export function ColorHighlightPopover({
+export const ColorHighlightPopover = ({
   editor: providedEditor,
   colors = pickHighlightColorsByValue([
     'var(--tt-color-highlight-green)',
@@ -204,7 +204,7 @@ export function ColorHighlightPopover({
   useColorValue = false,
   onApplied,
   ...props
-}: ColorHighlightPopoverProps) {
+}: ColorHighlightPopoverProps) => {
   const { editor } = useTiptapEditor(providedEditor);
   const [isOpen, setIsOpen] = useState(false);
   const { isVisible, canColorHighlight, isActive, label, Icon } =
@@ -240,6 +240,4 @@ export function ColorHighlightPopover({
       </PopoverContent>
     </Popover>
   );
-}
-
-export default ColorHighlightPopover;
+};

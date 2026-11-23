@@ -77,6 +77,7 @@ export const LinkCardButton = forwardRef<
       label,
       Icon,
       setLinkCard,
+      removeLinkCard,
     } = useLinkCard({
       editor,
       hideWhenUnavailable,
@@ -99,7 +100,13 @@ export const LinkCardButton = forwardRef<
         aria-label={label}
         aria-pressed={isActive}
         tooltip={label}
-        onClick={() => setLinkCard()}
+        onClick={() => {
+          if (isActive) {
+            removeLinkCard();
+          } else {
+            setLinkCard();
+          }
+        }}
         {...buttonProps}
         ref={ref}
       >

@@ -4,7 +4,6 @@ import { Editor } from '@tiptap/react';
 import {
   BsCardText,
   BsChatFill,
-  BsInfoCircleFill,
   BsPuzzleFill,
   BsTable,
   BsYoutube,
@@ -12,7 +11,6 @@ import {
 import { ImagePlusIcon } from '../../icons/ImagePlusIcon';
 import { LinkCardButton } from '../LinkCardButton';
 import { TablePopover } from '../TablePopover';
-import { TipsButton } from '../TipsButton/TipsButton';
 import { YoutubePopover } from '../YoutubePopover';
 import { NodeDropdownMenu } from './NodeDropdownMenu';
 
@@ -20,36 +18,21 @@ const CUSTOM_NODE_SELECTOR_ITEMS = [
   {
     key: 'undefined',
     label: 'カスタム要素',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsPuzzleFill className={className} />;
-    },
+    Icon: BsPuzzleFill,
   },
   {
     key: 'characterSpeech',
     label: 'キャラクタースピーチ',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsChatFill className={className} />;
-    },
+    Icon: BsChatFill,
     renderItem: (editor: Editor) => (
       <CharacterSpeechButton editor={editor} text="キャラクタースピーチ" />
     ),
     asChild: true,
   },
   {
-    key: 'tips',
-    label: 'Tips',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsInfoCircleFill className={className} />;
-    },
-    renderItem: (editor: Editor) => <TipsButton editor={editor} text="Tips" />,
-    asChild: true,
-  },
-  {
     key: 'linkCard',
     label: 'リンクカード',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsCardText className={className} />;
-    },
+    Icon: BsCardText,
     renderItem: (editor: Editor) => (
       <LinkCardButton editor={editor} text="リンクカード" />
     ),
@@ -58,9 +41,7 @@ const CUSTOM_NODE_SELECTOR_ITEMS = [
   {
     key: 'image',
     label: '画像',
-    renderIcon: ({ className }: { className: string }) => {
-      return <ImagePlusIcon className={className} />;
-    },
+    Icon: ImagePlusIcon,
     renderItem: (editor: Editor) => (
       <ImageUploadButton editor={editor} text="画像" />
     ),
@@ -69,22 +50,12 @@ const CUSTOM_NODE_SELECTOR_ITEMS = [
   {
     key: 'table',
     label: 'テーブル',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsTable className={className} />;
-    },
-    renderItem: (
-      editor: Editor,
-      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
-    ) => (
+    Icon: BsTable,
+    renderItem: (editor: Editor) => (
       <TablePopover
         editor={editor}
         insertText="テーブル追加"
         deleteText="テーブル削除"
-        onOpenChange={(isOpen) => {
-          if (setIsOpen) {
-            setIsOpen(isOpen);
-          }
-        }}
       />
     ),
     asChild: true,
@@ -92,23 +63,9 @@ const CUSTOM_NODE_SELECTOR_ITEMS = [
   {
     key: 'youtube',
     label: 'Youtube',
-    renderIcon: ({ className }: { className: string }) => {
-      return <BsYoutube className={className} />;
-    },
-    renderItem: (
-      editor: Editor,
-      setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
-    ) => (
-      <YoutubePopover
-        editor={editor}
-        text="Youtube"
-        onOpenChange={(isOpen) => {
-          if (setIsOpen) {
-            setIsOpen(isOpen);
-          }
-        }}
-        modal={true}
-      />
+    Icon: BsYoutube,
+    renderItem: (editor: Editor) => (
+      <YoutubePopover editor={editor} text="Youtube" modal={true} />
     ),
     asChild: true,
   },

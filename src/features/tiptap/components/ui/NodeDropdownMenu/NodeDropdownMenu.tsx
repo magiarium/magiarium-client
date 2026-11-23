@@ -1,6 +1,7 @@
 import { useCurrentNode } from '@/features/tiptap/hooks/useCurrentNode';
 import { Editor } from '@tiptap/react';
-import { forwardRef, useState } from 'react';
+import { forwardRef } from 'react';
+import { IconType } from 'react-icons/lib';
 import { ChevronDownIcon } from '../../icons/ChevronDownIcon';
 import { Button, ButtonProps } from '../../ui-primitive/Button';
 import {
@@ -13,11 +14,8 @@ import {
 type SelectorItems = {
   key: string;
   label: string;
-  renderIcon: ({ className }: { className: string }) => JSX.Element;
-  renderItem?: (
-    editor: Editor,
-    setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
-  ) => JSX.Element;
+  Icon: IconType;
+  renderItem?: (editor: Editor) => JSX.Element;
   asChild?: boolean;
 };
 
@@ -28,7 +26,6 @@ export const NodeDropdownMenu = ({
   editor: Editor;
   selectorItems: SelectorItems[];
 }) => {
-  const [popoverOpen, setPopoverOpen] = useState(false);
   return (
     <DropdownMenu modal={true}>
       <DropdownMenuTrigger asChild>
@@ -40,11 +37,6 @@ export const NodeDropdownMenu = ({
         align="start"
         style={{ overflow: 'visible' }}
         className="magiarium-editor__dropdown-menu"
-        onInteractOutside={(event) => {
-          if (popoverOpen) {
-            event.preventDefault();
-          }
-        }}
       >
         {selectorItems.map((item) => {
           if (typeof item.renderItem !== 'function') {
@@ -58,7 +50,7 @@ export const NodeDropdownMenu = ({
                 event.preventDefault();
               }}
             >
-              {item.renderItem(editor, setPopoverOpen)}
+              {item.renderItem(editor)}
             </DropdownMenuItem>
           );
         })}
@@ -90,13 +82,12 @@ const TriggerButton = forwardRef<HTMLButtonElement, TriggerButtonButtonProps>(
             : 'off'
         }
         role="button"
-        tabIndex={-1}
         aria-label="node-selector"
         tooltip="ノードセレクター"
         {...props}
         ref={ref}
       >
-        {selector.renderIcon({ className: 'tiptap-button-icon' })}
+        <selector.Icon className="tiptap-button-icon" />
         {selector.label}
         <ChevronDownIcon className="tiptap-button-dropdown-small" />
       </Button>
