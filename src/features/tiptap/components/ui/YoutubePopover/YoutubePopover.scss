@@ -1,0 +1,30 @@
+.tiptap-youtube-popover {
+  &__content-container {
+    position: relative;
+
+    padding: 10px;
+    cursor: default;
+  }
+
+  &__group {
+    padding: 5px;
+    margin: 5px 0;
+  }
+
+  &__input {
+    &[type='number'] {
+      width: 5rem;
+    }
+    height: 2rem;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  &__footer {
+    margin-top: 1rem;
+    width: 100%;
+  }
+}

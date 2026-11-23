@@ -4,9 +4,8 @@ import { useWindowManager } from '../hooks/useWindowManager';
 import { WindowController } from '../libs/WindowController';
 import { StartButton } from './StartButton';
 import { StartMenu } from './StartMenu';
-import './StartMenu.scss';
-import './TaskBar.scss';
-import { TaskBarButton } from './Taskbar.scss';
+import './Taskbar.scss';
+import { TaskbarButton } from './TaskbarButton';
 
 /**
  * タスクバー
@@ -54,7 +53,7 @@ export const Taskbar = () => {
           {windowControllers.map(
             (targetController: WindowController, index: number) => (
               <li key={`window-list-item-${index}`}>
-                <TaskBarButton windowController={targetController} />
+                <TaskbarButton windowController={targetController} />
               </li>
             )
           )}

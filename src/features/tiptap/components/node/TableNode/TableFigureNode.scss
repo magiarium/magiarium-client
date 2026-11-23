@@ -1,0 +1,109 @@
+// テーブル
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0;
+  overflow: hidden;
+  table-layout: fixed;
+  width: 100%;
+
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(217, 169, 216, 0.3);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 16px rgba(180, 130, 180, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  &[data-no-border] {
+    td,
+    th {
+      border: none;
+    }
+  }
+
+  td,
+  th {
+    border-right: 1px solid rgba(217, 169, 216, 0.2);
+    border-bottom: 1px solid rgba(217, 169, 216, 0.2);
+    box-sizing: border-box;
+    min-width: 1em;
+    padding: 10px 12px;
+    position: relative;
+    vertical-align: top;
+  }
+
+  tr:last-child {
+    td,
+    th {
+      border-bottom: none;
+    }
+  }
+
+  td:last-child,
+  th:last-child {
+    border-right: none;
+  }
+
+  th {
+    background: rgba(217, 169, 216, 0.16);
+    color: #805d80;
+    font-weight: 600;
+    text-align: left;
+
+    border-bottom: 1px solid rgba(217, 169, 216, 0.3);
+  }
+
+  .selectedCell:after {
+    background: rgba(217, 169, 216, 0.2);
+    content: '';
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+  }
+
+  .column-resize-handle {
+    background-color: rgba(190, 137, 190, 0.7);
+    bottom: -2px;
+    pointer-events: none;
+    position: absolute;
+    right: -2px;
+    top: 0;
+    width: 4px;
+    border-radius: 4px;
+  }
+}
+
+// 標準のテーブルラッパー
+.tableWrapper {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+// テーブルリサイズカーソル
+&.resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
+}
+
+// テーブルブロック(キャプション用のラッパー)
+.tiptap-table-figure-node {
+  margin: 1.5rem 0 1.5rem 0;
+
+  .tableWrapper {
+    margin: 0.5rem 0;
+  }
+
+  &__delete-button {
+    position: absolute;
+    top: 0;
+    right: -30px;
+  }
+}
