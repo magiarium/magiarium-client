@@ -13,7 +13,7 @@ const BlogDraftContentPage = async ({
       id="blog-draft-content"
       title="ブログ"
       subTitle="個別ページ(下書き)"
-      href="/blog/001/draft"
+      href={`/blog/${itemId}/draft`}
     >
       <BlogContent itemId={itemId} itemState="draft" />
     </WindowFrame>

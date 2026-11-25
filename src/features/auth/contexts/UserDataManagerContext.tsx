@@ -5,7 +5,9 @@ import { amplifyConfig } from '../libs/amplifyConfig';
 import { UserDataManager } from '../libs/UserDataManager';
 import { UserData } from '../type';
 
-Amplify.configure(amplifyConfig);
+Amplify.configure(amplifyConfig, {
+  ssr: true, // これを消すとセッションが切れたタイミングでサーバー側の認証だけ失敗するので消さないで
+});
 
 const UserDataManagerContext = createContext<UserDataManager | null>(null);
 

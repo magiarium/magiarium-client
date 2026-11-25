@@ -13,7 +13,7 @@ const BlogContentPage = async ({
       id="blog"
       title="ブログ"
       subTitle="個別ページ"
-      href="/blog/001"
+      href={`/blog/${itemId}`}
     >
       <BlogContent itemId={itemId} itemState="public" />
     </WindowFrame>
