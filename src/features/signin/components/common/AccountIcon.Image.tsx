@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/common/components/Image';
 import { ReactNode, useState } from 'react';
 import './AccountIcon.Image.scss';
 
@@ -9,7 +9,7 @@ import './AccountIcon.Image.scss';
  * @returns Reactコンポーネント
  */
 export const AccountIconImage = ({ id }: { id: string }): ReactNode => {
-  const [src, setSrc] = useState(`/user/icons/${id}.webp`);
+  const [src, setSrc] = useState(`/user/${id}/icon.webp`);
 
   return (
     <span className="account-icon__image">
@@ -19,7 +19,7 @@ export const AccountIconImage = ({ id }: { id: string }): ReactNode => {
         width={515}
         height={515}
         loading="eager"
-        onError={() => setSrc('/user/icons/unknown.webp')}
+        onError={() => setSrc('/user/unknown/icon.webp')}
       />
     </span>
   );

@@ -1,8 +1,8 @@
+import { Image } from '@/common/components/Image';
 import { INITIAL_IMAGE_METADATA } from '@/common/constants';
 import { useWindowController } from '@/features/desktop/hooks/useWindowController';
 import { WindowControllerId } from '@/features/desktop/type';
 import { ImageMetadata } from '@magiarium/structure';
-import Image from 'next/image';
 import './ImagePreview.scss';
 
 export const ImagePreview = ({
@@ -20,14 +20,14 @@ export const ImagePreview = ({
         type="button"
         onClick={() => {
           createWindowController({
-            id: `preview_image_${currentImageMetadata.fileName}` as WindowControllerId,
-            title: `"${currentImageMetadata.fileName}"プレビュー`,
+            id: `preview_image_${currentImageMetadata.src.replace('/', '-')}` as WindowControllerId,
+            title: `"${currentImageMetadata.src}"プレビュー`,
             children: (
               <Image
-                src={currentImageMetadata.path}
+                src={currentImageMetadata.src}
                 alt="プレビュー"
-                width={currentImageMetadata.size.width}
-                height={currentImageMetadata.size.height}
+                width={currentImageMetadata.originalWidth}
+                height={currentImageMetadata.originalHeight}
               />
             ),
           });
@@ -35,18 +35,12 @@ export const ImagePreview = ({
       >
         <Image
           className="image-preview__image"
-          src={currentImageMetadata.path}
+          src={currentImageMetadata.src}
           alt="プレビュー"
-          width={currentImageMetadata.size.width}
-          height={currentImageMetadata.size.height}
+          width={currentImageMetadata.originalWidth}
+          height={currentImageMetadata.originalHeight}
         />
       </button>
-      <div className="image-preview__input-field">
-        <label title="ファイル名">
-          ファイル名
-          <input type="text" value={currentImageMetadata.alt} disabled />
-        </label>
-      </div>
 
       <div className="image-preview__input-field">
         <label title="代替テキスト">
@@ -58,6 +52,22 @@ export const ImagePreview = ({
               onChange({
                 ...currentImageMetadata,
                 alt: event.target.value,
+              });
+            }}
+          />
+        </label>
+      </div>
+
+      <div className="image-preview__input-field">
+        <label title="タイトル">
+          タイトル
+          <input
+            type="text"
+            value={currentImageMetadata.title}
+            onChange={(event) => {
+              onChange({
+                ...currentImageMetadata,
+                title: event.target.value,
               });
             }}
           />

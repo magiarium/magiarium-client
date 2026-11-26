@@ -36,6 +36,8 @@
     border: 3px solid var(--select-color, #ddd);
     background-color: #fff;
 
+    cursor: default;
+
     &--editable {
       cursor: pointer;
     }

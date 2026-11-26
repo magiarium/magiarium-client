@@ -16,18 +16,6 @@ export const ImageFigureContextMenu = ({ editor }: { editor: Editor }) => {
         <Button
           type="button"
           role="button"
-          tooltip="画像削除"
-          variant="ghost"
-          onClick={() => {
-            editor.chain().focus().deleteImageFigure().run();
-          }}
-        >
-          <BsTrash className="tiptap-button-icon" />
-          画像削除
-        </Button>
-        <Button
-          type="button"
-          role="button"
           tooltip="画像差し替え"
           variant="ghost"
           onClick={() => {
@@ -36,6 +24,18 @@ export const ImageFigureContextMenu = ({ editor }: { editor: Editor }) => {
         >
           <BsArrowRepeat className="tiptap-button-icon" />
           画像差し替え
+        </Button>
+        <Button
+          type="button"
+          role="button"
+          tooltip="画像削除"
+          variant="ghost"
+          onClick={() => {
+            editor.chain().focus().deleteImageFigure().run();
+          }}
+        >
+          <BsTrash className="tiptap-button-icon" />
+          画像削除
         </Button>
       </ButtonGroup>
     </>

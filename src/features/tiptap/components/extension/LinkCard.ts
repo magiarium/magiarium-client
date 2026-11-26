@@ -1,4 +1,5 @@
-import { Node } from '@tiptap/core';
+import { ImageMetadata } from '@magiarium/structure';
+import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { LinkCardNode } from '../node/LinkCardNode/LinkCardNode';
 
@@ -18,7 +19,7 @@ export interface LinkCardOptions {
 
 export interface LinkCardAttributes {
   href: string | null;
-  thumbnailUrl?: string | null;
+  thumbnail?: ImageMetadata | null;
   title?: string | null;
   description?: string | null;
   target?: string | null;
@@ -44,7 +45,7 @@ export const LinkCard = Node.create<LinkCardOptions>({
   addAttributes() {
     return {
       href: {
-        default: '',
+        default: null,
 
         parseHTML: (element) => element.getAttribute('data-href') ?? '',
 
@@ -53,19 +54,19 @@ export const LinkCard = Node.create<LinkCardOptions>({
         }),
       },
 
-      thumbnailUrl: {
-        default: '',
+      thumbnail: {
+        default: null,
 
         parseHTML: (element) => element.getAttribute('data-thumbnail') ?? '',
 
         renderHTML: (attributes) =>
-          attributes.thumbnailUrl
-            ? { 'data-thumbnail': attributes.thumbnailUrl }
+          attributes.thumbnail
+            ? { 'data-thumbnail': attributes.thumbnail }
             : {},
       },
 
       title: {
-        default: '',
+        default: null,
 
         parseHTML: (element) => element.getAttribute('data-title') ?? '',
 
@@ -75,7 +76,7 @@ export const LinkCard = Node.create<LinkCardOptions>({
       },
 
       description: {
-        default: '',
+        default: null,
 
         parseHTML: (element) => element.getAttribute('data-description') ?? '',
 
@@ -107,6 +108,49 @@ export const LinkCard = Node.create<LinkCardOptions>({
       {
         tag: 'a[data-type="link-card"]',
       },
+    ];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return [
+      'div',
+      {
+        ...mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+        class: 'tiptap-link-card',
+      },
+      [
+        'a',
+        {
+          href: HTMLAttributes.href,
+          target: HTMLAttributes.target,
+        },
+        [
+          'div',
+          { class: 'tiptap-link-card__capture' },
+          HTMLAttributes.thumbnail.src
+            ? [
+                'img',
+                {
+                  class: 'tiptap-link-card__image',
+                  src: HTMLAttributes.thumbnail.src,
+                  alt: 'リンクカード画像',
+                  width: 1200,
+                  height: 800,
+                },
+              ]
+            : [
+                'span',
+                { class: 'tiptap-link-card__image' },
+                '画像が設定されていません。',
+              ],
+          ['span', { class: 'tiptap-link-card__link' }, HTMLAttributes.href],
+        ],
+        ['span', { class: 'tiptap-link-card__title' }, HTMLAttributes.title],
+        [
+          'span',
+          { class: 'tiptap-link-card__description' },
+          HTMLAttributes.description,
+        ],
+      ],
     ];
   },
 

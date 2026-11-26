@@ -2,7 +2,6 @@ import Blockquote from '@tiptap/extension-blockquote';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import HardBreak from '@tiptap/extension-hard-break';
 import Heading from '@tiptap/extension-heading';
-import Image from '@tiptap/extension-image';
 import { BulletList, ListItem, OrderedList } from '@tiptap/extension-list';
 import Paragraph from '@tiptap/extension-paragraph';
 import { TableKit } from '@tiptap/extension-table';
@@ -15,6 +14,7 @@ import { all, createLowlight } from 'lowlight';
 import { YOUTUBE_DEFAULT_SIZE } from '../../../ui/YoutubePopover';
 import { Caption } from '../../Caption';
 import { CharacterSpeech } from '../../CharacterSpeech';
+import { CustomImage } from '../../Image';
 import { ImageFigure } from '../../ImageFigure';
 import { LinkCard } from '../../LinkCard';
 import { CustomTable } from '../../Table/Table';
@@ -38,7 +38,7 @@ export const NODE_EXTENSIONS: Extensions = [
   HardBreak,
   Heading.configure({ levels: [3, 4, 5] }), // `h1=サイトタイトル` & `h2=コンテンツタイトル` のため、h3以降のみ許可
   ImageFigure,
-  Image,
+  CustomImage,
   BulletList,
   ListItem,
   OrderedList,

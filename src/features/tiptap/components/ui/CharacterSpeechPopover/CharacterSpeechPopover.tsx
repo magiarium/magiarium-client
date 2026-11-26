@@ -1,4 +1,4 @@
-import { CHARACTER_SPEECH_ICONS } from '@/features/content/common/constants';
+import { TEMPLATE_CHARACTER_ICONS } from '@/common/constants';
 import { ImageSelector } from '@/features/image/components/ImageSelector';
 import { useImageUploader } from '@/features/image/hooks/useImageUploader';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
@@ -101,7 +101,7 @@ export const CharacterSpeechMain = ({
         .focus()
         .setCharacterSpeech({
           ...characterSpeechState,
-          characterIcon: next.path,
+          characterIcon: next,
         })
         .run();
     },
@@ -120,15 +120,15 @@ export const CharacterSpeechMain = ({
         <CardItemGroup className="tiptap-character-speech__card-item-group">
           <ImageSelector
             iconSize="2rem"
-            templates={CHARACTER_SPEECH_ICONS}
+            templates={TEMPLATE_CHARACTER_ICONS}
             isActive={(current) =>
-              characterSpeechState?.characterIcon === current.path
+              characterSpeechState?.characterIcon?.src === current.src
             }
             onSelect={(next) => {
               setCharacterSpeechState((prev) => {
                 return {
                   ...prev,
-                  characterIcon: next.path,
+                  characterIcon: next,
                 };
               });
             }}

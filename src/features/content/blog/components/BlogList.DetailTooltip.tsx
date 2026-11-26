@@ -1,5 +1,5 @@
+import { Image } from '@/common/components/Image';
 import { BlogItemMetadata } from '@magiarium/structure';
-import Image from 'next/image';
 import { Tooltip } from 'radix-ui';
 import { useState } from 'react';
 import './BlogList.DetailTooltip.scss';
@@ -12,7 +12,7 @@ export const BlogListDtailTooltip = ({
   metadata: BlogItemMetadata;
 }) => {
   const [thumbnailSrc, setThumbnailSrc] = useState<string>(
-    metadata.thumbnailImage.path
+    metadata.thumbnailImage.src
   );
   return (
     <Tooltip.Content

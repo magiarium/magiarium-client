@@ -1,6 +1,6 @@
 import { MAGIARIUM_API_URL } from '@/constants';
-import { replacePathParams } from '@/features/content/common/libs/replacePathParams';
-import { getAccessToken } from '../../../auth/libs/getAccessToken';
+import { replacePathParams } from '@/features/api/libs/replacePathParams';
+import { getAccessToken } from '../../auth/libs/getAccessToken';
 import {
   ContentApiName,
   ContentApiRequest,

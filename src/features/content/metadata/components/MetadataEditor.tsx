@@ -1,15 +1,14 @@
 'use client';
 import { Button } from '@/common/components/Button';
 import { LoadingCircle } from '@/common/components/LoadingCircle';
+import { TEMPLATE_OGPS, TEMPLATE_THUMBNAILS } from '@/common/constants';
 import { useNotice } from '@/features/app-controller/hooks/useNotice';
 import { usePermission } from '@/features/auth/hooks/usePermission';
 import { ImageMetadata, ItemData } from '@magiarium/structure';
 import { FormEvent, useState } from 'react';
+import { saveItemData } from '../../../api/libs/saveItemData';
 import { ImageUploader } from '../../../image/components/ImageUploader';
-import { OGP_TEMPLATES, THUMBNAIL_TEMPLATES } from '../constants';
-import { saveItemData } from '../libs/saveItemData';
 import './MetadataEditor.scss';
-
 /**
  * メタデータ編集画面 ※メタデータはアイテム種別ごとに差分ない想定のため、共通処理扱い
  */
@@ -125,7 +124,7 @@ export const MetadataEditor = ({
             onChange={(value: ImageMetadata) =>
               handleChange('thumbnailImage', value)
             }
-            templates={THUMBNAIL_TEMPLATES}
+            templates={TEMPLATE_THUMBNAILS}
           />
         </div>
 
@@ -135,7 +134,7 @@ export const MetadataEditor = ({
             currentImage={editItemData.ogpImage}
             clipSize={{ width: 1200, height: 630 }}
             onChange={(value: ImageMetadata) => handleChange('ogpImage', value)}
-            templates={OGP_TEMPLATES}
+            templates={TEMPLATE_OGPS}
           />
         </div>
 

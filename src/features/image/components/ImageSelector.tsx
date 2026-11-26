@@ -1,6 +1,6 @@
+import { Image } from '@/common/components/Image';
 import { ImageMetadata } from '@magiarium/structure';
 import classNames from 'classnames';
-import Image from 'next/image';
 import { ChangeEvent } from 'react';
 import { BsPlus } from 'react-icons/bs';
 import './ImageSelector.scss';
@@ -48,10 +48,11 @@ export const ImageSelector = ({
             }}
           >
             <Image
-              src={targetImage.path}
-              alt={targetImage.alt}
-              width={targetImage.size.width}
-              height={targetImage.size.height}
+              src={targetImage.src}
+              alt={targetImage.alt ?? ''}
+              title={targetImage.title ?? ''}
+              width={targetImage.originalWidth}
+              height={targetImage.originalHeight}
             />
           </button>
         );

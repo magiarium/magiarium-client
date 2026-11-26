@@ -8,6 +8,9 @@ import { WindowContextProvider } from '@/features/desktop/contexts/WindowContext
 import { SideAssistantContextProvider } from '@/features/side-assistant/contexts/SideAssistantContext';
 import { ReactNode } from 'react';
 
+// AmplifyConfig
+import '@/common/libs/amplifyConfig';
+
 // CSS
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';

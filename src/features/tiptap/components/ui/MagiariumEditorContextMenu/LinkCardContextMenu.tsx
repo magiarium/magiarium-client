@@ -1,9 +1,9 @@
 import { Button as MagiariumButton } from '@/common/components/Button';
-import { LINK_CARD_THUMBNAIL_TEMPLATES } from '@/features/content/common/constants';
+import { Image } from '@/common/components/Image';
+import { TEMPLATE_OGPS, TEMPLATE_THUMBNAILS } from '@/common/constants';
 import { ImageSelector } from '@/features/image/components/ImageSelector';
 import { useImageUploader } from '@/features/image/hooks/useImageUploader';
 import { Editor } from '@tiptap/react';
-import Image from 'next/image';
 import { useRef } from 'react';
 import {
   BsArrowUpRight,
@@ -12,6 +12,7 @@ import {
   BsTrash,
   BsXLg,
 } from 'react-icons/bs';
+import { LinkCardAttributes } from '../../extension/LinkCard';
 import { Button } from '../../ui-primitive/Button';
 import { ButtonGroup } from '../../ui-primitive/ButtonGroup';
 import { Card, CardBody } from '../../ui-primitive/Card';
@@ -22,6 +23,7 @@ import {
   PopoverTrigger,
 } from '../../ui-primitive/Popover';
 import { useLinkCard } from '../LinkCardButton';
+import './LinkCardContextMenu.scss';
 
 /**
  * リンクカードコンテキストメニュー
@@ -39,20 +41,6 @@ export const LinkCardContextMenu = ({ editor }: { editor: Editor }) => {
   } = useLinkCard({
     editor,
   });
-  const { handleImageInput } = useImageUploader({
-    onChange: (next) => {
-      setLinkCardState((prev) => {
-        return {
-          ...prev,
-          href: prev?.href || '',
-          thumbnailUrl: next.path,
-        };
-      });
-    },
-    clipSize: { width: 1200, height: 800 },
-  });
-
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <ButtonGroup orientation={'vertical'}>
@@ -82,124 +70,11 @@ export const LinkCardContextMenu = ({ editor }: { editor: Editor }) => {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <Card>
-            <CardBody>
-              {linkCardState.thumbnailUrl ? (
-                <div className="tiptap-link-card__image">
-                  <Image
-                    className="tiptap-link-card__image"
-                    src={linkCardState.thumbnailUrl}
-                    alt="リンクカード画像"
-                    width={1200}
-                    height={800}
-                    onClick={() => inputRef.current?.click()}
-                  />
-                  <Button
-                    className="tiptap-link-card__image-reset-button"
-                    onClick={() => {
-                      setLinkCardState((prev) => {
-                        return {
-                          ...prev,
-                          href: prev?.href || '',
-                          thumbnailUrl: '',
-                        };
-                      });
-                    }}
-                  >
-                    <BsXLg className="tiptap-button-icon" />
-                  </Button>
-                </div>
-              ) : (
-                <ImageSelector
-                  iconSize="30px"
-                  templates={LINK_CARD_THUMBNAIL_TEMPLATES}
-                  onSelect={(next) => {
-                    setLinkCardState((prev) => {
-                      return {
-                        ...prev,
-                        href: prev?.href || '',
-                        thumbnailUrl: next.path,
-                      };
-                    });
-                  }}
-                  onInput={handleImageInput}
-                />
-              )}
-              <Input
-                ref={inputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageInput}
-              />
-              <Input
-                type="text"
-                placeholder="リンクを設定してください。"
-                value={linkCardState.href || ''}
-                onChange={(event) => {
-                  setLinkCardState((prev) => {
-                    return {
-                      ...prev,
-                      href: event.target.value,
-                    };
-                  });
-                }}
-              />
-              <Input
-                type="text"
-                placeholder="リンク先タイトルを設定してください。"
-                value={linkCardState.title || ''}
-                onChange={(event) => {
-                  setLinkCardState((prev) => {
-                    return {
-                      ...prev,
-                      href: prev?.href || '',
-                      title: event.target.value,
-                    };
-                  });
-                }}
-              />
-              <Input
-                type="text"
-                placeholder="リンク先概要を設定してください。"
-                value={linkCardState.description || ''}
-                onChange={(event) => {
-                  setLinkCardState((prev) => {
-                    return {
-                      ...prev,
-                      href: prev?.href || '',
-                      description: event.target.value,
-                    };
-                  });
-                }}
-              />
-              <label>
-                target:
-                <select
-                  value={linkCardState.target ?? '_blank'}
-                  onChange={(event) => {
-                    setLinkCardState((prev) => {
-                      return {
-                        ...prev,
-                        href: prev?.href ?? '',
-                        target: event.target.value,
-                      };
-                    });
-                  }}
-                >
-                  <option value="_blank">別タブ</option>
-                  <option value="_self">同タブ</option>
-                </select>
-              </label>
-              <MagiariumButton
-                onClick={() => {
-                  setLinkCard();
-                }}
-              >
-                反映
-              </MagiariumButton>
-            </CardBody>
-          </Card>
+          <LinkCardSettingCard
+            linkCardState={linkCardState}
+            setLinkCardState={setLinkCardState}
+            setLinkCard={setLinkCard}
+          />
         </PopoverContent>
       </Popover>
       <Button
@@ -227,5 +102,152 @@ export const LinkCardContextMenu = ({ editor }: { editor: Editor }) => {
         破棄する
       </Button>
     </ButtonGroup>
+  );
+};
+
+export const LinkCardSettingCard = ({
+  linkCardState,
+  setLinkCardState,
+  setLinkCard,
+}: {
+  linkCardState: LinkCardAttributes;
+  setLinkCardState: React.Dispatch<
+    React.SetStateAction<LinkCardAttributes | null>
+  >;
+  setLinkCard: () => void;
+}) => {
+  const { handleImageInput } = useImageUploader({
+    onChange: (next) => {
+      setLinkCardState((prev) => {
+        return {
+          ...prev,
+          href: prev?.href || '',
+          thumbnailUrl: next.src,
+        };
+      });
+    },
+    clipSize: { width: 1200, height: 800 },
+  });
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  return (
+    <Card>
+      <CardBody>
+        {linkCardState.thumbnail?.src ? (
+          <div className="tiptap-link-card-context-menu__image-container">
+            <Image
+              className="tiptap-link-card-context-menu__thumbnail"
+              src={linkCardState.thumbnail.src}
+              alt="リンクカード画像"
+              width={1200}
+              height={800}
+              onClick={() => inputRef.current?.click()}
+            />
+            <Button
+              className="tiptap-link-card-context-menu__image-reset-button"
+              onClick={() => {
+                setLinkCardState((prev) => {
+                  return {
+                    ...prev,
+                    href: prev?.href || '',
+                    thumbnail: null,
+                  };
+                });
+              }}
+            >
+              <BsXLg className="tiptap-button-icon" />
+            </Button>
+          </div>
+        ) : (
+          <ImageSelector
+            iconSize="30px"
+            templates={[...TEMPLATE_THUMBNAILS, ...TEMPLATE_OGPS]}
+            onSelect={(next) => {
+              setLinkCardState((prev) => {
+                return {
+                  ...prev,
+                  href: prev?.href || '',
+                  thumbnail: next,
+                };
+              });
+            }}
+            onInput={handleImageInput}
+          />
+        )}
+        <Input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageInput}
+        />
+        <Input
+          type="text"
+          placeholder="リンクを設定してください。"
+          value={linkCardState.href || ''}
+          onChange={(event) => {
+            setLinkCardState((prev) => {
+              return {
+                ...prev,
+                href: event.target.value,
+              };
+            });
+          }}
+        />
+        <Input
+          type="text"
+          placeholder="リンク先タイトルを設定してください。"
+          value={linkCardState.title || ''}
+          onChange={(event) => {
+            setLinkCardState((prev) => {
+              return {
+                ...prev,
+                href: prev?.href || '',
+                title: event.target.value,
+              };
+            });
+          }}
+        />
+        <Input
+          type="text"
+          placeholder="リンク先概要を設定してください。"
+          value={linkCardState.description || ''}
+          onChange={(event) => {
+            setLinkCardState((prev) => {
+              return {
+                ...prev,
+                href: prev?.href || '',
+                description: event.target.value,
+              };
+            });
+          }}
+        />
+        <label>
+          target:
+          <select
+            value={linkCardState.target ?? '_blank'}
+            onChange={(event) => {
+              setLinkCardState((prev) => {
+                return {
+                  ...prev,
+                  href: prev?.href ?? '',
+                  target: event.target.value,
+                };
+              });
+            }}
+          >
+            <option value="_blank">別タブ</option>
+            <option value="_self">同タブ</option>
+          </select>
+        </label>
+        <MagiariumButton
+          onClick={() => {
+            setLinkCard();
+          }}
+        >
+          反映
+        </MagiariumButton>
+      </CardBody>
+    </Card>
   );
 };

@@ -1,7 +1,7 @@
+import { Image } from '@/common/components/Image';
 import { BlogList } from '@/features/content/blog/components/BlogList';
 import { useWindowManager } from '@/features/desktop/hooks/useWindowManager';
 import { WindowControllerId } from '@/features/desktop/type';
-import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import './GlobalNavigation.scss';
 

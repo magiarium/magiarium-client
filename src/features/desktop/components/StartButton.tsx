@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/common/components/Image';
 import './StartButton.scss';
 export const StartButton = ({ onClick }: { onClick: () => void }) => {
   return (

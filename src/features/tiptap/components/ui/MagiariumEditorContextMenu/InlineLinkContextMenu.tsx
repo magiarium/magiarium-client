@@ -1,10 +1,17 @@
+import { TEMPLATE_SERVICE_ICONS } from '@/common/constants';
 import { ImageSelector } from '@/features/image/components/ImageSelector';
 import { useImageUploader } from '@/features/image/hooks/useImageUploader';
 import { Editor } from '@tiptap/react';
-import { BsArrowUpRight, BsGearFill, BsTrash } from 'react-icons/bs';
+import {
+  BsArrowUpRight,
+  BsGearFill,
+  BsPersonCircle,
+  BsTrash,
+} from 'react-icons/bs';
 import { FaUnlink } from 'react-icons/fa';
 import { Button } from '../../ui-primitive/Button';
 import { ButtonGroup } from '../../ui-primitive/ButtonGroup';
+import { Card, CardBody } from '../../ui-primitive/Card';
 import {
   Popover,
   PopoverContent,
@@ -18,18 +25,26 @@ import { InlineLinkContent, useInlineLink } from '../InlineLinkPopover';
  * @param params.editor Tiptapエディターのインスタンス
  */
 export const InlineLinkContextMenu = ({ editor }: { editor: Editor }) => {
-  const { inlineLinkState, openLink, setInlineLinkState, removeInlineLink } =
-    useInlineLink({ editor });
+  const {
+    inlineLinkState,
+    openLink,
+    setInlineLinkState,
+    removeInlineLink,
+    setInlineLink,
+  } = useInlineLink({ editor });
 
   const { handleImageInput } = useImageUploader({
     onChange: (next) => {
-      setInlineLinkState((prev) => {
-        return {
-          ...prev,
-          href: prev?.href || '',
-          icon: next.path,
-        };
-      });
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange('inlineLink')
+        .setInlineLink({
+          ...inlineLinkState,
+          icon: next,
+        })
+        .run();
+      setInlineLinkState(null);
     },
     clipSize: { width: 32, height: 32 },
   });
@@ -65,7 +80,14 @@ export const InlineLinkContextMenu = ({ editor }: { editor: Editor }) => {
           <InlineLinkContent editor={editor} />
         </PopoverContent>
       </Popover>
-      <Popover modal={true}>
+      <Popover
+        modal={true}
+        onOpenChange={(open) => {
+          if (open) {
+            setInlineLink();
+          }
+        }}
+      >
         <PopoverTrigger asChild>
           <Button
             type="button"
@@ -73,85 +95,55 @@ export const InlineLinkContextMenu = ({ editor }: { editor: Editor }) => {
             tooltip="破棄する"
             variant="ghost"
           >
+            <BsPersonCircle />
             アイコン変更
           </Button>
         </PopoverTrigger>
         <PopoverContent side="bottom" align="start">
-          <ImageSelector
-            iconSize="30px"
-            className="tiptap-inline-link__icon-selector"
-            templates={[
-              {
-                path: '/assets/images/preset/x_icon.png',
-                mimeType: 'image/png',
-                alt: 'Xアイコン',
-                fileName: 'x_icon.png',
-                size: { width: 32, height: 32 },
-                uploadedAt: '20261108122000',
-              },
-              {
-                path: '/assets/images/preset/youtube_icon.png',
-                mimeType: 'image/png',
-                alt: 'Youtubeアイコン',
-                fileName: 'youtube_icon.png',
-                size: { width: 32, height: 32 },
-                uploadedAt: '20261108122000',
-              },
-              {
-                path: '/assets/images/preset/pixiv_icon.png',
-                mimeType: 'image/png',
-                alt: 'Xアイコン',
-                fileName: 'pixiv_icon.png',
-                size: { width: 32, height: 32 },
-                uploadedAt: '20261108122000',
-              },
-              {
-                path: '/assets/images/preset/magiarium_icon.png',
-                mimeType: 'image/png',
-                alt: 'まぎありうむブログアイコン',
-                fileName: 'magiarium_icon.png',
-                size: { width: 32, height: 32 },
-                uploadedAt: '20261108122000',
-              },
-              {
-                path: '/assets/images/preset/magiarium_blog_icon.png',
-                mimeType: 'image/png',
-                alt: 'まぎありうむアイコン',
-                fileName: 'magiarium_blog_icon.png',
-                size: { width: 32, height: 32 },
-                uploadedAt: '20261108122000',
-              },
-            ]}
-            isActive={(current) => {
-              if (inlineLinkState.href === '') return false;
-              return current.path === inlineLinkState.icon;
-            }}
-            onSelect={(imageInfo) => {
-              setInlineLinkState((prev) => {
-                return {
-                  ...prev,
-                  href: prev?.href || '',
-                  icon: imageInfo.path,
-                };
-              });
-            }}
-            onInput={handleImageInput}
-          />
-          {inlineLinkState.icon && inlineLinkState.icon !== '' && (
-            <Button
-              onClick={() => {
-                setInlineLinkState((prev) => {
-                  return {
-                    ...prev,
-                    href: prev?.href || '',
-                    icon: null,
-                  };
-                });
-              }}
-            >
-              <BsTrash className="tiptap-button-icon" />
-            </Button>
-          )}
+          <Card>
+            <CardBody>
+              <ImageSelector
+                iconSize="30px"
+                className="tiptap-inline-link__icon-selector"
+                templates={TEMPLATE_SERVICE_ICONS}
+                isActive={(current) => {
+                  if (inlineLinkState.href === '') return false;
+                  return current.src === inlineLinkState.icon?.src;
+                }}
+                onSelect={(imageMetadata) => {
+                  const success = editor
+                    .chain()
+                    .focus()
+                    .extendMarkRange('inlineLink')
+                    .setInlineLink({
+                      ...inlineLinkState,
+                      icon: imageMetadata,
+                    })
+                    .run();
+                  setInlineLinkState(null);
+                }}
+                onInput={handleImageInput}
+              />
+              {inlineLinkState.icon && inlineLinkState.icon?.src !== '' && (
+                <Button
+                  onClick={() => {
+                    editor
+                      .chain()
+                      .focus()
+                      .extendMarkRange('inlineLink')
+                      .setInlineLink({
+                        ...inlineLinkState,
+                        icon: null,
+                      })
+                      .run();
+                    setInlineLinkState(null);
+                  }}
+                >
+                  <BsTrash className="tiptap-button-icon" />
+                </Button>
+              )}
+            </CardBody>
+          </Card>
         </PopoverContent>
       </Popover>
       <Button
@@ -165,18 +157,6 @@ export const InlineLinkContextMenu = ({ editor }: { editor: Editor }) => {
       >
         <FaUnlink className="tiptap-button-icon" />
         リンク解除
-      </Button>
-      <Button
-        type="button"
-        role="button"
-        tooltip="破棄する"
-        variant="ghost"
-        onClick={() => {
-          editor.chain().focus().deleteSelection().run();
-        }}
-      >
-        <BsTrash className="tiptap-button-icon" />
-        破棄する
       </Button>
     </ButtonGroup>
   );

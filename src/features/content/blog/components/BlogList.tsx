@@ -5,7 +5,7 @@ import { useWindowController } from '@/features/desktop/hooks/useWindowControlle
 import { WindowControllerId } from '@/features/desktop/type';
 import { Tabs } from 'radix-ui';
 import { BsEnvelope, BsPlusSquareFill } from 'react-icons/bs';
-import { MetadataEditor } from '../../common/components/MetadataEditor';
+import { MetadataEditor } from '../../metadata/components/MetadataEditor';
 import { createBlogItemTemplate } from '../libs/createBlogItemTemplate';
 import { BlogListContent } from './BlogList.Content';
 import './BlogList.scss';

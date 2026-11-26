@@ -1,7 +1,7 @@
+import { Image } from '@/common/components/Image';
 import { useAppState } from '@/features/app-controller/hooks/useAppState';
 import { useUserData } from '@/features/auth/hooks/useUserData';
 import classNames from 'classnames';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ReactNode, RefObject, useState } from 'react';

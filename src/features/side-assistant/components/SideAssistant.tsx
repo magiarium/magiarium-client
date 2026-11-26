@@ -1,7 +1,7 @@
 'use client';
+import { Image } from '@/common/components/Image';
 import { useAppState } from '@/features/app-controller/hooks/useAppState';
 import classNames from 'classnames';
-import Image from 'next/image';
 import { ReactNode } from 'react';
 import { Rnd } from 'react-rnd';
 import { GRAB_CHARACTER_SIZE, SPEECH_TAIL_POSITION } from '../constants';

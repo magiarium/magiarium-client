@@ -1,18 +1,18 @@
 import { InputNumberWithSlider } from '@/common/components/InputNumberWithSlider';
 import { Size } from '@/common/type';
+import { ImageMetadata } from '@magiarium/structure';
 import Cropper from 'react-easy-crop';
 import {
   ColorCode,
   ColorPicker,
 } from '../../../common/components/InputColorPicker';
 import { useImageCliper } from '../hooks/useImageCliper';
-import { ImageInfo } from '../libs/loadImageInfo';
 import './ImageCliper.scss';
 
 type ImageCliperProps = {
   imageUrl: string;
   clipSize: Size;
-  onChange: (imageInfo: ImageInfo) => void;
+  onChange: (imageMetadata: ImageMetadata) => void;
   onCancel: () => void;
 };
 

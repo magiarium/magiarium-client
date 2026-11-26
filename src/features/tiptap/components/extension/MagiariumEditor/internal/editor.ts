@@ -25,6 +25,7 @@ export const EDITOR_EXTENSIONS: Extensions = [
 
         fileReader.readAsDataURL(file);
         fileReader.onload = () => {
+          const img = new Image();
           currentEditor
             .chain()
             .insertContentAt(pos, {
@@ -34,6 +35,11 @@ export const EDITOR_EXTENSIONS: Extensions = [
                   type: 'image',
                   attrs: {
                     src: fileReader.result,
+                    fileName: file.name,
+                    title: file.name.substring(0, file.name.lastIndexOf('.')),
+                    alt: file.name.substring(0, file.name.lastIndexOf('.')),
+                    originalWidth: img.width,
+                    originalHeight: img.height,
                   },
                 },
                 { type: 'caption' },
@@ -57,6 +63,7 @@ export const EDITOR_EXTENSIONS: Extensions = [
 
         fileReader.readAsDataURL(file);
         fileReader.onload = () => {
+          const img = new Image();
           currentEditor
             .chain()
             .insertContentAt(currentEditor.state.selection.anchor, {
@@ -66,6 +73,11 @@ export const EDITOR_EXTENSIONS: Extensions = [
                   type: 'image',
                   attrs: {
                     src: fileReader.result,
+                    fileName: file.name,
+                    title: file.name.substring(0, file.name.lastIndexOf('.')),
+                    alt: file.name.substring(0, file.name.lastIndexOf('.')),
+                    originalWidth: img.width,
+                    originalHeight: img.height,
                   },
                 },
                 { type: 'caption' },
@@ -98,8 +110,8 @@ export const EDITOR_EXTENSIONS: Extensions = [
     maxSize: MAX_FILE_SIZE,
     limit: 3,
     upload: async (file) => {
-      const imageInfo = await handleImageUpload(file);
-      return imageInfo.blobUrl;
+      const imageMetadata = await handleImageUpload(file);
+      return imageMetadata;
     },
     onError: (error) => console.error('Upload failed:', error),
   }),

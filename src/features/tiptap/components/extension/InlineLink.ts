@@ -1,10 +1,11 @@
+import { ImageMetadata } from '@magiarium/structure';
 import Link from '@tiptap/extension-link';
-import { ReactMarkViewRenderer } from '@tiptap/react';
+import { mergeAttributes, ReactMarkViewRenderer } from '@tiptap/react';
 import { InlineLinkMark } from '../node/InlineLinkMark';
 
 export interface InlineLinkAttributes {
   href: string;
-  icon?: string | null;
+  icon?: ImageMetadata | null;
   target?: string | null;
   rel?: string | null;
 }
@@ -34,7 +35,6 @@ export const InlineLink = Link.extend({
           attributes.icon
             ? {
                 'data-icon': attributes.icon,
-                style: `--inline-link-icon: url("${attributes.icon}")`,
               }
             : {},
       },
@@ -47,16 +47,27 @@ export const InlineLink = Link.extend({
         (attributes) =>
         ({ chain }) => {
           return chain()
-            .setLink(attributes)
+            .updateAttributes('inlineLink', attributes)
             .setMeta('preventAutolink', true)
             .run();
         },
       unsetInlineLink:
         () =>
         ({ chain }) => {
-          return chain().unsetLink().run();
+          return chain().unsetMark('inlineLink').run();
         },
     };
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return [
+      'a',
+      {
+        ...mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+        class: 'tiptap-inline-link',
+      },
+      ['span', { class: 'inline-link__text' }, 0],
+    ];
   },
 
   addMarkView() {

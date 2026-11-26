@@ -3,8 +3,8 @@ import { BlogItemMetadata } from '@magiarium/structure';
 import { Tooltip } from 'radix-ui';
 import { useState } from 'react';
 import { BsArrowClockwise } from 'react-icons/bs';
-import { ContentApiRequest } from '../../common/constants';
-import { useFetchContentApi } from '../../common/hooks/useFetchContentApi';
+import { ContentApiRequest } from '../../../api/constants';
+import { useFetchContentApi } from '../../../api/hooks/useFetchContentApi';
 import './BlogList.Content.scss';
 import { BlogListRecord } from './BlogList.Record';
 

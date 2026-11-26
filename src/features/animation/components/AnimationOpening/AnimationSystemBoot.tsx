@@ -1,5 +1,5 @@
+import { Image } from '@/common/components/Image';
 import { LoadingOverlay } from '@/common/components/LoadingOverlay';
-import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { AnimatorId } from '../../libs/animator/type';
@@ -63,6 +63,7 @@ export const AnimationSystemBoot = ({
             width={515}
             height={515}
             loading="eager"
+            strictImport // 読み込み遅れるとレイアウトが崩れるのでstrictImport
           />
           <div
             className="animation-system-boot__title"

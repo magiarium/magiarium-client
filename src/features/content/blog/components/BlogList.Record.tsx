@@ -1,16 +1,16 @@
 import { Button } from '@/common/components/Button';
 import { ContextMenu } from '@/common/components/ContextMenu';
+import { Image } from '@/common/components/Image';
 import { useNotice } from '@/features/app-controller/hooks/useNotice';
 import { useWindowController } from '@/features/desktop/hooks/useWindowController';
 import { WindowControllerId } from '@/features/desktop/type';
 import { BlogItemMetadata } from '@magiarium/structure';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Tooltip } from 'radix-ui';
 import { useState } from 'react';
 import { BsPencilFill, BsTrashFill } from 'react-icons/bs';
-import { MetadataEditor } from '../../common/components/MetadataEditor';
-import { fetchContentApi } from '../../common/libs/fetchContentApi';
+import { fetchContentApi } from '../../../api/libs/fetchContentApi';
+import { MetadataEditor } from '../../metadata/components/MetadataEditor';
 import { BlogListDtailTooltip } from './BlogList.DetailTooltip';
 import './BlogList.Record.scss';
 
@@ -27,7 +27,7 @@ export const BlogListRecord = ({
   onLoading: (isLoading: boolean) => void;
 }) => {
   const [thumbnailSrc, setThumbnailSrc] = useState<string>(
-    metadata.thumbnailImage.path
+    metadata.thumbnailImage.src
   );
   const { setNotice, closeNotice } = useNotice();
   const { createWindowController } = useWindowController();

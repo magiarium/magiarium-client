@@ -21,7 +21,7 @@ export const ImageUploader = ({
     onChange,
   });
 
-  if (currentImage.path) {
+  if (currentImage.src) {
     // 既に選択済みであればプレビュー
     return (
       <div className="image-uploader__input-field">
@@ -49,7 +49,7 @@ export const ImageUploader = ({
         <input
           type="file"
           accept="image/*"
-          value={currentImage.path}
+          value={currentImage.src}
           onChange={handleImageInput}
         />
       </label>

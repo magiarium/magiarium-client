@@ -1,11 +1,9 @@
 'use client';
 
-import { Button } from '@/common/components/Button';
 import { LoadingCircle } from '@/common/components/LoadingCircle';
-import { usePermission } from '@/features/auth/hooks/usePermission';
 import { MagiariumEditor } from '@/features/tiptap/components/ui/MagiariumEditor';
 import { ItemId, ItemState } from '@magiarium/structure';
-import { useFetchContentApi } from '../../common/hooks/useFetchContentApi';
+import { useFetchContentApi } from '../../../api/hooks/useFetchContentApi';
 import './BlogItem.Content.scss';
 
 export const BlogContent = ({
@@ -35,8 +33,6 @@ export const BlogContent = ({
       ? useFetchContentApi('GetDraftItemData', request)
       : useFetchContentApi('GetPublicItemData', request);
 
-  const { can } = usePermission();
-
   if (isLoading) {
     return (
       <>
@@ -55,18 +51,8 @@ export const BlogContent = ({
         <h2>{itemData.title}</h2>
       </div>
       <div className="blog-content__main">
-        <MagiariumEditor content={itemData.content} isEditable={can('EDIT')} />
+        <MagiariumEditor itemData={itemData} />
       </div>
-      {can('EDIT') && (
-        <aside className="blog-content__edit-aside">
-          {can('SAVE:DRAFT') && <Button onClick={() => {}}>下書き保存</Button>}
-          {itemData.itemState === 'draft' && can('SAVE:PUBLIC') && (
-            <Button onClick={() => {}} priority={'SECONDARY'}>
-              下書き公開
-            </Button>
-          )}
-        </aside>
-      )}
     </article>
   );
 };

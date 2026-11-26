@@ -110,7 +110,7 @@ InlineLinkButton.displayName = 'InlineLinkButton';
 /**
  * InlineLinkポップオーバーのメインコンテンツ
  */
-const InlineLinkMain = ({
+export const InlineLinkMain = ({
   inlineLinkState,
   setInlineLinkState,
   setInlineLink,
