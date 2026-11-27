@@ -1,4 +1,4 @@
-import { BlogContent } from '@/features/content/blog/components/BlogItem.Content';
+import { BlogContent } from '@/features/content/blog/components/BlogItemContent';
 import { WindowFrame } from '@/features/desktop/components/WindowFrame';
 import { ItemId } from '@magiarium/structure';
 

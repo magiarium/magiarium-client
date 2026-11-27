@@ -1,4 +1,4 @@
-import { LockPage } from '@/features/signin/components/Main';
+import { LockPage } from '@/features/signin/components/ui/LockPage';
 
 const SigninPage = () => {
   return <LockPage />;

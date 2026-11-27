@@ -1,6 +1,6 @@
 'use client';
 import { createContext, ReactNode, useState } from 'react';
-import { SideAssistant } from '../components/SideAssistant';
+import { SideAssistant } from '../components/SideAssistant/SideAssistant';
 import { SideAssistantController } from '../libs/SideAssistantController';
 
 const SideAssistantContext = createContext<SideAssistantController | null>(

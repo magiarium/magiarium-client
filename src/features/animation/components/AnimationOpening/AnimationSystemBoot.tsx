@@ -1,11 +1,11 @@
 import { Image } from '@/common/components/Image';
-import { LoadingOverlay } from '@/common/components/LoadingOverlay';
+import { LoadingOverlay } from '@/common/components/LoadingOverlay/LoadingOverlay';
+import { AnimationSkipOverlay } from '@/features/animation/components/AnimationSkipOverlay';
+import { useAnimationController } from '@/features/animation/hooks/useAnimationController';
+import { AnimatorId } from '@/features/animation/libs/animator/type';
+import { AnimationControllerId } from '@/features/animation/libs/controller/type';
+import { createAnimationController } from '@/features/animation/libs/factory/createAnimationController';
 import { useEffect, useRef } from 'react';
-import { useAnimationController } from '../../hooks/useAnimationController';
-import { AnimatorId } from '../../libs/animator/type';
-import { AnimationControllerId } from '../../libs/controller/type';
-import { createAnimationController } from '../../libs/factory/createAnimationController';
-import { AnimationSkipOverlay } from '../AnimationSkipOverlay';
 import './AnimationSystemBoot.scss';
 
 const CONTROLLER_ID = 'system-boot-animation' as AnimationControllerId;
