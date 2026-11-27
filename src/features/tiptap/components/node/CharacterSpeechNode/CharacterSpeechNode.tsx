@@ -2,9 +2,7 @@
 import { Image } from '@/common/components/Image';
 import { Speech } from '@/common/components/SpeechBubble';
 import { TEMPLATE_CHARACTER_ICONS } from '@/common/constants';
-import { getNowDateTimeString } from '@/common/libs/getNowDatetimeString';
-import { ImageSelector } from '@/features/image/components/ImageSelector';
-import { useImageUploader } from '@/features/image/hooks/useImageUploader';
+import { ImageSelector } from '@/features/image/components/ImageSelector/ImageSelector';
 import { Node } from '@tiptap/pm/model';
 import {
   Editor,
@@ -96,28 +94,13 @@ const CharacterSpeechIcon = ({
             : undefined
         }
         className={classNames('tiptap-character-speech__character-icon')}
-        src={node.attrs.characterIcon.src ?? '/user/icons/unknown.webp'}
+        src={node.attrs.characterIcon?.src ?? '/user/unknown/icon.webp'}
         alt={'キャラクターアイコン'}
         width={515}
         height={515}
       />
     );
   }
-
-  const { handleImageInput } = useImageUploader({
-    onChange: (next) => {
-      updateAttributes({
-        characterIcon: {
-          src: next.src,
-          alt: 'キャラクターアイコン',
-          originalWidth: 515,
-          originalHeight: 515,
-          uploadedAt: getNowDateTimeString(),
-        },
-      });
-    },
-    clipSize: { width: 515, height: 515 },
-  });
 
   return (
     <Popover>
@@ -134,7 +117,7 @@ const CharacterSpeechIcon = ({
             'tiptap-character-speech__character-icon',
             'tiptap-character-speech__character-icon--editable'
           )}
-          src={node.attrs.characterIcon.src ?? '/user/icons/unknown.webp'}
+          src={node.attrs.characterIcon?.src ?? '/user/unknown/icon.webp'}
           alt={'キャラクターアイコン'}
           width={515}
           height={515}
@@ -145,17 +128,21 @@ const CharacterSpeechIcon = ({
           <CardBody>
             <CardItemGroup className="tiptap-character-speech__card-item-group">
               <ImageSelector
-                iconSize="2rem"
+                selectorIconSize="2rem"
                 templates={TEMPLATE_CHARACTER_ICONS}
-                isActive={(current) => {
-                  return node.attrs.characterIcon.src === current.src;
-                }}
-                onSelect={(next) => {
+                currentImageMetadata={node.attrs.characterIcon}
+                onChange={(next) => {
                   updateAttributes({
-                    characterIcon: next,
+                    characterIcon: {
+                      ...next,
+                      alt: 'キャラクターアイコン',
+                    },
                   });
                 }}
-                onInput={handleImageInput}
+                customInput={{
+                  canCustom: true,
+                  clipSize: { width: 515, height: 515 },
+                }}
               />
             </CardItemGroup>
             <CardItemGroup className="tiptap-character-speech__card-item-group">

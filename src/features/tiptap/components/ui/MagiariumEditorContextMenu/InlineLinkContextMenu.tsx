@@ -1,6 +1,5 @@
 import { TEMPLATE_SERVICE_ICONS } from '@/common/constants';
-import { ImageSelector } from '@/features/image/components/ImageSelector';
-import { useImageUploader } from '@/features/image/hooks/useImageUploader';
+import { ImageSelector } from '@/features/image/components/ImageSelector/ImageSelector';
 import { Editor } from '@tiptap/react';
 import {
   BsArrowUpRight,
@@ -32,22 +31,6 @@ export const InlineLinkContextMenu = ({ editor }: { editor: Editor }) => {
     removeInlineLink,
     setInlineLink,
   } = useInlineLink({ editor });
-
-  const { handleImageInput } = useImageUploader({
-    onChange: (next) => {
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange('inlineLink')
-        .setInlineLink({
-          ...inlineLinkState,
-          icon: next,
-        })
-        .run();
-      setInlineLinkState(null);
-    },
-    clipSize: { width: 32, height: 32 },
-  });
 
   return (
     <ButtonGroup orientation={'vertical'}>
@@ -103,26 +86,25 @@ export const InlineLinkContextMenu = ({ editor }: { editor: Editor }) => {
           <Card>
             <CardBody>
               <ImageSelector
-                iconSize="30px"
+                selectorIconSize="30px"
                 className="tiptap-inline-link__icon-selector"
                 templates={TEMPLATE_SERVICE_ICONS}
-                isActive={(current) => {
-                  if (inlineLinkState.href === '') return false;
-                  return current.src === inlineLinkState.icon?.src;
-                }}
-                onSelect={(imageMetadata) => {
+                currentImageMetadata={inlineLinkState.icon}
+                onChange={(next) => {
                   const success = editor
                     .chain()
                     .focus()
                     .extendMarkRange('inlineLink')
                     .setInlineLink({
                       ...inlineLinkState,
-                      icon: imageMetadata,
+                      icon: next,
                     })
                     .run();
-                  setInlineLinkState(null);
                 }}
-                onInput={handleImageInput}
+                customInput={{
+                  canCustom: true,
+                  clipSize: { width: 32, height: 32 },
+                }}
               />
               {inlineLinkState.icon && inlineLinkState.icon?.src !== '' && (
                 <Button

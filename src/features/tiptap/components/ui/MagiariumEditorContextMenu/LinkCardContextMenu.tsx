@@ -1,10 +1,10 @@
 import { Button as MagiariumButton } from '@/common/components/Button';
 import { Image } from '@/common/components/Image';
 import { TEMPLATE_OGPS, TEMPLATE_THUMBNAILS } from '@/common/constants';
-import { ImageSelector } from '@/features/image/components/ImageSelector';
+import { ImageSelector } from '@/features/image/components/ImageSelector/ImageSelector';
 import { useImageUploader } from '@/features/image/hooks/useImageUploader';
 import { Editor } from '@tiptap/react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
   BsArrowUpRight,
   BsEraser,
@@ -116,17 +116,18 @@ export const LinkCardSettingCard = ({
   >;
   setLinkCard: () => void;
 }) => {
+  const [isShowClipper, setIsShowClipper] = useState<boolean>(false);
   const { handleImageInput } = useImageUploader({
     onChange: (next) => {
       setLinkCardState((prev) => {
         return {
           ...prev,
           href: prev?.href || '',
-          thumbnailUrl: next.src,
+          thumbnail: next,
         };
       });
+      setIsShowClipper(true);
     },
-    clipSize: { width: 1200, height: 800 },
   });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -160,9 +161,10 @@ export const LinkCardSettingCard = ({
           </div>
         ) : (
           <ImageSelector
-            iconSize="30px"
+            selectorIconSize="30px"
+            currentImageMetadata={linkCardState.thumbnail}
             templates={[...TEMPLATE_THUMBNAILS, ...TEMPLATE_OGPS]}
-            onSelect={(next) => {
+            onChange={(next) => {
               setLinkCardState((prev) => {
                 return {
                   ...prev,
@@ -171,7 +173,10 @@ export const LinkCardSettingCard = ({
                 };
               });
             }}
-            onInput={handleImageInput}
+            customInput={{
+              canCustom: true,
+              clipSize: { width: 1200, height: 800 },
+            }}
           />
         )}
         <Input
