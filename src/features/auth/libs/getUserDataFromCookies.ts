@@ -1,4 +1,5 @@
-import { fetchAuthSession, signOut } from 'aws-amplify/auth';
+import { signOut } from 'aws-amplify/auth';
+import { fetchAuthSession } from 'aws-amplify/auth/server';
 import { cookies } from 'next/headers';
 import {
   AVAILABLE_ACCOUNTS_COOKIE_KEY,
@@ -52,14 +53,19 @@ export const getUserDataFromCookies = async (): Promise<
     nextServerContext: {
       cookies,
     },
-    operation: (contextSpec) => fetchAuthSession(contextSpec),
+    operation: async (contextSpec) => fetchAuthSession(contextSpec),
   });
 
   try {
     const currentAccount = extractCurrentAccountFromSession(session);
     if (!validateAuthSession({ session, currentAccount })) {
       // cookieと実際のセッション情報が異なるため、サインアウトしてゲストアカウント扱い
-      await signOut();
+      await runWithAmplifyServerContext({
+        nextServerContext: {
+          cookies,
+        },
+        operation: async (contextSpec) => await signOut(contextSpec),
+      });
       return {
         currentAccount: GUEST_ACCOUNT,
         availableAccounts,

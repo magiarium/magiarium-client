@@ -1,6 +1,5 @@
-import { CHARACTER_SPEECH_ICONS } from '@/features/content/common/constants';
-import { ImageSelector } from '@/features/image/components/ImageSelector';
-import { useImageUploader } from '@/features/image/hooks/useImageUploader';
+import { TEMPLATE_CHARACTER_ICONS } from '@/common/constants';
+import { ImageSelector } from '@/features/image/components/ImageSelector/ImageSelector';
 import { useTiptapEditor } from '@/features/tiptap/hooks/useTiptapEditor';
 import { Editor } from '@tiptap/core';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
@@ -93,21 +92,6 @@ export const CharacterSpeechMain = ({
   setCharacterSpeechState,
   setCharacterSpeech,
 }: CharacterSpeechMainProps) => {
-  const { handleImageInput } = useImageUploader({
-    onChange: (next) => {
-      if (!editor) return;
-      editor
-        .chain()
-        .focus()
-        .setCharacterSpeech({
-          ...characterSpeechState,
-          characterIcon: next.path,
-        })
-        .run();
-    },
-    clipSize: { width: 515, height: 515 },
-  });
-
   useEffect(() => {
     if (!characterSpeechState) return;
 
@@ -119,20 +103,24 @@ export const CharacterSpeechMain = ({
       <CardBody>
         <CardItemGroup className="tiptap-character-speech__card-item-group">
           <ImageSelector
-            iconSize="2rem"
-            templates={CHARACTER_SPEECH_ICONS}
-            isActive={(current) =>
-              characterSpeechState?.characterIcon === current.path
-            }
-            onSelect={(next) => {
-              setCharacterSpeechState((prev) => {
-                return {
-                  ...prev,
-                  characterIcon: next.path,
-                };
-              });
+            currentImageMetadata={characterSpeechState?.characterIcon}
+            selectorIconSize="2rem"
+            templates={TEMPLATE_CHARACTER_ICONS}
+            onChange={(next) => {
+              if (!editor) return;
+              editor
+                .chain()
+                .focus()
+                .setCharacterSpeech({
+                  ...characterSpeechState,
+                  characterIcon: next,
+                })
+                .run();
             }}
-            onInput={handleImageInput}
+            customInput={{
+              canCustom: true,
+              clipSize: { width: 515, height: 515 },
+            }}
           />
         </CardItemGroup>
         <CardItemGroup className="tiptap-character-speech__card-item-group">

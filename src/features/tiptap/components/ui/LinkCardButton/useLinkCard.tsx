@@ -102,10 +102,10 @@ export const useLinkCardHandlers = (props: {
   useEffect(() => {
     if (!editor) return;
 
-    const { thumbnailUrl, title, href, target, description } =
+    const { thumbnail, title, href, target, description } =
       editor.getAttributes('linkCard');
     if (editor.isActive('linkCard') && linkCardState === null) {
-      setLinkCardState({ thumbnailUrl, title, href, target, description });
+      setLinkCardState({ thumbnail, title, href, target, description });
     }
   }, [editor, linkCardState]);
 
@@ -113,9 +113,9 @@ export const useLinkCardHandlers = (props: {
     if (!editor) return;
 
     const updateLinkCardState = () => {
-      const { thumbnailUrl, title, href, target, description } =
+      const { thumbnail, title, href, target, description } =
         editor.getAttributes('linkCard');
-      setLinkCardState({ thumbnailUrl, title, href, target, description });
+      setLinkCardState({ thumbnail, title, href, target, description });
     };
     editor.on('selectionUpdate', updateLinkCardState);
     return () => {

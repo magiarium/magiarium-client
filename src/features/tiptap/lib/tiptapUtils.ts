@@ -1,4 +1,5 @@
-import { ImageInfo, loadImageInfo } from '@/features/image/libs/loadImageInfo';
+import { loadImageMetadata } from '@/features/image/libs/loadImageMetadata';
+import { ImageMetadata } from '@magiarium/structure';
 import type { Node as PMNode } from '@tiptap/pm/model';
 import type { Transaction } from '@tiptap/pm/state';
 import {
@@ -636,7 +637,7 @@ export const selectionWithinConvertibleTypes = (
  * @throws {Error} アップロードがキャンセルされた場合
  *
  */
-export const handleImageUpload = async (file: File): Promise<ImageInfo> => {
+export const handleImageUpload = async (file: File): Promise<ImageMetadata> => {
   // アップロード対象のファイルが指定されているか確認する
   if (!file) {
     throw new Error('No file provided');
@@ -650,9 +651,9 @@ export const handleImageUpload = async (file: File): Promise<ImageInfo> => {
   }
 
   // 実際のアップロード処理は保存時にまとめて実施するため、BlobURLの作成まで実施する。
-  const imageInfo = await loadImageInfo(file);
+  const imageMetadata = await loadImageMetadata(file);
 
-  return imageInfo;
+  return imageMetadata;
 };
 
 /**

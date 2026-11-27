@@ -1,6 +1,7 @@
+import { ImageMetadata } from '@magiarium/structure';
 import { useCallback, useState } from 'react';
 import { Area, Point, Size } from 'react-easy-crop';
-import { ImageInfo, loadImageInfo } from '../libs/loadImageInfo';
+import { loadImageMetadata } from '../libs/loadImageMetadata';
 
 /**
  * 画像クリップコンポーネント用のフック
@@ -26,7 +27,7 @@ export const useImageCliper = () => {
   }: {
     imageUrl: string;
     clipSize: Size;
-    onChange: (imageInfo: ImageInfo) => void;
+    onChange: (imageMetadata: ImageMetadata) => void;
   }) => {
     if (!croppedAreaPixels || isProcessing) {
       if (!croppedAreaPixels) {
@@ -114,9 +115,9 @@ export const useImageCliper = () => {
         lastModified: Date.now(),
       });
 
-      const imageInfo = await loadImageInfo(croppedFile);
+      const imageMetadata = await loadImageMetadata(croppedFile);
 
-      onChange(imageInfo);
+      onChange(imageMetadata);
     } catch (err) {
       setError('画像の加工に失敗しました。');
     } finally {

@@ -5,11 +5,13 @@ import {
   focusNextNode,
   isValidPosition,
 } from '@/features/tiptap/lib/tiptapUtils';
+import { ImageMetadata } from '@magiarium/structure';
 import type { NodeViewProps } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useRef, useState } from 'react';
 import { Button } from '../../ui-primitive/Button';
 import './ImageUploadNode.scss';
+import { UploadFunction } from './ImageUploadNodeExtension';
 
 export interface FileItem {
   /**
@@ -63,11 +65,7 @@ export interface UploadOptions {
    * @param {AbortSignal} signal - アップロード中断用シグナル
    * @returns {Promise<string>} アップロードされたファイルURL
    */
-  upload: (
-    file: File,
-    onProgress: (event: { progress: number }) => void,
-    signal: AbortSignal
-  ) => Promise<string>;
+  upload: UploadFunction;
   /**
    * ファイルアップロード成功時にトリガーされるコールバック関数
    * @param {string} url - アップロードに成功したファイルのURL
@@ -88,7 +86,7 @@ export interface UploadOptions {
 const useFileUpload = (options: UploadOptions) => {
   const [fileItems, setFileItems] = useState<FileItem[]>([]);
 
-  const uploadFile = async (file: File): Promise<string | null> => {
+  const uploadFile = async (file: File): Promise<ImageMetadata | null> => {
     if (file.size > options.maxSize) {
       const error = new Error(
         `File size exceeds maximum allowed (${options.maxSize / 1024 / 1024}MB)`
@@ -115,7 +113,7 @@ const useFileUpload = (options: UploadOptions) => {
         throw new Error('Upload function is not defined');
       }
 
-      const url = await options.upload(
+      const imageMetadata = await options.upload(
         file,
         (event: { progress: number }) => {
           setFileItems((prev) =>
@@ -127,18 +125,23 @@ const useFileUpload = (options: UploadOptions) => {
         abortController.signal
       );
 
-      if (!url) throw new Error('Upload failed: No URL returned');
+      if (!imageMetadata) throw new Error('Upload failed: No URL returned');
 
       if (!abortController.signal.aborted) {
         setFileItems((prev) =>
           prev.map((item) =>
             item.id === fileId
-              ? { ...item, status: 'success', url, progress: 100 }
+              ? {
+                  ...item,
+                  status: 'success',
+                  url: imageMetadata.src,
+                  progress: 100,
+                }
               : item
           )
         );
-        options.onSuccess?.(url);
-        return url;
+        options.onSuccess?.(imageMetadata.src);
+        return imageMetadata;
       }
 
       return null;
@@ -159,7 +162,7 @@ const useFileUpload = (options: UploadOptions) => {
     }
   };
 
-  const uploadFiles = async (files: File[]): Promise<string[]> => {
+  const uploadFiles = async (files: File[]): Promise<ImageMetadata[]> => {
     if (!files || files.length === 0) {
       options.onError?.(new Error('No files to upload'));
       return [];
@@ -179,7 +182,9 @@ const useFileUpload = (options: UploadOptions) => {
     const results = await Promise.all(uploadPromises);
 
     // 結果がnullの場合は除外(アップロード失敗)
-    return results.filter((url): url is string => url !== null);
+    return results.filter(
+      (imageMetadata): imageMetadata is ImageMetadata => imageMetadata !== null
+    );
   };
 
   const removeFileItem = (fileId: string) => {
@@ -461,15 +466,13 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
     useFileUpload(uploadOptions);
 
   const handleUpload = async (files: File[]) => {
-    const urls = await uploadFiles(files);
+    const imageMetadatas = await uploadFiles(files);
 
-    if (urls.length > 0) {
+    if (imageMetadatas.length > 0) {
       const pos = props.getPos();
 
       if (isValidPosition(pos)) {
-        const imageNodes = urls.map((url, index) => {
-          const filename =
-            files[index]?.name.replace(/\.[^/.]+$/, '') || 'unknown';
+        const imageNodes = imageMetadatas.map((imageMetadata) => {
           return {
             type: 'imageFigure',
             content: [
@@ -477,9 +480,12 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
                 type: extension.options.type,
                 attrs: {
                   ...extension.options,
-                  src: url,
-                  alt: filename,
-                  title: filename,
+                  src: imageMetadata.src,
+                  title: imageMetadata.title,
+                  alt: imageMetadata.alt,
+                  originalWidth: imageMetadata.originalWidth,
+                  originalHeight: imageMetadata.originalHeight,
+                  uploadedAt: imageMetadata.uploadedAt,
                 },
               },
               {

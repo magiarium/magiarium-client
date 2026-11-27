@@ -1,8 +1,8 @@
 'use client';
+import { Image } from '@/common/components/Image';
 import { Speech } from '@/common/components/SpeechBubble';
-import { CHARACTER_SPEECH_ICONS } from '@/features/content/common/constants';
-import { ImageSelector } from '@/features/image/components/ImageSelector';
-import { useImageUploader } from '@/features/image/hooks/useImageUploader';
+import { TEMPLATE_CHARACTER_ICONS } from '@/common/constants';
+import { ImageSelector } from '@/features/image/components/ImageSelector/ImageSelector';
 import { Node } from '@tiptap/pm/model';
 import {
   Editor,
@@ -11,7 +11,6 @@ import {
   NodeViewWrapper,
 } from '@tiptap/react';
 import classNames from 'classnames';
-import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 import { Card, CardBody, CardItemGroup } from '../../ui-primitive/Card';
 import { ColorSelector } from '../../ui-primitive/ColorSelector/ColorSelector';
@@ -22,7 +21,6 @@ import {
   PopoverTrigger,
 } from '../../ui-primitive/Popover';
 import './CharacterSpeechNode.scss';
-
 /**
  * キャラクタースピーチメイン
  */
@@ -96,7 +94,7 @@ const CharacterSpeechIcon = ({
             : undefined
         }
         className={classNames('tiptap-character-speech__character-icon')}
-        src={node.attrs.characterIcon ?? '/user/icons/unknown.webp'}
+        src={node.attrs.characterIcon?.src ?? '/user/unknown/icon.webp'}
         alt={'キャラクターアイコン'}
         width={515}
         height={515}
@@ -104,20 +102,8 @@ const CharacterSpeechIcon = ({
     );
   }
 
-  const { handleImageInput } = useImageUploader({
-    onChange: (next) => {
-      updateAttributes({
-        characterIcon: next.path,
-        frameColor: node.attrs.frameColor,
-        characterName: node.attrs.characterName,
-        characterPosition: node.attrs.characterPosition,
-      });
-    },
-    clipSize: { width: 515, height: 515 },
-  });
-
   return (
-    <Popover modal={true}>
+    <Popover>
       <PopoverTrigger asChild>
         <Image
           style={
@@ -131,7 +117,7 @@ const CharacterSpeechIcon = ({
             'tiptap-character-speech__character-icon',
             'tiptap-character-speech__character-icon--editable'
           )}
-          src={node.attrs.characterIcon ?? '/user/icons/unknown.webp'}
+          src={node.attrs.characterIcon?.src ?? '/user/unknown/icon.webp'}
           alt={'キャラクターアイコン'}
           width={515}
           height={515}
@@ -142,17 +128,21 @@ const CharacterSpeechIcon = ({
           <CardBody>
             <CardItemGroup className="tiptap-character-speech__card-item-group">
               <ImageSelector
-                iconSize="2rem"
-                templates={CHARACTER_SPEECH_ICONS}
-                isActive={(current) => {
-                  return node.attrs.characterIcon === current.path;
-                }}
-                onSelect={(next) => {
+                selectorIconSize="2rem"
+                templates={TEMPLATE_CHARACTER_ICONS}
+                currentImageMetadata={node.attrs.characterIcon}
+                onChange={(next) => {
                   updateAttributes({
-                    characterIcon: next.path,
+                    characterIcon: {
+                      ...next,
+                      alt: 'キャラクターアイコン',
+                    },
                   });
                 }}
-                onInput={handleImageInput}
+                customInput={{
+                  canCustom: true,
+                  clipSize: { width: 515, height: 515 },
+                }}
               />
             </CardItemGroup>
             <CardItemGroup className="tiptap-character-speech__card-item-group">
@@ -179,9 +169,6 @@ const CharacterSpeechIcon = ({
                   value={node.attrs.characterPosition}
                   onChange={(event) => {
                     updateAttributes({
-                      characterIcon: node.attrs.characterIcon,
-                      frameColor: node.attrs.frameColor,
-                      characterName: node.attrs.characterName,
                       characterPosition: event.target.value,
                     });
                   }}

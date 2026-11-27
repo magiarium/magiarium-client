@@ -1,7 +1,8 @@
 .tiptap-youtube-figure-node {
+  position: relative;
   &__delete-button {
     position: absolute;
     top: 0;
-    right: -60px;
+    right: -75px;
   }
 }

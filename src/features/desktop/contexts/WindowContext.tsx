@@ -1,6 +1,6 @@
 'use client';
 import { createContext, ReactNode, useState } from 'react';
-import { WindowScreen } from '../components/WindowScreen';
+import { WindowScreen } from '../components/WindowScreen/WindowScreen';
 import { WindowControllerManager } from '../libs/WindowManager';
 
 const WindowContext = createContext<WindowControllerManager | null>(null);

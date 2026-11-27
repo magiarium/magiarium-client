@@ -1,4 +1,4 @@
-import { BlogList } from '@/features/content/blog/components/BlogList';
+import { BlogList } from '@/features/content/blog/components/BlogList/BlogList';
 import { WindowFrame } from '@/features/desktop/components/WindowFrame';
 
 const BlogListPage = () => {

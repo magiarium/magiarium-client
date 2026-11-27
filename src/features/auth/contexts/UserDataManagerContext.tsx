@@ -1,11 +1,7 @@
 'use client';
-import { Amplify } from 'aws-amplify';
 import { createContext, ReactNode, useState } from 'react';
-import { amplifyConfig } from '../libs/amplifyConfig';
 import { UserDataManager } from '../libs/UserDataManager';
 import { UserData } from '../type';
-
-Amplify.configure(amplifyConfig);
 
 const UserDataManagerContext = createContext<UserDataManager | null>(null);
 

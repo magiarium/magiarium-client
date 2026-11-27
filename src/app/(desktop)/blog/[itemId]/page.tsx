@@ -1,4 +1,4 @@
-import { BlogContent } from '@/features/content/blog/components/BlogItem.Content';
+import { BlogContent } from '@/features/content/blog/components/BlogItemContent';
 import { WindowFrame } from '@/features/desktop/components/WindowFrame';
 import { ItemId } from '@magiarium/structure';
 
@@ -13,7 +13,7 @@ const BlogContentPage = async ({
       id="blog"
       title="ブログ"
       subTitle="個別ページ"
-      href="/blog/001"
+      href={`/blog/${itemId}`}
     >
       <BlogContent itemId={itemId} itemState="public" />
     </WindowFrame>

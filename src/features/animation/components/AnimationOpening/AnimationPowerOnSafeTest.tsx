@@ -1,9 +1,9 @@
-import { LoadingOverlay } from '@/common/components/LoadingOverlay';
+import { LoadingOverlay } from '@/common/components/LoadingOverlay/LoadingOverlay';
+import { AnimationSkipOverlay } from '@/features/animation/components/AnimationSkipOverlay';
+import { useAnimationController } from '@/features/animation/hooks/useAnimationController';
+import { AnimationControllerId } from '@/features/animation/libs/controller/type';
+import { createToVisibleChainAnimationController } from '@/features/animation/libs/factory/createToVisibleChainAnimationController';
 import { useEffect, useRef } from 'react';
-import { useAnimationController } from '../../hooks/useAnimationController';
-import { AnimationControllerId } from '../../libs/controller/type';
-import { createToVisibleChainAnimationController } from '../../libs/factory/createToVisibleChainAnimationController';
-import { AnimationSkipOverlay } from '../AnimationSkipOverlay';
 import './AnimationPowerOnSafeTest.scss';
 
 const CONTROLLER_ID = 'power-on-safe-test-animation' as AnimationControllerId;

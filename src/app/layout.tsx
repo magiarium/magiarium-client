@@ -1,12 +1,15 @@
 import { AdobeFontsLoader } from '@/common/components/AdobeFontsLoader';
 import { AnimationControllerContextProvider } from '@/features/animation/contexts/AnimationControllerContext';
 import { ApplicationContextProvider } from '@/features/app-controller/contexts/ApplicationContext';
-import { AuthExpiredNotice } from '@/features/auth/components/AuthExpiredNotice';
+import { AuthExpiredNotice } from '@/features/auth/components/AuthExpiredNotice/AuthExpiredNotice';
 import { UserDataManagerContextProvider } from '@/features/auth/contexts/UserDataManagerContext';
 import { getUserDataFromCookies } from '@/features/auth/libs/getUserDataFromCookies';
 import { WindowContextProvider } from '@/features/desktop/contexts/WindowContext';
 import { SideAssistantContextProvider } from '@/features/side-assistant/contexts/SideAssistantContext';
 import { ReactNode } from 'react';
+
+// AmplifyConfig
+import '@/common/libs/amplifyConfig';
 
 // CSS
 import '@fortawesome/fontawesome-free/css/all.min.css';

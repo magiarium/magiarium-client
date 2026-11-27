@@ -1,5 +1,5 @@
 import { useNotice } from '@/features/app-controller/hooks/useNotice';
-import { NoticeDialog } from '../../../common/components/NoticeDialog';
+import { NoticeDialog } from '../../../common/components/NoticeDialog/NoticeDialog';
 
 /**
  * Noticeコンポーネント

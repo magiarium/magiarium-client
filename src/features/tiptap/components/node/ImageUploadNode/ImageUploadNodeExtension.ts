@@ -1,3 +1,4 @@
+import { ImageMetadata } from '@magiarium/structure';
 import type { NodeType } from '@tiptap/pm/model';
 import { NodeSelection } from '@tiptap/pm/state';
 import {
@@ -12,7 +13,7 @@ export type UploadFunction = (
   file: File,
   onProgress?: (event: { progress: number }) => void,
   abortSignal?: AbortSignal
-) => Promise<string>;
+) => Promise<ImageMetadata>;
 
 export interface ImageUploadNodeOptions {
   /**

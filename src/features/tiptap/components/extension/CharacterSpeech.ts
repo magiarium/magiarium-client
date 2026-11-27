@@ -1,4 +1,5 @@
 import { CharacterSpeechNode } from '@/features/tiptap/components/node/CharacterSpeechNode';
+import { ImageMetadata } from '@magiarium/structure';
 import { Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 
@@ -14,7 +15,7 @@ declare module '@tiptap/core' {
 }
 
 export interface CharacterSpeechAttributes {
-  characterIcon?: string | null;
+  characterIcon?: ImageMetadata | null;
   frameColor?: string | null;
   characterName?: string | null;
   characterPosition?: string | null;
@@ -97,6 +98,18 @@ export const CharacterSpeech = Node.create({
           return commands.deleteNode(this.name);
         },
     };
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return [
+      'div',
+      {
+        ...this.options.HTMLAttributes,
+        ...HTMLAttributes,
+        'data-character-speech': '',
+      },
+      0,
+    ];
   },
 
   addNodeView() {

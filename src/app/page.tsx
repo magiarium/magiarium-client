@@ -1,5 +1,5 @@
 'use client';
-import { AnimationOpening } from '@/features/animation/components/AnimationOpening/Main';
+import { AnimationOpening } from '@/features/animation/components/AnimationOpening';
 import { useAppState } from '@/features/app-controller/hooks/useAppState';
 
 const TopPage = () => {

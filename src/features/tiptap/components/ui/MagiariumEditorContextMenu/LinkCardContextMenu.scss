@@ -1,0 +1,34 @@
+.tiptap-link-card-context-menu {
+  &__image-container {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    max-height: 100px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-sizing: border-box;
+    background-color: var(--surface-color);
+  }
+
+  &__thumbnail {
+    display: block;
+    height: 100%;
+    max-height: 150px;
+    width: auto;
+
+    border-radius: 5px;
+
+    background-color: var(--shadow-color);
+    padding: 10px;
+  }
+
+  &__image-reset-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}

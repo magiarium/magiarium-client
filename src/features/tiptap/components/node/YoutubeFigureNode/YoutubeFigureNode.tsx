@@ -14,7 +14,7 @@ import './YoutubeFigureNode.scss';
  */
 export const YoutubeFigureNode = ({ editor, deleteNode }: NodeViewProps) => {
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper className="tiptap-youtube-figure-node">
       {editor.isEditable && <YoutubeFigureTrashButton onClick={deleteNode} />}
       <NodeViewContent />
     </NodeViewWrapper>
